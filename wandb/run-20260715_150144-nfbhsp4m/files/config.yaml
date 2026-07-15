@@ -1,0 +1,31 @@
+_wandb:
+    value:
+        cli_version: 0.28.0
+        e:
+            gttfb3cz9ahjfya280l5uu0o0fe1tard:
+                cpu_count: 32
+                cpu_count_logical: 64
+                disk:
+                    /:
+                        total: "21255933952"
+                        used: "7108493312"
+                email: nonozarazua@gmail.com
+                executable: /srv/software/eb24/software/Miniforge3/24.1.2-0/bin/python
+                host: n-hpc-login1
+                memory:
+                    total: "201357291520"
+                os: Linux-6.1.0-50-amd64-x86_64-with-glibc2.36
+                program: <python with no main file>
+                python: CPython 3.10.14
+                root: /home/zarazuanav/workspace/repos/ccre-classification
+                startedAt: "2026-07-15T13:01:44.187100Z"
+                writerId: gttfb3cz9ahjfya280l5uu0o0fe1tard
+        m: []
+        python_version: 3.10.14
+        t:
+            "3":
+                - 2
+            "4": 3.10.14
+            "5": 0.28.0
+            "12": 0.28.0
+            "13": linux-x86_64

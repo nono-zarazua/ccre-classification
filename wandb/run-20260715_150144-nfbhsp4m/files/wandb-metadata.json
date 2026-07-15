@@ -1,0 +1,22 @@
+{
+  "os": "Linux-6.1.0-50-amd64-x86_64-with-glibc2.36",
+  "python": "CPython 3.10.14",
+  "startedAt": "2026-07-15T13:01:44.187100Z",
+  "program": "<python with no main file>",
+  "email": "nonozarazua@gmail.com",
+  "root": "/home/zarazuanav/workspace/repos/ccre-classification",
+  "host": "n-hpc-login1",
+  "executable": "/srv/software/eb24/software/Miniforge3/24.1.2-0/bin/python",
+  "cpu_count": 32,
+  "cpu_count_logical": 64,
+  "disk": {
+    "/": {
+      "total": "21255933952",
+      "used": "7108493312"
+    }
+  },
+  "memory": {
+    "total": "201357291520"
+  },
+  "writerId": "gttfb3cz9ahjfya280l5uu0o0fe1tard"
+}
