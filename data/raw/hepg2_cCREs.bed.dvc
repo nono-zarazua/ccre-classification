@@ -1,0 +1,5 @@
+outs:
+- md5: 7d41f1fe04aaa9974c4a7a268f9b9597
+  size: 258564663
+  hash: md5
+  path: hepg2_cCREs.bed
