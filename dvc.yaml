@@ -1,0 +1,9 @@
+stages:
+  prepare_hepg2_els:
+    cmd: bash src/get_hepg2_ELS.sh
+    deps:
+    - data/raw/hepg2_cCREs.bed
+    - src/get_hepg2_ELS.sh
+    outs:
+    - data/processed/hepg2_ELS.bed
+    - data/processed/hepg2_ELS.trimmed.bed

@@ -1,0 +1,23 @@
+schema: '2.0'
+stages:
+  prepare_hepg2_els:
+    cmd: bash src/get_hepg2_ELS.sh
+    deps:
+    - path: data/raw/hepg2_cCREs.bed
+      hash: md5
+      md5: 7d41f1fe04aaa9974c4a7a268f9b9597
+      size: 258564663
+    - path: src/get_hepg2_ELS.sh
+      hash: md5
+      md5: 819cfdfd96505ff835810e28af52b11d
+      size: 490
+      isexec: true
+    outs:
+    - path: data/processed/hepg2_ELS.bed
+      hash: md5
+      md5: d0d9e876436f30883f9b6b95f006264e
+      size: 5103993
+    - path: data/processed/hepg2_ELS.trimmed.bed
+      hash: md5
+      md5: 90344951982b7a86d5c31472e6dbc635
+      size: 1821999
