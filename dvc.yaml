@@ -7,3 +7,12 @@ stages:
     outs:
     - data/processed/hepg2_ELS.bed
     - data/processed/hepg2_ELS.trimmed.bed
+  build_negatives:
+    cmd: Rscript --vanilla src/build_negs.R
+    deps:
+    - data/processed/hepg2_ELS.trimmed.bed
+    - src/build_negs.R
+    outs:
+    - data/processed/hepg2_ELS.trimmed.fa
+    - data/processed/negatives/neg1x_hepg2_ELS.trimmed.bed
+    - data/processed/negatives/neg1x_hepg2_ELS.trimmed.fa

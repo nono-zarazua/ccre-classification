@@ -21,3 +21,27 @@ stages:
       hash: md5
       md5: 90344951982b7a86d5c31472e6dbc635
       size: 1821999
+  build_negatives:
+    cmd: Rscript --vanilla src/build_negs.R
+    deps:
+    - path: data/processed/hepg2_ELS.trimmed.bed
+      hash: md5
+      md5: 90344951982b7a86d5c31472e6dbc635
+      size: 1821999
+    - path: src/build_negs.R
+      hash: md5
+      md5: a9dec8893334d34181076dcf70426409
+      size: 746
+    outs:
+    - path: data/processed/hepg2_ELS.trimmed.fa
+      hash: md5
+      md5: 0e394655746c706359d291f21722d896
+      size: 15674615
+    - path: data/processed/negatives/neg1x_hepg2_ELS.trimmed.bed
+      hash: md5
+      md5: fce50ecf5acee740acfa85ada0859d93
+      size: 666694
+    - path: data/processed/negatives/neg1x_hepg2_ELS.trimmed.fa
+      hash: md5
+      md5: 9fa8ef1c985d0d1f4422c21fb1ba2b38
+      size: 8688436
