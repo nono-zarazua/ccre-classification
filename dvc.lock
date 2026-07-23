@@ -45,3 +45,36 @@ stages:
       hash: md5
       md5: 9fa8ef1c985d0d1f4422c21fb1ba2b38
       size: 8688436
+  make_folds:
+    cmd: bash src/make_folds.sh
+    deps:
+    - path: data/processed/hepg2_ELS.trimmed.bed
+      hash: md5
+      md5: 90344951982b7a86d5c31472e6dbc635
+      size: 1821999
+    - path: src/make_folds.sh
+      hash: md5
+      md5: 211b1be368e9a5b849910b1dcae624f5
+      size: 963
+      isexec: true
+    outs:
+    - path: data/processed/folds/fold1/fold1.bed
+      hash: md5
+      md5: bd062ddaf6fd24dc92fd4a9dd83c483e
+      size: 358990
+    - path: data/processed/folds/fold2/fold2.bed
+      hash: md5
+      md5: c7c0e5ee73b763ac13cf4dd73dc7a35a
+      size: 355647
+    - path: data/processed/folds/fold3/fold3.bed
+      hash: md5
+      md5: e2204a54f5bc0b83a8bdfbb2f8b8e141
+      size: 367564
+    - path: data/processed/folds/fold4/fold4.bed
+      hash: md5
+      md5: 9c3499c526df1cce898f8204bb6860da
+      size: 361520
+    - path: data/processed/folds/fold5/fold5.bed
+      hash: md5
+      md5: 6e1a91a218e0ed90b1a94044efc24ff7
+      size: 377184

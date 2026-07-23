@@ -16,3 +16,14 @@ stages:
     - data/processed/hepg2_ELS.trimmed.fa
     - data/processed/negatives/neg1x_hepg2_ELS.trimmed.bed
     - data/processed/negatives/neg1x_hepg2_ELS.trimmed.fa
+  make_folds:
+    cmd: bash src/make_folds.sh
+    deps:
+    - data/processed/hepg2_ELS.trimmed.bed
+    - src/make_folds.sh
+    outs:
+    - data/processed/folds/fold1/fold1.bed
+    - data/processed/folds/fold2/fold2.bed
+    - data/processed/folds/fold3/fold3.bed
+    - data/processed/folds/fold4/fold4.bed
+    - data/processed/folds/fold5/fold5.bed
