@@ -13,33 +13,33 @@ stages:
     - data/processed/hepg2_ELS.trimmed.bed
     - src/make_folds.sh
     outs:
-    - data/processed/folds/fold1/fold1.bed
-    - data/processed/folds/fold2/fold2.bed
-    - data/processed/folds/fold3/fold3.bed
-    - data/processed/folds/fold4/fold4.bed
-    - data/processed/folds/fold5/fold5.bed
+    - data/processed/ls-gkm/folds/fold1/fold1.bed
+    - data/processed/ls-gkm/folds/fold2/fold2.bed
+    - data/processed/ls-gkm/folds/fold3/fold3.bed
+    - data/processed/ls-gkm/folds/fold4/fold4.bed
+    - data/processed/ls-gkm/folds/fold5/fold5.bed
   build_negatives:
     cmd: Rscript --vanilla src/build_negs.R <fold_nr>
     deps:
     - src/build_negs.R
-    - data/processed/folds/fold1/fold1.bed
-    - data/processed/folds/fold2/fold2.bed
-    - data/processed/folds/fold3/fold3.bed
-    - data/processed/folds/fold4/fold4.bed
-    - data/processed/folds/fold5/fold5.bed
+    - data/processed/ls-gkm/folds/fold1/fold1.bed
+    - data/processed/ls-gkm/folds/fold2/fold2.bed
+    - data/processed/ls-gkm/folds/fold3/fold3.bed
+    - data/processed/ls-gkm/folds/fold4/fold4.bed
+    - data/processed/ls-gkm/folds/fold5/fold5.bed
     outs:
-    - data/processed/folds/fold1/fold1.fa
-    - data/processed/folds/fold1/neg1x_fold1.bed
-    - data/processed/folds/fold1/neg1x_fold1.fa
-    - data/processed/folds/fold2/fold2.fa
-    - data/processed/folds/fold2/neg1x_fold2.bed
-    - data/processed/folds/fold2/neg1x_fold2.fa
-    - data/processed/folds/fold3/fold3.fa
-    - data/processed/folds/fold3/neg1x_fold3.bed
-    - data/processed/folds/fold3/neg1x_fold3.fa
-    - data/processed/folds/fold4/fold4.fa
-    - data/processed/folds/fold4/neg1x_fold4.bed
-    - data/processed/folds/fold4/neg1x_fold4.fa
-    - data/processed/folds/fold5/fold5.fa
-    - data/processed/folds/fold5/neg1x_fold5.bed
-    - data/processed/folds/fold5/neg1x_fold5.fa
+    - data/processed/ls-gkm/folds/fold1/fold1.fa
+    - data/processed/ls-gkm/folds/fold1/neg1x_fold1.bed
+    - data/processed/ls-gkm/folds/fold1/neg1x_fold1.fa
+    - data/processed/ls-gkm/folds/fold2/fold2.fa
+    - data/processed/ls-gkm/folds/fold2/neg1x_fold2.bed
+    - data/processed/ls-gkm/folds/fold2/neg1x_fold2.fa
+    - data/processed/ls-gkm/folds/fold3/fold3.fa
+    - data/processed/ls-gkm/folds/fold3/neg1x_fold3.bed
+    - data/processed/ls-gkm/folds/fold3/neg1x_fold3.fa
+    - data/processed/ls-gkm/folds/fold4/fold4.fa
+    - data/processed/ls-gkm/folds/fold4/neg1x_fold4.bed
+    - data/processed/ls-gkm/folds/fold4/neg1x_fold4.fa
+    - data/processed/ls-gkm/folds/fold5/fold5.fa
+    - data/processed/ls-gkm/folds/fold5/neg1x_fold5.bed
+    - data/processed/ls-gkm/folds/fold5/neg1x_fold5.fa
