@@ -3,7 +3,7 @@
 MAIN="/work/zarazuanav/workspace/repos/ccre-classification"
 PROCESSED="$MAIN/data/processed"
 BED="$PROCESSED/hepg2_ELS.trimmed.bed"
-FOLDS="$PROCESSED/folds"
+FOLDS="$PROCESSED/ls-gkm/folds"
 
 
 echo "Building fold 1 with chroms: 1, 20, 14, 22"
