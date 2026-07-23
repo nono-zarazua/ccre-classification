@@ -7,15 +7,6 @@ stages:
     outs:
     - data/processed/hepg2_ELS.bed
     - data/processed/hepg2_ELS.trimmed.bed
-  build_negatives:
-    cmd: Rscript --vanilla src/build_negs.R
-    deps:
-    - data/processed/hepg2_ELS.trimmed.bed
-    - src/build_negs.R
-    outs:
-    - data/processed/hepg2_ELS.trimmed.fa
-    - data/processed/negatives/neg1x_hepg2_ELS.trimmed.bed
-    - data/processed/negatives/neg1x_hepg2_ELS.trimmed.fa
   make_folds:
     cmd: bash src/make_folds.sh
     deps:
@@ -27,3 +18,28 @@ stages:
     - data/processed/folds/fold3/fold3.bed
     - data/processed/folds/fold4/fold4.bed
     - data/processed/folds/fold5/fold5.bed
+  build_negatives:
+    cmd: Rscript --vanilla src/build_negs.R <fold_nr>
+    deps:
+    - src/build_negs.R
+    - data/processed/folds/fold1/fold1.bed
+    - data/processed/folds/fold2/fold2.bed
+    - data/processed/folds/fold3/fold3.bed
+    - data/processed/folds/fold4/fold4.bed
+    - data/processed/folds/fold5/fold5.bed
+    outs:
+    - data/processed/folds/fold1/fold1.fa
+    - data/processed/folds/fold1/neg1x_fold1.bed
+    - data/processed/folds/fold1/neg1x_fold1.fa
+    - data/processed/folds/fold2/fold2.fa
+    - data/processed/folds/fold2/neg1x_fold2.bed
+    - data/processed/folds/fold2/neg1x_fold2.fa
+    - data/processed/folds/fold3/fold3.fa
+    - data/processed/folds/fold3/neg1x_fold3.bed
+    - data/processed/folds/fold3/neg1x_fold3.fa
+    - data/processed/folds/fold4/fold4.fa
+    - data/processed/folds/fold4/neg1x_fold4.bed
+    - data/processed/folds/fold4/neg1x_fold4.fa
+    - data/processed/folds/fold5/fold5.fa
+    - data/processed/folds/fold5/neg1x_fold5.bed
+    - data/processed/folds/fold5/neg1x_fold5.fa
