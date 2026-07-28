@@ -13,33 +13,98 @@ stages:
     - data/processed/hepg2_ELS.trimmed.bed
     - src/make_folds.sh
     outs:
-    - data/processed/ls-gkm/folds/fold1/fold1.bed
-    - data/processed/ls-gkm/folds/fold2/fold2.bed
-    - data/processed/ls-gkm/folds/fold3/fold3.bed
-    - data/processed/ls-gkm/folds/fold4/fold4.bed
-    - data/processed/ls-gkm/folds/fold5/fold5.bed
+    - data/processed/folds/fold1/fold1.bed
+    - data/processed/folds/fold2/fold2.bed
+    - data/processed/folds/fold3/fold3.bed
+    - data/processed/folds/fold4/fold4.bed
+    - data/processed/folds/fold5/fold5.bed
   build_negatives:
     cmd: Rscript --vanilla src/build_negs.R <fold_nr>
     deps:
     - src/build_negs.R
-    - data/processed/ls-gkm/folds/fold1/fold1.bed
-    - data/processed/ls-gkm/folds/fold2/fold2.bed
-    - data/processed/ls-gkm/folds/fold3/fold3.bed
-    - data/processed/ls-gkm/folds/fold4/fold4.bed
-    - data/processed/ls-gkm/folds/fold5/fold5.bed
+    - data/processed/folds/fold1/fold1.bed
+    - data/processed/folds/fold2/fold2.bed
+    - data/processed/folds/fold3/fold3.bed
+    - data/processed/folds/fold4/fold4.bed
+    - data/processed/folds/fold5/fold5.bed
     outs:
-    - data/processed/ls-gkm/folds/fold1/fold1.fa
-    - data/processed/ls-gkm/folds/fold1/neg1x_fold1.bed
-    - data/processed/ls-gkm/folds/fold1/neg1x_fold1.fa
-    - data/processed/ls-gkm/folds/fold2/fold2.fa
-    - data/processed/ls-gkm/folds/fold2/neg1x_fold2.bed
-    - data/processed/ls-gkm/folds/fold2/neg1x_fold2.fa
-    - data/processed/ls-gkm/folds/fold3/fold3.fa
-    - data/processed/ls-gkm/folds/fold3/neg1x_fold3.bed
-    - data/processed/ls-gkm/folds/fold3/neg1x_fold3.fa
-    - data/processed/ls-gkm/folds/fold4/fold4.fa
-    - data/processed/ls-gkm/folds/fold4/neg1x_fold4.bed
-    - data/processed/ls-gkm/folds/fold4/neg1x_fold4.fa
-    - data/processed/ls-gkm/folds/fold5/fold5.fa
-    - data/processed/ls-gkm/folds/fold5/neg1x_fold5.bed
-    - data/processed/ls-gkm/folds/fold5/neg1x_fold5.fa
+    - data/processed/folds/fold1/fold1.fa
+    - data/processed/folds/fold1/neg1x_fold1.bed
+    - data/processed/folds/fold1/neg1x_fold1.fa
+    - data/processed/folds/fold2/fold2.fa
+    - data/processed/folds/fold2/neg1x_fold2.bed
+    - data/processed/folds/fold2/neg1x_fold2.fa
+    - data/processed/folds/fold3/fold3.fa
+    - data/processed/folds/fold3/neg1x_fold3.bed
+    - data/processed/folds/fold3/neg1x_fold3.fa
+    - data/processed/folds/fold4/fold4.fa
+    - data/processed/folds/fold4/neg1x_fold4.bed
+    - data/processed/folds/fold4/neg1x_fold4.fa
+    - data/processed/folds/fold5/fold5.fa
+    - data/processed/folds/fold5/neg1x_fold5.bed
+    - data/processed/folds/fold5/neg1x_fold5.fa
+  make_outer_files:
+    cmd: for i in 1 2 3 4 5; do bash src/make_outer_files.sh "$i"; done
+    deps:
+    - data/processed/folds/fold1/fold1.fa
+    - data/processed/folds/fold1/neg1x_fold1.fa
+    - data/processed/folds/fold2/fold2.fa
+    - data/processed/folds/fold2/neg1x_fold2.fa
+    - data/processed/folds/fold3/fold3.fa
+    - data/processed/folds/fold3/neg1x_fold3.fa
+    - data/processed/folds/fold4/fold4.fa
+    - data/processed/folds/fold4/neg1x_fold4.fa
+    - data/processed/folds/fold5/fold5.fa
+    - data/processed/folds/fold5/neg1x_fold5.fa
+    - src/make_outer_files.sh
+    outs:
+    - data/processed/ls-gkm/training/outer1/train_neg.fa
+    - data/processed/ls-gkm/training/outer1/train_pos.fa
+    - data/processed/ls-gkm/training/outer2/train_neg.fa
+    - data/processed/ls-gkm/training/outer2/train_pos.fa
+    - data/processed/ls-gkm/training/outer3/train_neg.fa
+    - data/processed/ls-gkm/training/outer3/train_pos.fa
+    - data/processed/ls-gkm/training/outer4/train_neg.fa
+    - data/processed/ls-gkm/training/outer4/train_pos.fa
+    - data/processed/ls-gkm/training/outer5/train_neg.fa
+    - data/processed/ls-gkm/training/outer5/train_pos.fa
+  train_ls_gkm:
+    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>' 'output_prefix'
+    deps:
+    - ../lsgkm/bin/gkmtrain
+    - data/processed/ls-gkm/training/outer1/train_neg.fa
+    - data/processed/ls-gkm/training/outer1/train_pos.fa
+    - data/processed/ls-gkm/training/outer2/train_neg.fa
+    - data/processed/ls-gkm/training/outer2/train_pos.fa
+    - data/processed/ls-gkm/training/outer3/train_neg.fa
+    - data/processed/ls-gkm/training/outer3/train_pos.fa
+    - data/processed/ls-gkm/training/outer4/train_neg.fa
+    - data/processed/ls-gkm/training/outer4/train_pos.fa
+    - data/processed/ls-gkm/training/outer5/train_neg.fa
+    - data/processed/ls-gkm/training/outer5/train_pos.fa
+    outs:
+    - models/ls-gkm/outer1.model.txt
+    - models/ls-gkm/outer2.model.txt
+    - models/ls-gkm/outer3.model.txt
+    - models/ls-gkm/outer4.model.txt
+    - models/ls-gkm/outer5.model.txt
+  test_ls_gkm:
+    cmd: bash ../lsgkm/bin/gkmpredict -T 4 '<fasta>' '<model>' 'output'
+    deps:
+    - ../lsgkm/bin/gkmpredict
+    - models/ls-gkm/outer1.model.txt
+    - models/ls-gkm/outer2.model.txt
+    - models/ls-gkm/outer3.model.txt
+    - models/ls-gkm/outer4.model.txt
+    - models/ls-gkm/outer5.model.txt
+    outs:
+    - predictions/ls-gkm/outer1/pos_scores.txt
+    - predictions/ls-gkm/outer1/neg_scores.txt
+    - predictions/ls-gkm/outer2/pos_scores.txt
+    - predictions/ls-gkm/outer2/neg_scores.txt
+    - predictions/ls-gkm/outer3/pos_scores.txt
+    - predictions/ls-gkm/outer3/neg_scores.txt
+    - predictions/ls-gkm/outer4/pos_scores.txt
+    - predictions/ls-gkm/outer4/neg_scores.txt
+    - predictions/ls-gkm/outer5/pos_scores.txt
+    - predictions/ls-gkm/outer5/neg_scores.txt
