@@ -9,179 +9,179 @@ stages:
       size: 258564663
     - path: src/get_hepg2_ELS.sh
       hash: md5
-      md5: 819cfdfd96505ff835810e28af52b11d
-      size: 490
+      md5: eeda2e8d121885c73cfe0a559d9b02ea
+      size: 502
       isexec: true
     outs:
-    - path: data/processed/hepg2_ELS.bed
+    - path: data/processed/evn/hepg2_ELS.bed
       hash: md5
       md5: d0d9e876436f30883f9b6b95f006264e
       size: 5103993
-    - path: data/processed/hepg2_ELS.trimmed.bed
+    - path: data/processed/evn/hepg2_ELS.trimmed.bed
       hash: md5
       md5: 90344951982b7a86d5c31472e6dbc635
       size: 1821999
   build_negatives:
     cmd: Rscript --vanilla src/build_negs.R <fold_nr>
     deps:
-    - path: data/processed/folds/fold1/fold1.bed
+    - path: data/processed/evn/folds/fold1/fold1.bed
       hash: md5
       md5: bd062ddaf6fd24dc92fd4a9dd83c483e
       size: 358990
-    - path: data/processed/folds/fold2/fold2.bed
+    - path: data/processed/evn/folds/fold2/fold2.bed
       hash: md5
       md5: c7c0e5ee73b763ac13cf4dd73dc7a35a
       size: 355647
-    - path: data/processed/folds/fold3/fold3.bed
+    - path: data/processed/evn/folds/fold3/fold3.bed
       hash: md5
       md5: e2204a54f5bc0b83a8bdfbb2f8b8e141
       size: 367564
-    - path: data/processed/folds/fold4/fold4.bed
+    - path: data/processed/evn/folds/fold4/fold4.bed
       hash: md5
       md5: 9c3499c526df1cce898f8204bb6860da
       size: 361520
-    - path: data/processed/folds/fold5/fold5.bed
+    - path: data/processed/evn/folds/fold5/fold5.bed
       hash: md5
       md5: 6e1a91a218e0ed90b1a94044efc24ff7
       size: 377184
     - path: src/build_negs.R
       hash: md5
-      md5: aa55b9590cd9d0f16495a2faa16d4326
-      size: 1181
+      md5: c1ed623116de3d6f30a47e0a4b57faba
+      size: 1188
     outs:
-    - path: data/processed/folds/fold1/fold1.fa
+    - path: data/processed/evn/folds/fold1/fold1.fa
       hash: md5
       md5: f89ac5dc599152ffade6c9ac9c3ef1fd
       size: 3063134
-    - path: data/processed/folds/fold1/neg1x_fold1.bed
+    - path: data/processed/evn/folds/fold1/neg1x_fold1.bed
       hash: md5
       md5: ebd62284e1426b0e5b9e192bf54fd358
       size: 241121
-    - path: data/processed/folds/fold1/neg1x_fold1.fa
+    - path: data/processed/evn/folds/fold1/neg1x_fold1.fa
       hash: md5
       md5: abffe32f3cc3c9efedcd1ee1dfd722cf
       size: 3067584
-    - path: data/processed/folds/fold2/fold2.fa
+    - path: data/processed/evn/folds/fold2/fold2.fa
       hash: md5
       md5: 347c6236bb8e084f14d3fb2989d5cfc8
       size: 3025959
-    - path: data/processed/folds/fold2/neg1x_fold2.bed
+    - path: data/processed/evn/folds/fold2/neg1x_fold2.bed
       hash: md5
       md5: 5a232e2e3c398952b09d4825132f7f27
       size: 237103
-    - path: data/processed/folds/fold2/neg1x_fold2.fa
+    - path: data/processed/evn/folds/fold2/neg1x_fold2.fa
       hash: md5
       md5: bc42cce011aecf87983ec41c305a9f86
       size: 3029498
-    - path: data/processed/folds/fold3/fold3.fa
+    - path: data/processed/evn/folds/fold3/fold3.fa
       hash: md5
       md5: 1fd63868ecb162bd935e01c53a0b229b
       size: 3178346
-    - path: data/processed/folds/fold3/neg1x_fold3.bed
+    - path: data/processed/evn/folds/fold3/neg1x_fold3.bed
       hash: md5
       md5: cd00de54d1f08cf3235160cdaf165c0b
       size: 246377
-    - path: data/processed/folds/fold3/neg1x_fold3.fa
+    - path: data/processed/evn/folds/fold3/neg1x_fold3.fa
       hash: md5
       md5: 491660eefb4c08abcd25a3f1ce9653c4
       size: 3182448
-    - path: data/processed/folds/fold4/fold4.fa
+    - path: data/processed/evn/folds/fold4/fold4.fa
       hash: md5
       md5: a25b6177aae573602d906a7738a8e3af
       size: 3108999
-    - path: data/processed/folds/fold4/neg1x_fold4.bed
+    - path: data/processed/evn/folds/fold4/neg1x_fold4.bed
       hash: md5
       md5: 8e7ca6b16f019e6f449c4d84a4801d41
       size: 244337
-    - path: data/processed/folds/fold4/neg1x_fold4.fa
+    - path: data/processed/evn/folds/fold4/neg1x_fold4.fa
       hash: md5
       md5: 2d600490fe04c0bdf55395b0795a90d7
       size: 3117614
-    - path: data/processed/folds/fold5/fold5.fa
+    - path: data/processed/evn/folds/fold5/fold5.fa
       hash: md5
       md5: d2317725c8345e9c995af5d5eb69d8ef
       size: 3243946
-    - path: data/processed/folds/fold5/neg1x_fold5.bed
+    - path: data/processed/evn/folds/fold5/neg1x_fold5.bed
       hash: md5
       md5: 89ea29fc956a19b4f60d8f904906f4d9
       size: 252713
-    - path: data/processed/folds/fold5/neg1x_fold5.fa
+    - path: data/processed/evn/folds/fold5/neg1x_fold5.fa
       hash: md5
       md5: 0e52ed71f927e74b44bb7e14b994c673
       size: 3248615
   make_folds:
     cmd: bash src/make_folds.sh
     deps:
-    - path: data/processed/hepg2_ELS.trimmed.bed
+    - path: data/processed/evn/hepg2_ELS.trimmed.bed
       hash: md5
       md5: 90344951982b7a86d5c31472e6dbc635
       size: 1821999
     - path: src/make_folds.sh
       hash: md5
-      md5: d0deaad200dfd15090b030e2c8eba350
-      size: 970
+      md5: 394e05e2608e47bad60e29857e520819
+      size: 974
       isexec: true
     outs:
-    - path: data/processed/folds/fold1/fold1.bed
+    - path: data/processed/evn/folds/fold1/fold1.bed
       hash: md5
       md5: bd062ddaf6fd24dc92fd4a9dd83c483e
       size: 358990
-    - path: data/processed/folds/fold2/fold2.bed
+    - path: data/processed/evn/folds/fold2/fold2.bed
       hash: md5
       md5: c7c0e5ee73b763ac13cf4dd73dc7a35a
       size: 355647
-    - path: data/processed/folds/fold3/fold3.bed
+    - path: data/processed/evn/folds/fold3/fold3.bed
       hash: md5
       md5: e2204a54f5bc0b83a8bdfbb2f8b8e141
       size: 367564
-    - path: data/processed/folds/fold4/fold4.bed
+    - path: data/processed/evn/folds/fold4/fold4.bed
       hash: md5
       md5: 9c3499c526df1cce898f8204bb6860da
       size: 361520
-    - path: data/processed/folds/fold5/fold5.bed
+    - path: data/processed/evn/folds/fold5/fold5.bed
       hash: md5
       md5: 6e1a91a218e0ed90b1a94044efc24ff7
       size: 377184
   make_outer_files:
     cmd: for i in 1 2 3 4 5; do bash src/make_outer_files.sh "$i"; done
     deps:
-    - path: data/processed/folds/fold1/fold1.fa
+    - path: data/processed/evn/folds/fold1/fold1.fa
       hash: md5
       md5: f89ac5dc599152ffade6c9ac9c3ef1fd
       size: 3063134
-    - path: data/processed/folds/fold1/neg1x_fold1.fa
+    - path: data/processed/evn/folds/fold1/neg1x_fold1.fa
       hash: md5
       md5: abffe32f3cc3c9efedcd1ee1dfd722cf
       size: 3067584
-    - path: data/processed/folds/fold2/fold2.fa
+    - path: data/processed/evn/folds/fold2/fold2.fa
       hash: md5
       md5: 347c6236bb8e084f14d3fb2989d5cfc8
       size: 3025959
-    - path: data/processed/folds/fold2/neg1x_fold2.fa
+    - path: data/processed/evn/folds/fold2/neg1x_fold2.fa
       hash: md5
       md5: bc42cce011aecf87983ec41c305a9f86
       size: 3029498
-    - path: data/processed/folds/fold3/fold3.fa
+    - path: data/processed/evn/folds/fold3/fold3.fa
       hash: md5
       md5: 1fd63868ecb162bd935e01c53a0b229b
       size: 3178346
-    - path: data/processed/folds/fold3/neg1x_fold3.fa
+    - path: data/processed/evn/folds/fold3/neg1x_fold3.fa
       hash: md5
       md5: 491660eefb4c08abcd25a3f1ce9653c4
       size: 3182448
-    - path: data/processed/folds/fold4/fold4.fa
+    - path: data/processed/evn/folds/fold4/fold4.fa
       hash: md5
       md5: a25b6177aae573602d906a7738a8e3af
       size: 3108999
-    - path: data/processed/folds/fold4/neg1x_fold4.fa
+    - path: data/processed/evn/folds/fold4/neg1x_fold4.fa
       hash: md5
       md5: 2d600490fe04c0bdf55395b0795a90d7
       size: 3117614
-    - path: data/processed/folds/fold5/fold5.fa
+    - path: data/processed/evn/folds/fold5/fold5.fa
       hash: md5
       md5: d2317725c8345e9c995af5d5eb69d8ef
       size: 3243946
-    - path: data/processed/folds/fold5/neg1x_fold5.fa
+    - path: data/processed/evn/folds/fold5/neg1x_fold5.fa
       hash: md5
       md5: 0e52ed71f927e74b44bb7e14b994c673
       size: 3248615
@@ -190,43 +190,43 @@ stages:
       md5: c37055a12879188392671810429e64d8
       size: 1236
     outs:
-    - path: data/processed/ls-gkm/training/outer1/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer1/train_neg.fa
       hash: md5
       md5: 979788f3b05758f5e7faae3700e258c3
       size: 12578175
-    - path: data/processed/ls-gkm/training/outer1/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer1/train_pos.fa
       hash: md5
       md5: b0197ae40612ce4ad8b740b433ca52b9
       size: 12557250
-    - path: data/processed/ls-gkm/training/outer2/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer2/train_neg.fa
       hash: md5
       md5: 00f6fdee2995abeef43ea240407f5fc5
       size: 12616261
-    - path: data/processed/ls-gkm/training/outer2/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer2/train_pos.fa
       hash: md5
       md5: 375fecf56efa6f5f86021d5b87b873f6
       size: 12594425
-    - path: data/processed/ls-gkm/training/outer3/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer3/train_neg.fa
       hash: md5
       md5: 7ee4838cac6388534546b4a39dde9546
       size: 12463311
-    - path: data/processed/ls-gkm/training/outer3/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer3/train_pos.fa
       hash: md5
       md5: 1d29494d79c67e16cf59cbda68ba7f6f
       size: 12442038
-    - path: data/processed/ls-gkm/training/outer4/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer4/train_neg.fa
       hash: md5
       md5: 97423d214a126f700a30b05e8e307a72
       size: 12528145
-    - path: data/processed/ls-gkm/training/outer4/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer4/train_pos.fa
       hash: md5
       md5: 3b7fdc2e394a3e2aaa02afc4967b5351
       size: 12511385
-    - path: data/processed/ls-gkm/training/outer5/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer5/train_neg.fa
       hash: md5
       md5: a883ea6f814802d4b935c89f6ab190c3
       size: 12397144
-    - path: data/processed/ls-gkm/training/outer5/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer5/train_pos.fa
       hash: md5
       md5: 87fc307a126239ca81cdfb15918b8dbd
       size: 12376438
@@ -239,64 +239,64 @@ stages:
       md5: 038f6f2fc057ff25a66b32faa6895343
       size: 143632
       isexec: true
-    - path: data/processed/ls-gkm/training/outer1/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer1/train_neg.fa
       hash: md5
       md5: 979788f3b05758f5e7faae3700e258c3
       size: 12578175
-    - path: data/processed/ls-gkm/training/outer1/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer1/train_pos.fa
       hash: md5
       md5: b0197ae40612ce4ad8b740b433ca52b9
       size: 12557250
-    - path: data/processed/ls-gkm/training/outer2/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer2/train_neg.fa
       hash: md5
       md5: 00f6fdee2995abeef43ea240407f5fc5
       size: 12616261
-    - path: data/processed/ls-gkm/training/outer2/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer2/train_pos.fa
       hash: md5
       md5: 375fecf56efa6f5f86021d5b87b873f6
       size: 12594425
-    - path: data/processed/ls-gkm/training/outer3/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer3/train_neg.fa
       hash: md5
       md5: 7ee4838cac6388534546b4a39dde9546
       size: 12463311
-    - path: data/processed/ls-gkm/training/outer3/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer3/train_pos.fa
       hash: md5
       md5: 1d29494d79c67e16cf59cbda68ba7f6f
       size: 12442038
-    - path: data/processed/ls-gkm/training/outer4/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer4/train_neg.fa
       hash: md5
       md5: 97423d214a126f700a30b05e8e307a72
       size: 12528145
-    - path: data/processed/ls-gkm/training/outer4/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer4/train_pos.fa
       hash: md5
       md5: 3b7fdc2e394a3e2aaa02afc4967b5351
       size: 12511385
-    - path: data/processed/ls-gkm/training/outer5/train_neg.fa
+    - path: data/processed/evn/ls-gkm/training/outer5/train_neg.fa
       hash: md5
       md5: a883ea6f814802d4b935c89f6ab190c3
       size: 12397144
-    - path: data/processed/ls-gkm/training/outer5/train_pos.fa
+    - path: data/processed/evn/ls-gkm/training/outer5/train_pos.fa
       hash: md5
       md5: 87fc307a126239ca81cdfb15918b8dbd
       size: 12376438
     outs:
-    - path: models/ls-gkm/outer1.model.txt
+    - path: models/evn/ls-gkm/outer1.model.txt
       hash: md5
       md5: decdcc7597dea1bbe000ecf9d5fd9fd4
       size: 15829504
-    - path: models/ls-gkm/outer2.model.txt
+    - path: models/evn/ls-gkm/outer2.model.txt
       hash: md5
       md5: 90f97f2f2edfa003b80fde3a20443250
       size: 15992390
-    - path: models/ls-gkm/outer3.model.txt
+    - path: models/evn/ls-gkm/outer3.model.txt
       hash: md5
       md5: 5e0cbbb0c15206b63ce585a5c45e5221
       size: 15766434
-    - path: models/ls-gkm/outer4.model.txt
+    - path: models/evn/ls-gkm/outer4.model.txt
       hash: md5
       md5: b219b11ad36aaa9c190ba024ffcff3ea
       size: 15869471
-    - path: models/ls-gkm/outer5.model.txt
+    - path: models/evn/ls-gkm/outer5.model.txt
       hash: md5
       md5: ff1b42bf6c64a2948b1280c4caa612d0
       size: 15805919
@@ -308,64 +308,64 @@ stages:
       md5: c55cfc447d7882ad8e41427f06e00e68
       size: 135016
       isexec: true
-    - path: models/ls-gkm/outer1.model.txt
+    - path: models/evn/ls-gkm/outer1.model.txt
       hash: md5
       md5: decdcc7597dea1bbe000ecf9d5fd9fd4
       size: 15829504
-    - path: models/ls-gkm/outer2.model.txt
+    - path: models/evn/ls-gkm/outer2.model.txt
       hash: md5
       md5: 90f97f2f2edfa003b80fde3a20443250
       size: 15992390
-    - path: models/ls-gkm/outer3.model.txt
+    - path: models/evn/ls-gkm/outer3.model.txt
       hash: md5
       md5: 5e0cbbb0c15206b63ce585a5c45e5221
       size: 15766434
-    - path: models/ls-gkm/outer4.model.txt
+    - path: models/evn/ls-gkm/outer4.model.txt
       hash: md5
       md5: b219b11ad36aaa9c190ba024ffcff3ea
       size: 15869471
-    - path: models/ls-gkm/outer5.model.txt
+    - path: models/evn/ls-gkm/outer5.model.txt
       hash: md5
       md5: ff1b42bf6c64a2948b1280c4caa612d0
       size: 15805919
     outs:
-    - path: predictions/ls-gkm/outer1/neg_scores.txt
+    - path: predictions/evn/ls-gkm/outer1/neg_scores.txt
       hash: md5
       md5: 64fa004d739bbbcc13aafebe77bdd9aa
       size: 418697
-    - path: predictions/ls-gkm/outer1/pos_scores.txt
+    - path: predictions/evn/ls-gkm/outer1/pos_scores.txt
       hash: md5
       md5: 2cdc8db20665a7fc8ab9a65a661f9232
       size: 406202
-    - path: predictions/ls-gkm/outer2/neg_scores.txt
+    - path: predictions/evn/ls-gkm/outer2/neg_scores.txt
       hash: md5
       md5: 5d1e3f48105427c42dfebdb326baeb94
       size: 412074
-    - path: predictions/ls-gkm/outer2/pos_scores.txt
+    - path: predictions/evn/ls-gkm/outer2/pos_scores.txt
       hash: md5
       md5: f077b325f9662e3f823affe17db4161e
       size: 401705
-    - path: predictions/ls-gkm/outer3/neg_scores.txt
+    - path: predictions/evn/ls-gkm/outer3/neg_scores.txt
       hash: md5
       md5: c8c184a734e999a68d1554f7e6781391
       size: 428489
-    - path: predictions/ls-gkm/outer3/pos_scores.txt
+    - path: predictions/evn/ls-gkm/outer3/pos_scores.txt
       hash: md5
       md5: f3ec9eae5ec24b7c1fe2dd87033733df
       size: 415513
-    - path: predictions/ls-gkm/outer4/neg_scores.txt
+    - path: predictions/evn/ls-gkm/outer4/neg_scores.txt
       hash: md5
       md5: d354b9355f07d84af8b9dc4f9190782e
       size: 424431
-    - path: predictions/ls-gkm/outer4/pos_scores.txt
+    - path: predictions/evn/ls-gkm/outer4/pos_scores.txt
       hash: md5
       md5: bfb5bb6ab98d18ca50fd3ec524396d71
       size: 408873
-    - path: predictions/ls-gkm/outer5/neg_scores.txt
+    - path: predictions/evn/ls-gkm/outer5/neg_scores.txt
       hash: md5
       md5: 1bf2e53c900429faa378d37a9328e296
       size: 439442
-    - path: predictions/ls-gkm/outer5/pos_scores.txt
+    - path: predictions/evn/ls-gkm/outer5/pos_scores.txt
       hash: md5
       md5: 57d7cef8a7e31b34337f33e7612de441
       size: 426416
