@@ -369,3 +369,102 @@ stages:
       hash: md5
       md5: 57d7cef8a7e31b34337f33e7612de441
       size: 426416
+  merge_pos_negs:
+    cmd: for i in 1 2 3 4 5; do Rscript src/prepare_lsgkm_scores.R 
+      predictions/evn/ls-gkm/outer"$i"; done
+    deps:
+    - path: predictions/evn/ls-gkm/outer1/neg_scores.txt
+      hash: md5
+      md5: 64fa004d739bbbcc13aafebe77bdd9aa
+      size: 418697
+    - path: predictions/evn/ls-gkm/outer1/pos_scores.txt
+      hash: md5
+      md5: 2cdc8db20665a7fc8ab9a65a661f9232
+      size: 406202
+    - path: predictions/evn/ls-gkm/outer2/neg_scores.txt
+      hash: md5
+      md5: 5d1e3f48105427c42dfebdb326baeb94
+      size: 412074
+    - path: predictions/evn/ls-gkm/outer2/pos_scores.txt
+      hash: md5
+      md5: f077b325f9662e3f823affe17db4161e
+      size: 401705
+    - path: predictions/evn/ls-gkm/outer3/neg_scores.txt
+      hash: md5
+      md5: c8c184a734e999a68d1554f7e6781391
+      size: 428489
+    - path: predictions/evn/ls-gkm/outer3/pos_scores.txt
+      hash: md5
+      md5: f3ec9eae5ec24b7c1fe2dd87033733df
+      size: 415513
+    - path: predictions/evn/ls-gkm/outer4/neg_scores.txt
+      hash: md5
+      md5: d354b9355f07d84af8b9dc4f9190782e
+      size: 424431
+    - path: predictions/evn/ls-gkm/outer4/pos_scores.txt
+      hash: md5
+      md5: bfb5bb6ab98d18ca50fd3ec524396d71
+      size: 408873
+    - path: predictions/evn/ls-gkm/outer5/neg_scores.txt
+      hash: md5
+      md5: 1bf2e53c900429faa378d37a9328e296
+      size: 439442
+    - path: predictions/evn/ls-gkm/outer5/pos_scores.txt
+      hash: md5
+      md5: 57d7cef8a7e31b34337f33e7612de441
+      size: 426416
+    - path: src/prepare_lsgkm_scores.R
+      hash: md5
+      md5: 32b69def3377ba7ea1dfbb1d86e32f24
+      size: 1883
+    outs:
+    - path: results/evn/ls-gkm/outer1.tsv
+      hash: md5
+      md5: eb99659e00a7058da74fd3b2088fa39e
+      size: 1292271
+    - path: results/evn/ls-gkm/outer2.tsv
+      hash: md5
+      md5: 6be4dfe5cdcbd032f0f9b2ff686d601b
+      size: 1273591
+    - path: results/evn/ls-gkm/outer3.tsv
+      hash: md5
+      md5: c8c1a04c90dc3f6b6a77c49089aadd3e
+      size: 1323350
+    - path: results/evn/ls-gkm/outer4.tsv
+      hash: md5
+      md5: 4d07ab2166a068679eaf10b2a49c4d97
+      size: 1306964
+    - path: results/evn/ls-gkm/outer5.tsv
+      hash: md5
+      md5: 75020d8e0666b5dd84b1e2798d0e7d50
+      size: 1356558
+  merge_outers:
+    cmd: "{\n  head -n 1 results/evn/ls-gkm/outer1.tsv\n  for FOLD in 1 2 3 4 5; do\n\
+      \    tail -n +2 \"results/evn/ls-gkm/outer$FOLD.tsv\"\n  done\n} > results/evn/ls-gkm/all_outers.tsv\
+      \    \n"
+    deps:
+    - path: results/evn/ls-gkm/outer1.tsv
+      hash: md5
+      md5: eb99659e00a7058da74fd3b2088fa39e
+      size: 1292271
+    - path: results/evn/ls-gkm/outer2.tsv
+      hash: md5
+      md5: 6be4dfe5cdcbd032f0f9b2ff686d601b
+      size: 1273591
+    - path: results/evn/ls-gkm/outer3.tsv
+      hash: md5
+      md5: c8c1a04c90dc3f6b6a77c49089aadd3e
+      size: 1323350
+    - path: results/evn/ls-gkm/outer4.tsv
+      hash: md5
+      md5: 4d07ab2166a068679eaf10b2a49c4d97
+      size: 1306964
+    - path: results/evn/ls-gkm/outer5.tsv
+      hash: md5
+      md5: 75020d8e0666b5dd84b1e2798d0e7d50
+      size: 1356558
+    outs:
+    - path: results/evn/ls-gkm/all_outer.tsv
+      hash: md5
+      md5: a390b358efce01d48d4960fcf4c4f4fc
+      size: 6552462

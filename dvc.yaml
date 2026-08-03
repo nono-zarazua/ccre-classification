@@ -69,7 +69,8 @@ stages:
     - data/processed/evn/ls-gkm/training/outer5/train_neg.fa
     - data/processed/evn/ls-gkm/training/outer5/train_pos.fa
   train_ls_gkm:
-    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>' 'output_prefix'
+    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>' 
+      'output_prefix'
     deps:
     - ../lsgkm/bin/gkmtrain
     - data/processed/evn/ls-gkm/training/outer1/train_neg.fa
@@ -108,3 +109,40 @@ stages:
     - predictions/evn/ls-gkm/outer4/neg_scores.txt
     - predictions/evn/ls-gkm/outer5/pos_scores.txt
     - predictions/evn/ls-gkm/outer5/neg_scores.txt
+  merge_pos_negs:
+    cmd: for i in 1 2 3 4 5; do Rscript src/prepare_lsgkm_scores.R 
+      predictions/evn/ls-gkm/outer"$i"; done
+    deps:
+    - predictions/evn/ls-gkm/outer1/neg_scores.txt
+    - predictions/evn/ls-gkm/outer1/pos_scores.txt
+    - predictions/evn/ls-gkm/outer2/neg_scores.txt
+    - predictions/evn/ls-gkm/outer2/pos_scores.txt
+    - predictions/evn/ls-gkm/outer3/neg_scores.txt
+    - predictions/evn/ls-gkm/outer3/pos_scores.txt
+    - predictions/evn/ls-gkm/outer4/neg_scores.txt
+    - predictions/evn/ls-gkm/outer4/pos_scores.txt
+    - predictions/evn/ls-gkm/outer5/neg_scores.txt
+    - predictions/evn/ls-gkm/outer5/pos_scores.txt
+    - src/prepare_lsgkm_scores.R
+    outs:
+    - results/evn/ls-gkm/outer1.tsv
+    - results/evn/ls-gkm/outer2.tsv
+    - results/evn/ls-gkm/outer3.tsv
+    - results/evn/ls-gkm/outer4.tsv
+    - results/evn/ls-gkm/outer5.tsv
+  merge_outers:
+    cmd: |
+      {
+        head -n 1 results/evn/ls-gkm/outer1.tsv
+        for FOLD in 1 2 3 4 5; do
+          tail -n +2 "results/evn/ls-gkm/outer$FOLD.tsv"
+        done
+      } > results/evn/ls-gkm/all_outers.tsv    
+    deps:
+    - results/evn/ls-gkm/outer1.tsv
+    - results/evn/ls-gkm/outer2.tsv
+    - results/evn/ls-gkm/outer3.tsv
+    - results/evn/ls-gkm/outer4.tsv
+    - results/evn/ls-gkm/outer5.tsv
+    outs:
+    - results/evn/ls-gkm/all_outer.tsv
