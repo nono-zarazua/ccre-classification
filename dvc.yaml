@@ -146,3 +146,16 @@ stages:
     - results/evn/ls-gkm/outer5.tsv
     outs:
     - results/evn/ls-gkm/all_outer.tsv
+  render_evn_lsgkm_report:
+    cmd: bash src/render_report.sh  
+    deps:
+    - src/render_report.sh 
+    - reports/lsgkm_results.Rmd 
+    - results/evn/ls-gkm/outer1.tsv
+    - results/evn/ls-gkm/outer2.tsv
+    - results/evn/ls-gkm/outer3.tsv
+    - results/evn/ls-gkm/outer4.tsv
+    - results/evn/ls-gkm/all_outer.tsv
+    - results/evn/ls-gkm/outer5.tsv
+    outs:
+    - reports/rendered/evn/lsgkm_results.html 

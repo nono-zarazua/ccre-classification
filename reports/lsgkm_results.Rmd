@@ -1,0 +1,999 @@
+---
+title: "LS-GKM Evaluation Report"
+output:
+   html_document:
+   toc: true
+   toc_float: true
+   number_sections: true
+params:
+   results_dir: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 6
+)
+
+library(dplyr)
+library(tidyr)
+library(yardstick)
+library(ggplot2)
+library(gt)
+
+classification_threshold <- 0
+```
+
+```{r helper-functions, include=FALSE}
+read_scores <- function(file_path) {
+  read.delim(
+    file_path,
+    header = TRUE,
+    sep = "\t",
+    stringsAsFactors = FALSE,
+    check.names = FALSE
+  )
+}
+
+
+validate_scores <- function(df, file_path) {
+  required_columns <- c(
+    "chrom",
+    "start",
+    "end",
+    "class",
+    "index",
+    "score",
+    "label",
+    "model",
+    "task",
+    "outer",
+    "seq_length"
+  )
+
+  missing_columns <- setdiff(
+    required_columns,
+    colnames(df)
+  )
+
+  if (length(missing_columns) > 0) {
+    stop(
+      "File is missing required columns: ",
+      file_path,
+      "\nMissing columns: ",
+      paste(missing_columns, collapse = ", ")
+    )
+  }
+
+  if (nrow(df) == 0) {
+    stop("File contains no rows: ", file_path)
+  }
+
+  if (anyNA(df$score)) {
+    stop("Missing score values found in: ", file_path)
+  }
+
+  if (anyNA(df$label)) {
+    stop("Missing label values found in: ", file_path)
+  }
+
+  if (!all(df$label %in% c(0, 1))) {
+    stop("Labels must contain only 0 and 1 in: ", file_path)
+  }
+
+  if (!all(df$class %in% c("pos", "neg"))) {
+    stop(
+      "Class must contain only 'pos' and 'neg' in: ",
+      file_path
+    )
+  }
+
+  expected_label <- ifelse(
+    df$class == "pos",
+    1L,
+    0L
+  )
+
+  if (!all(df$label == expected_label)) {
+    stop(
+      "The class and label columns are inconsistent in: ",
+      file_path
+    )
+  }
+
+  if (anyNA(df$start) || anyNA(df$end)) {
+    stop("Missing genomic coordinates found in: ", file_path)
+  }
+
+  if (any(df$end < df$start)) {
+    stop("End coordinate is smaller than start in: ", file_path)
+  }
+
+  if (any(df$seq_length != df$end - df$start)) {
+    stop("Incorrect sequence lengths found in: ", file_path)
+  }
+
+  df
+}
+
+
+prepare_metric_data <- function(df, threshold = 0) {
+  df |>
+    mutate(
+      truth = factor(
+        class,
+        levels = c("pos", "neg")
+      ),
+      prediction = factor(
+        if_else(score >= threshold, "pos", "neg"),
+        levels = c("pos", "neg")
+      )
+    )
+}
+
+
+calculate_metrics <- function(
+  df,
+  outer_fold,
+  threshold = 0
+) {
+  metric_data <- prepare_metric_data(
+    df,
+    threshold = threshold
+  )
+
+  tibble(
+    outer_fold = outer_fold,
+    n_positive = sum(metric_data$label == 1),
+    n_negative = sum(metric_data$label == 0),
+    positive_prevalence = mean(metric_data$label == 1),
+
+    roc_auc = roc_auc_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$score,
+      event_level = "first"
+    ),
+
+    average_precision = average_precision_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$score,
+      event_level = "first"
+    ),
+
+    balanced_accuracy = bal_accuracy_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$prediction,
+      event_level = "first"
+    ),
+
+    mcc = mcc_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$prediction
+    ),
+
+    sensitivity = sens_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$prediction,
+      event_level = "first"
+    ),
+
+    specificity = spec_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$prediction,
+      event_level = "first"
+    ),
+
+    precision = precision_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$prediction,
+      event_level = "first"
+    ),
+
+    f1 = f_meas_vec(
+      truth = metric_data$truth,
+      estimate = metric_data$prediction,
+      beta = 1,
+      event_level = "first"
+    )
+  )
+}
+```
+
+```{r read-input, include=FALSE}
+results_dir <- params$results_dir
+
+if (is.null(results_dir) || !nzchar(results_dir)) {
+  stop(
+    "No results directory was provided.\n",
+    "Set params$results_dir when rendering the report."
+  )
+}
+
+if (!dir.exists(results_dir)) {
+  stop(
+    "Results directory does not exist: ",
+    results_dir
+  )
+}
+
+results_dir <- normalizePath(
+  results_dir,
+  mustWork = TRUE
+)
+
+outer_names <- paste0("outer", 1:5)
+
+outer_files <- file.path(
+  results_dir,
+  paste0(outer_names, ".tsv")
+)
+
+all_outer_file <- file.path(
+  results_dir,
+  "all_outer.tsv"
+)
+
+required_files <- c(
+  outer_files,
+  all_outer_file
+)
+
+missing_files <- required_files[
+  !file.exists(required_files)
+]
+
+if (length(missing_files) > 0) {
+  stop(
+    "The following required files are missing:\n",
+    paste(missing_files, collapse = "\n")
+  )
+}
+
+outer_data <- setNames(
+  lapply(
+    outer_files,
+    function(file_path) {
+      validate_scores(
+        read_scores(file_path),
+        file_path
+      )
+    }
+  ),
+  outer_names
+)
+
+for (outer_name in outer_names) {
+  observed_outer <- unique(
+    outer_data[[outer_name]]$outer
+  )
+
+  if (
+    length(observed_outer) != 1 ||
+    observed_outer != outer_name
+  ) {
+    stop(
+      "The outer column in ",
+      outer_name,
+      ".tsv does not match its filename."
+    )
+  }
+}
+
+df_outer_files <- bind_rows(
+  outer_data
+)
+
+df_all <- validate_scores(
+  read_scores(all_outer_file),
+  all_outer_file
+)
+
+if (nrow(df_outer_files) != nrow(df_all)) {
+  stop(
+    "The number of rows in all_outer.tsv does not match ",
+    "the combined number of rows in outer1.tsv through outer5.tsv."
+  )
+}
+
+individual_counts <- df_outer_files |>
+  count(
+    outer,
+    class,
+    name = "n"
+  ) |>
+  arrange(
+    outer,
+    class
+  )
+
+consolidated_counts <- df_all |>
+  count(
+    outer,
+    class,
+    name = "n"
+  ) |>
+  arrange(
+    outer,
+    class
+  )
+
+if (!identical(individual_counts, consolidated_counts)) {
+  stop(
+    "The outer-fold class counts in all_outer.tsv do not match ",
+    "the five individual outer-fold files."
+  )
+}
+```
+
+# Dataset composition
+
+The evaluation directory contains five held-out outer-fold prediction files and one consolidated out-of-fold prediction file.
+
+```{r dataset-composition-table}
+dataset_composition <- df_all |>
+  group_by(outer) |>
+  summarise(
+    n_total = n(),
+    n_positive = sum(label == 1),
+    n_negative = sum(label == 0),
+    positive_prevalence = mean(label == 1),
+    minimum_seq_length = min(seq_length),
+    median_seq_length = median(seq_length),
+    maximum_seq_length = max(seq_length),
+    .groups = "drop"
+  ) |>
+  arrange(outer)
+
+dataset_composition |>
+  gt() |>
+  tab_header(
+    title = "Dataset composition by outer fold"
+  ) |>
+  fmt_integer(
+    columns = c(
+      n_total,
+      n_positive,
+      n_negative,
+      minimum_seq_length,
+      median_seq_length,
+      maximum_seq_length
+    )
+  ) |>
+  fmt_percent(
+    columns = positive_prevalence,
+    decimals = 1
+  )
+```
+
+```{r pooled-dataset-composition}
+pooled_composition <- df_all |>
+  summarise(
+    n_total = n(),
+    n_positive = sum(label == 1),
+    n_negative = sum(label == 0),
+    positive_prevalence = mean(label == 1),
+    n_outer_folds = n_distinct(outer),
+    minimum_seq_length = min(seq_length),
+    median_seq_length = median(seq_length),
+    maximum_seq_length = max(seq_length)
+  )
+
+pooled_composition |>
+  gt() |>
+  tab_header(
+    title = "Pooled out-of-fold dataset composition"
+  ) |>
+  fmt_integer(
+    columns = c(
+      n_total,
+      n_positive,
+      n_negative,
+      n_outer_folds,
+      minimum_seq_length,
+      median_seq_length,
+      maximum_seq_length
+    )
+  ) |>
+  fmt_percent(
+    columns = positive_prevalence,
+    decimals = 1
+  )
+```
+
+# Per-fold summary table
+
+Threshold-independent metrics use the continuous LS-GKM score. Threshold-based metrics use a classification threshold of `r classification_threshold`.
+
+```{r calculate-per-fold-metrics}
+per_fold_metrics <- bind_rows(
+  lapply(
+    outer_names,
+    function(outer_name) {
+      calculate_metrics(
+        df = outer_data[[outer_name]],
+        outer_fold = outer_name,
+        threshold = classification_threshold
+      )
+    }
+  )
+)
+
+metric_summary_rows <- per_fold_metrics |>
+  summarise(
+    across(
+      c(
+        positive_prevalence,
+        roc_auc,
+        average_precision,
+        balanced_accuracy,
+        mcc,
+        sensitivity,
+        specificity,
+        precision,
+        f1
+      ),
+      list(
+        mean = mean,
+        sd = sd
+      ),
+      na.rm = TRUE
+    )
+  )
+```
+
+```{r per-fold-summary-table}
+per_fold_metrics |>
+  gt() |>
+  tab_header(
+    title = "Performance by outer fold",
+    subtitle = paste(
+      "Threshold-based metrics use score >=",
+      classification_threshold
+    )
+  ) |>
+  fmt_integer(
+    columns = c(
+      n_positive,
+      n_negative
+    )
+  ) |>
+  fmt_percent(
+    columns = positive_prevalence,
+    decimals = 1
+  ) |>
+  fmt_number(
+    columns = c(
+      roc_auc,
+      average_precision,
+      balanced_accuracy,
+      mcc,
+      sensitivity,
+      specificity,
+      precision,
+      f1
+    ),
+    decimals = 3
+  )
+```
+
+```{r fold-mean-sd-table}
+fold_metric_distribution <- per_fold_metrics |>
+  summarise(
+    across(
+      c(
+        roc_auc,
+        average_precision,
+        balanced_accuracy,
+        mcc,
+        sensitivity,
+        specificity,
+        precision,
+        f1
+      ),
+      list(
+        mean = mean,
+        sd = sd
+      ),
+      na.rm = TRUE
+    )
+  ) |>
+  pivot_longer(
+    cols = everything(),
+    names_to = c("metric", ".value"),
+    names_pattern = "(.+)_(mean|sd)$"
+  )
+
+fold_metric_distribution |>
+  gt() |>
+  tab_header(
+    title = "Distribution of performance across outer folds"
+  ) |>
+  fmt_number(
+    columns = c(mean, sd),
+    decimals = 3
+  )
+```
+
+# ROC curves
+
+## ROC curves by outer fold
+
+```{r per-fold-roc-curves}
+roc_data <- bind_rows(
+  lapply(
+    outer_names,
+    function(outer_name) {
+      metric_data <- prepare_metric_data(
+        outer_data[[outer_name]],
+        threshold = classification_threshold
+      )
+
+      roc_curve(
+        metric_data,
+        truth = truth,
+        score,
+        event_level = "first"
+      ) |>
+        mutate(outer = outer_name)
+    }
+  )
+)
+
+roc_labels <- per_fold_metrics |>
+  transmute(
+    outer = outer_fold,
+    label = paste0(
+      "ROC AUC = ",
+      sprintf("%.3f", roc_auc)
+    )
+  )
+
+ggplot(
+  roc_data,
+  aes(
+    x = 1 - specificity,
+    y = sensitivity,
+    group = outer
+  )
+) +
+  geom_line() +
+  geom_abline(
+    intercept = 0,
+    slope = 1,
+    linetype = "dashed"
+  ) +
+  geom_text(
+    data = roc_labels,
+    aes(
+      x = 0.62,
+      y = 0.08,
+      label = label
+    ),
+    inherit.aes = FALSE,
+    hjust = 0
+  ) +
+  facet_wrap(~outer) +
+  coord_equal() +
+  labs(
+    title = "ROC curves by outer fold",
+    x = "False-positive rate",
+    y = "True-positive rate"
+  )
+```
+
+## Pooled out-of-fold ROC curve
+
+```{r pooled-roc-curve}
+pooled_metric_data <- prepare_metric_data(
+  df_all,
+  threshold = classification_threshold
+)
+
+pooled_roc_data <- roc_curve(
+  pooled_metric_data,
+  truth = truth,
+  score,
+  event_level = "first"
+)
+
+pooled_roc_auc <- roc_auc_vec(
+  truth = pooled_metric_data$truth,
+  estimate = pooled_metric_data$score,
+  event_level = "first"
+)
+
+ggplot(
+  pooled_roc_data,
+  aes(
+    x = 1 - specificity,
+    y = sensitivity
+  )
+) +
+  geom_line() +
+  geom_abline(
+    intercept = 0,
+    slope = 1,
+    linetype = "dashed"
+  ) +
+  coord_equal() +
+  labs(
+    title = "Pooled out-of-fold ROC curve",
+    subtitle = paste0(
+      "ROC AUC = ",
+      round(pooled_roc_auc, 3)
+    ),
+    x = "False-positive rate",
+    y = "True-positive rate"
+  )
+```
+
+# Precision–recall curves
+
+## Precision–recall curves by outer fold
+
+```{r per-fold-pr-curves}
+pr_data <- bind_rows(
+  lapply(
+    outer_names,
+    function(outer_name) {
+      metric_data <- prepare_metric_data(
+        outer_data[[outer_name]],
+        threshold = classification_threshold
+      )
+
+      pr_curve(
+        metric_data,
+        truth = truth,
+        score,
+        event_level = "first"
+      ) |>
+        mutate(outer = outer_name)
+    }
+  )
+)
+
+fold_prevalence <- df_outer_files |>
+  group_by(outer) |>
+  summarise(
+    prevalence = mean(label == 1),
+    .groups = "drop"
+  )
+
+pr_labels <- per_fold_metrics |>
+  transmute(
+    outer = outer_fold,
+    label = paste0(
+      "AP = ",
+      sprintf("%.3f", average_precision),
+      "\nPrevalence = ",
+      sprintf("%.3f", positive_prevalence)
+    )
+  )
+
+ggplot(
+  pr_data,
+  aes(
+    x = recall,
+    y = precision,
+    group = outer
+  )
+) +
+  geom_line() +
+  geom_hline(
+    data = fold_prevalence,
+    aes(yintercept = prevalence),
+    linetype = "dashed"
+  ) +
+  geom_text(
+    data = pr_labels,
+    aes(
+      x = 0.05,
+      y = 0.12,
+      label = label
+    ),
+    inherit.aes = FALSE,
+    hjust = 0
+  ) +
+  facet_wrap(~outer) +
+  coord_cartesian(
+    xlim = c(0, 1),
+    ylim = c(0, 1)
+  ) +
+  labs(
+    title = "Precision–recall curves by outer fold",
+    subtitle = "Dashed lines indicate positive prevalence",
+    x = "Recall",
+    y = "Precision"
+  )
+```
+
+## Pooled out-of-fold precision–recall curve
+
+```{r pooled-pr-curve}
+pooled_pr_data <- pr_curve(
+  pooled_metric_data,
+  truth = truth,
+  score,
+  event_level = "first"
+)
+
+pooled_average_precision <- average_precision_vec(
+  truth = pooled_metric_data$truth,
+  estimate = pooled_metric_data$score,
+  event_level = "first"
+)
+
+pooled_prevalence <- mean(
+  pooled_metric_data$label == 1
+)
+
+ggplot(
+  pooled_pr_data,
+  aes(
+    x = recall,
+    y = precision
+  )
+) +
+  geom_line() +
+  geom_hline(
+    yintercept = pooled_prevalence,
+    linetype = "dashed"
+  ) +
+  coord_cartesian(
+    xlim = c(0, 1),
+    ylim = c(0, 1)
+  ) +
+  labs(
+    title = "Pooled out-of-fold precision–recall curve",
+    subtitle = paste0(
+      "Average precision = ",
+      round(pooled_average_precision, 3),
+      "; positive prevalence = ",
+      round(pooled_prevalence, 3)
+    ),
+    x = "Recall",
+    y = "Precision"
+  )
+```
+
+# Pooled out-of-fold performance
+
+The pooled results combine predictions from all five held-out outer folds. Every observation in this table was scored by a model that did not train on that observation's chromosome group.
+
+```{r pooled-performance}
+pooled_metrics <- calculate_metrics(
+  df = df_all,
+  outer_fold = "all_outer",
+  threshold = classification_threshold
+)
+
+pooled_metrics |>
+  gt() |>
+  tab_header(
+    title = "Pooled out-of-fold performance",
+    subtitle = paste(
+      "Threshold-based metrics use score >=",
+      classification_threshold
+    )
+  ) |>
+  fmt_integer(
+    columns = c(
+      n_positive,
+      n_negative
+    )
+  ) |>
+  fmt_percent(
+    columns = positive_prevalence,
+    decimals = 1
+  ) |>
+  fmt_number(
+    columns = c(
+      roc_auc,
+      average_precision,
+      balanced_accuracy,
+      mcc,
+      sensitivity,
+      specificity,
+      precision,
+      f1
+    ),
+    decimals = 3
+  )
+```
+
+```{r pooled-versus-fold-summary}
+pooled_fold_comparison <- tibble(
+  metric = c(
+    "ROC AUC",
+    "Average precision",
+    "Balanced accuracy",
+    "MCC",
+    "Sensitivity",
+    "Specificity",
+    "Precision",
+    "F1"
+  ),
+
+  pooled = c(
+    pooled_metrics$roc_auc,
+    pooled_metrics$average_precision,
+    pooled_metrics$balanced_accuracy,
+    pooled_metrics$mcc,
+    pooled_metrics$sensitivity,
+    pooled_metrics$specificity,
+    pooled_metrics$precision,
+    pooled_metrics$f1
+  ),
+
+  fold_mean = c(
+    mean(per_fold_metrics$roc_auc),
+    mean(per_fold_metrics$average_precision),
+    mean(per_fold_metrics$balanced_accuracy),
+    mean(per_fold_metrics$mcc),
+    mean(per_fold_metrics$sensitivity),
+    mean(per_fold_metrics$specificity),
+    mean(per_fold_metrics$precision),
+    mean(per_fold_metrics$f1)
+  ),
+
+  fold_sd = c(
+    sd(per_fold_metrics$roc_auc),
+    sd(per_fold_metrics$average_precision),
+    sd(per_fold_metrics$balanced_accuracy),
+    sd(per_fold_metrics$mcc),
+    sd(per_fold_metrics$sensitivity),
+    sd(per_fold_metrics$specificity),
+    sd(per_fold_metrics$precision),
+    sd(per_fold_metrics$f1)
+  )
+)
+
+pooled_fold_comparison |>
+  gt() |>
+  tab_header(
+    title = "Pooled performance versus fold-level distribution"
+  ) |>
+  fmt_number(
+    columns = c(
+      pooled,
+      fold_mean,
+      fold_sd
+    ),
+    decimals = 3
+  )
+```
+
+# Interpretation
+
+```{r interpretation, results='asis'}
+best_roc_fold <- per_fold_metrics |>
+  slice_max(
+    roc_auc,
+    n = 1,
+    with_ties = FALSE
+  )
+
+lowest_roc_fold <- per_fold_metrics |>
+  slice_min(
+    roc_auc,
+    n = 1,
+    with_ties = FALSE
+  )
+
+best_ap_fold <- per_fold_metrics |>
+  slice_max(
+    average_precision,
+    n = 1,
+    with_ties = FALSE
+  )
+
+lowest_ap_fold <- per_fold_metrics |>
+  slice_min(
+    average_precision,
+    n = 1,
+    with_ties = FALSE
+  )
+
+cat(
+  sprintf(
+    paste0(
+      "The pooled out-of-fold ROC AUC was **%.3f**, while the ",
+      "mean ROC AUC across the five outer folds was **%.3f ± %.3f**.\n\n"
+    ),
+    pooled_metrics$roc_auc,
+    mean(per_fold_metrics$roc_auc),
+    sd(per_fold_metrics$roc_auc)
+  )
+)
+
+cat(
+  sprintf(
+    paste0(
+      "The pooled average precision was **%.3f**, compared with a ",
+      "positive prevalence of **%.3f**. The mean average precision ",
+      "across folds was **%.3f ± %.3f**.\n\n"
+    ),
+    pooled_metrics$average_precision,
+    pooled_metrics$positive_prevalence,
+    mean(per_fold_metrics$average_precision),
+    sd(per_fold_metrics$average_precision)
+  )
+)
+
+cat(
+  sprintf(
+    paste0(
+      "ROC AUC ranged from **%.3f** in `%s` to **%.3f** in `%s`. ",
+      "Average precision ranged from **%.3f** in `%s` to **%.3f** ",
+      "in `%s`.\n\n"
+    ),
+    lowest_roc_fold$roc_auc,
+    lowest_roc_fold$outer_fold,
+    best_roc_fold$roc_auc,
+    best_roc_fold$outer_fold,
+    lowest_ap_fold$average_precision,
+    lowest_ap_fold$outer_fold,
+    best_ap_fold$average_precision,
+    best_ap_fold$outer_fold
+  )
+)
+
+cat(
+  sprintf(
+    paste0(
+      "At the fixed decision threshold of **%.2f**, pooled sensitivity ",
+      "was **%.3f** and pooled specificity was **%.3f**. These values ",
+      "describe performance at this specific threshold and should be ",
+      "interpreted separately from ROC AUC and average precision.\n\n"
+    ),
+    classification_threshold,
+    pooled_metrics$sensitivity,
+    pooled_metrics$specificity
+  )
+)
+
+cat(
+  paste0(
+    "Differences between folds may reflect variation in the chromosome ",
+    "groups assigned to each held-out fold. Fold-level variability should ",
+    "therefore be considered alongside the pooled result rather than relying ",
+    "on the pooled result alone.\n"
+  )
+)
+```
+
+# Reproducibility
+
+## Input files
+
+```{r input-files}
+tibble(
+  file = basename(required_files),
+  path = required_files,
+  rows = c(
+    vapply(
+      outer_data,
+      nrow,
+      integer(1)
+    ),
+    nrow(df_all)
+  )
+) |>
+  gt() |>
+  tab_header(
+    title = "Files used to generate this report"
+  ) |>
+  fmt_integer(
+    columns = rows
+  )
+```
+
+## Session information
+
+```{r session-information}
+sessionInfo()
+```
+
