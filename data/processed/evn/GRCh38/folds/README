@@ -1,10 +1,10 @@
-| Fold | Chromosomes                      | ELS loci | Missing negs |
-| ---- | -------------------------------- | -------- | ------------ |
-| 1    | chr1, chr7, chr16, chrX          |  341,995 |           17 |
-| 2    | chr2, chr12, chr17, chr19        |  345,566 |           10 |
-| 3    | chr3, chr8, chr9, chr18, chr22   |  345,589 |           20 |
-| 4    | chr6, chr4, chr11, chr13, chr21  |  342,649 |           15 |
-| 5    | chr5, chr10, chr15, chr14, chr20 |  342,870 |           15 |
+| Fold | Chromosomes                      | ELS loci |
+| ---- | -------------------------------- | -------- |
+| 1    | chr1, chr7, chr16, chrX          |  341,995 |
+| 2    | chr2, chr12, chr17, chr19        |  345,566 |
+| 3    | chr3, chr8, chr9, chr18, chr22   |  345,589 |
+| 4    | chr6, chr4, chr11, chr13, chr21  |  342,649 |
+| 5    | chr5, chr10, chr15, chr14, chr20 |  341,033 |
 
 
 

@@ -16,11 +16,11 @@
 ### Node / CPU / Memory Settings
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=16
 #SBATCH --mem=100G
 #SBATCH --time=05-00:00:00
 # --qos=long
-#SBATCH --array=1-5
+#SBATCH --array=1-24%6
 ################################################################################
 ### Safer Bash behavior
 ################################################################################
@@ -51,32 +51,54 @@ source activate ls-gkm
 ################################################################################
 ### Running code
 ################################################################################
-set -euo pipefail
-
 echo "Conda environment: ${CONDA_PREFIX}"
 
-TEST_FOLD="${SLURM_ARRAY_TASK_ID}"
+# Map 24 tasks to four outers x six nested training percentages.
+percentages=(100 80 60 40 20 10)
+task_index="$((SLURM_ARRAY_TASK_ID - 1))"
+outer="$((task_index / ${#percentages[@]} + 1))"
+percentage_index="$((task_index % ${#percentages[@]}))"
+percentage="${percentages[${percentage_index}]}"
 
-bash src/make_outer_files.sh "${TEST_FOLD}"
+if (( outer < 1 || outer > 4 )); then
+    echo "ERROR: derived outer number is invalid: ${outer}" >&2
+    exit 1
+fi
 
-TRAIN_DIR="data/processed/ls-gkm/training/outer${TEST_FOLD}"
-MODEL_DIR="models/ls-gkm"
+TRAIN_DIR="data/processed/evn/GRCh38/learning_curves/outer${outer}"
+TRAIN_POS="${TRAIN_DIR}/train_${percentage}_pos.fa"
+TRAIN_NEG="${TRAIN_DIR}/train_${percentage}_neg.fa"
 
-TRAIN_POS="${TRAIN_DIR}/train_pos.fa"
-TRAIN_NEG="${TRAIN_DIR}/train_neg.fa"
+# Percentage-specific directories prevent the six models for an outer from
+# overwriting one another while retaining the requested outerN.model.txt name.
+MODEL_DIR="models/evn/GRCh38/ls-gkm/outer${outer}/${percentage}"
+MODEL_PREFIX="${MODEL_DIR}/outer${outer}"
+
+for input_fasta in "${TRAIN_POS}" "${TRAIN_NEG}"; do
+    if [[ ! -s "${input_fasta}" ]]; then
+        echo "ERROR: required training FASTA is missing or empty: ${input_fasta}" >&2
+        exit 1
+    fi
+done
 
 mkdir -p "${MODEL_DIR}"
 
-echo "Outer test fold: ${TEST_FOLD}"
+echo "Array task ID: ${SLURM_ARRAY_TASK_ID}"
+echo "Outer: ${outer}"
+echo "Training fraction: ${percentage}%"
+echo "Training positive FASTA: ${TRAIN_POS}"
+echo "Training negative FASTA: ${TRAIN_NEG}"
 echo "Training positive sequences: $(grep -c '^>' "${TRAIN_POS}")"
 echo "Training negative sequences: $(grep -c '^>' "${TRAIN_NEG}")"
+echo "Model output: ${MODEL_PREFIX}.model.txt"
 
 /work/zarazuanav/workspace/repos/lsgkm/bin/gkmtrain \
-	-T "${SLURM_CPUS_PER_TASK}" \
-	-m 16000 \
-	"${TRAIN_POS}" \
-	"${TRAIN_NEG}" \
-	"${MODEL_DIR}/outer${TEST_FOLD}"
+    -T "${SLURM_CPUS_PER_TASK}" \
+    -m 64000 \
+    "${TRAIN_POS}" \
+    "${TRAIN_NEG}" \
+    "${MODEL_PREFIX}"
+
 ################################################################################
 ### Runtime
 ################################################################################

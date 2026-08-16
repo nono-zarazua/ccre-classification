@@ -57,44 +57,9 @@ echo "Conda environment: ${CONDA_PREFIX}"
 
 TEST_FOLD="${SLURM_ARRAY_TASK_ID}"
 
-FOLD_DIR="data/processed/folds"
-MODEL="models/ls-gkm/outer${TEST_FOLD}.model.txt"
-OUTPUT_DIR="predictions/ls-gkm/outer${TEST_FOLD}"
-
-TEST_POS="${FOLD_DIR}/fold${TEST_FOLD}/fold${TEST_FOLD}.fa"
-TEST_NEG="${FOLD_DIR}/fold${TEST_FOLD}/neg1x_fold${TEST_FOLD}.fa"
-
-OUT_POS="${OUTPUT_DIR}/pos_scores.txt"
-OUT_NEG="${OUTPUT_DIR}/neg_scores.txt"
-
-mkdir -p "predictions/ls-gkm/outer${TEST_FOLD}"
-
-echo "Positive predictions outer${TEST_FOLD}"
-
-/work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict \
-	-T "${SLURM_CPUS_PER_TASK}" \
-	"${TEST_POS}" \
-	"${MODEL}" \
-	"${OUT_POS}"
-
-
-echo "Negative predictions outer${TEST_FOLD}"
-
-/work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict \
-	-T "${SLURM_CPUS_PER_TASK}" \
-	"${TEST_NEG}" \
-	"${MODEL}" \
-	"${OUT_NEG}"### Running code
-################################################################################
-set -euo pipefail
-
-echo "Conda environment: ${CONDA_PREFIX}"
-
-TEST_FOLD="${SLURM_ARRAY_TASK_ID}"
-
-FOLD_DIR="data/processed/folds"
-MODEL="models/ls-gkm/outer${TEST_FOLD}.model.txt"
-OUTPUT_DIR="predictions/ls-gkm/outer${TEST_FOLD}"
+FOLD_DIR="data/processed/evn/folds"
+MODEL="models/evn/ls-gkm/outer${TEST_FOLD}.model.txt"
+OUTPUT_DIR="predictions/evn/ls-gkm/outer${TEST_FOLD}"
 
 TEST_POS="${FOLD_DIR}/fold${TEST_FOLD}/fold${TEST_FOLD}.fa"
 TEST_NEG="${FOLD_DIR}/fold${TEST_FOLD}/neg1x_fold${TEST_FOLD}.fa"
