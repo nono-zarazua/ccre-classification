@@ -1,30 +1,40 @@
-# GRCh38 ELS sequences by chromosome
+# GRCh38 ELS source pools by chromosome
 
-| chrom | positive_seqs | missing_neg_seqs |
-|:------|--------------:|-----------------:|
-| chr1  |        153196 |               75 |
-| chr2  |        144254 |               65 |
-| chr3  |        113596 |               22 |
-| chr4  |         86232 |               46 |
-| chr5  |         97469 |               20 |
-| chr6  |        101231 |               34 |
-| chr7  |         90955 |               63 |
-| chr8  |         83028 |               28 |
-| chr9  |         74200 |               35 |
-| chr10 |         85396 |               39 |
-| chr11 |         85530 |               32 |
-| chr12 |         83790 |               27 |
-| chr13 |         47845 |               22 |
-| chr14 |         54609 |               28 |
-| chr15 |         54997 |               22 |
-| chr16 |         56326 |               42 |
-| chr17 |         69926 |               71 |
-| chr18 |         40267 |                6 |
-| chr19 |         47596 |               52 |
-| chr20 |         48562 |               28 |
-| chr21 |         21811 |               18 |
-| chr22 |         34498 |               31 |
-| chrX  |         41518 |               20 |
-| chrY  |          1837 |                0 |
+This directory contains the chromosome-specific positive ELS and generated
+negative source pools used by `src/make_GRCh38_master_training.py`.
 
-chr3 is pending because SLURM task 1825907_3 is still running.
+BED and FASTA records correspond by position within each chromosome/class pair.
+The negative pools are reused; the master and learning-curve stages do not
+generate new negatives.
+
+| chromosome | source_positive_records | missing_negative_records | selected_benchmark_records_per_class |
+|:-----------|------------------------:|-------------------------:|-------------------------------------:|
+| chr1       |                 153,196 |                       75 |                               18,069 |
+| chr2       |                 144,254 |                       65 |                               17,014 |
+| chr3       |                 113,596 |                       22 |                               13,398 |
+| chr4       |                  86,232 |                       46 |                               10,171 |
+| chr5       |                  97,469 |                       20 |                               11,496 |
+| chr6       |                 101,231 |                       34 |                               11,940 |
+| chr7       |                  90,955 |                       63 |                               10,728 |
+| chr8       |                  83,028 |                       28 |                                9,793 |
+| chr9       |                  74,200 |                       35 |                                8,751 |
+| chr10      |                  85,396 |                       39 |                               10,072 |
+| chr11      |                  85,530 |                       32 |                               10,088 |
+| chr12      |                  83,790 |                       27 |                                9,883 |
+| chr13      |                  47,845 |                       22 |                                5,643 |
+| chr14      |                  54,609 |                       28 |                                6,441 |
+| chr15      |                  54,997 |                       22 |                                6,487 |
+| chr16      |                  56,326 |                       42 |                                6,643 |
+| chr17      |                  69,926 |                       71 |                                8,247 |
+| chr18      |                  40,267 |                        6 |                                4,749 |
+| chr19      |                  47,596 |                       52 |                                5,614 |
+| chr20      |                  48,562 |                       28 |                                5,728 |
+| chr21      |                  21,811 |                       18 |                                2,572 |
+| chr22      |                  34,498 |                       31 |                                4,069 |
+| chrX       |                  41,518 |                       20 |                                4,897 |
+| chrY       |                   1,837 |                        0 |                                    0 |
+
+The selected counts use Hamilton largest-remainder allocation with target
+202,493 records per class and seed 42. chrY is excluded. The selected chr1 quota
+is routed to fixed validation, chr2 to fixed testing, and all other selected
+chromosomes to fixed learning-curve training.

@@ -1,6 +1,75 @@
-| Outer set | Folds included | Validation chromosome |     ELS |
-| --------- | -------------- | --------------------: | ------: |
-| Outer 1   | 2 + 3 + 4      |              **chr6** | 101,231 |
-| Outer 2   | 1 + 3 + 4      |              **chr6** | 101,231 |
-| Outer 3   | 1 + 2 + 4      |              **chr6** | 101,231 |
-| Outer 4   | 1 + 2 + 3      |              **chr3** | 113,596 |
+# GRCh38 training and evaluation datasets
+
+This directory contains two related dataset organizations produced from one
+deterministic, chromosome-proportional selection of 202,493 records per class:
+
+1. a fixed train/validation/test benchmark for the main learning curves; and
+2. chromosome-based outer datasets for separate sensitivity and
+   cross-validation experiments.
+
+All positive and negative BED/FASTA pairs remain synchronized by record position.
+The selection seed is 42.
+
+## Fixed learning-curve benchmark
+
+The chromosome quotas are calculated across chr1-chr22 and chrX before routing
+records into fixed splits.
+
+| split | chromosome membership | positive records | negative records | purpose |
+|:------|:----------------------|-----------------:|-----------------:|:--------|
+| Training 100% | Selected chromosomes except chr1 and chr2 | 167,410 | 167,410 | Learning-curve model fitting |
+| Validation | chr1 selected quota | 18,069 | 18,069 | Early stopping and hyperparameter/model selection |
+| Test | chr2 selected quota | 17,014 | 17,014 | Final evaluation only |
+| **Complete benchmark** | chr1-chr22 and chrX | **202,493** | **202,493** | — |
+
+The fixed files are:
+
+```text
+train_100_pos.bed
+train_100_pos.fa
+train_100_neg.bed
+train_100_neg.fa
+validation_pos.bed
+validation_pos.fa
+validation_neg.bed
+validation_neg.fa
+test_pos.bed
+test_pos.fa
+test_neg.bed
+test_neg.fa
+train_100_manifest.tsv
+train_100_summary.json
+```
+
+Validation and test are each written once and are not percentage-subsetted. The
+test set must not be used for tuning, early stopping, checkpoint selection, or
+threshold selection.
+
+The nested training subsets in `../learning_curves/` are prefixes of one fixed
+shuffle of the 167,410-record-per-class training pool:
+
+| training percentage | records per class |
+|--------------------:|------------------:|
+| 10%  | 16,741 |
+| 20%  | 33,482 |
+| 40%  | 66,964 |
+| 60%  | 100,446 |
+| 80%  | 133,928 |
+| 100% | 167,410 |
+
+## Chromosome-based outer datasets
+
+The outer organization remains separate from the fixed learning-curve split.
+Counts are per class. The held-out outer fold is available through the
+corresponding directory under `../folds/`.
+
+| outer set | training folds | held-out fold | validation chromosome | training records per class | validation records per class |
+|:----------|:---------------|:-------------:|:----------------------|---------------------------:|-----------------------------:|
+| Outer 1 | 2 + 3 + 4 | 1 | chr6 | 109,992 | 11,940 |
+| Outer 2 | 1 + 3 + 4 | 2 | chr6 | 109,571 | 11,940 |
+| Outer 3 | 1 + 2 + 4 | 3 | chr6 | 109,569 | 11,940 |
+| Outer 4 | 1 + 2 + 3 | 4 | chr3 | 108,457 | 13,398 |
+
+Each `outerN/` directory contains separate `train_{pos,neg}.{bed,fa}` and
+`validation_{pos,neg}.{bed,fa}` files. The fixed chr1/chr2 learning-curve
+routing does not replace or alter these outer-specific validation rules.

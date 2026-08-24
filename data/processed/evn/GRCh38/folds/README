@@ -1,11 +1,24 @@
-| Fold | Chromosomes                      | ELS loci |
-| ---- | -------------------------------- | -------- |
-| 1    | chr1, chr7, chr16, chrX          |  341,995 |
-| 2    | chr2, chr12, chr17, chr19        |  345,566 |
-| 3    | chr3, chr8, chr9, chr18, chr22   |  345,589 |
-| 4    | chr6, chr4, chr11, chr13, chr21  |  342,649 |
-| 5    | chr5, chr10, chr15, chr14, chr20 |  341,033 |
+# GRCh38 chromosome folds
 
+The fold files are derived from the same chromosome-proportional selection used
+for the fixed 202,493-record-per-class benchmark. Positive and negative fold
+files have identical target counts; counts below are therefore per class.
 
+| fold | chromosomes | selected records per class |
+|:----:|:------------|---------------------------:|
+| 1 | chr1, chr7, chr16, chrX | 40,337 |
+| 2 | chr2, chr12, chr17, chr19 | 40,758 |
+| 3 | chr3, chr8, chr9, chr18, chr22 | 40,760 |
+| 4 | chr6, chr4, chr11, chr13, chr21 | 40,414 |
+| 5 | chr5, chr10, chr15, chr14, chr20 | 40,224 |
+| **Total** | chr1-chr22 and chrX | **202,493** |
 
+Each fold directory contains:
 
+- `foldN.bed` and `foldN.fa`: selected positive records.
+- `neg1x_foldN.bed` and `neg1x_foldN.fa`: selected negative records.
+
+These folds support the chromosome-based outer experiments. They are distinct
+from the fixed learning-curve split: for that analysis, the selected chr1 quota
+is validation, the selected chr2 quota is test, and neither enters the fixed
+training master.
