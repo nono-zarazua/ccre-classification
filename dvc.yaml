@@ -296,6 +296,7 @@ stages:
     cmd: bash src/make_GRCh38_folds_outer_files.sh
     deps:
     - src/make_GRCh38_folds_outer_files.sh
+    - src/make_GRCh38_master_training.py
     - data/processed/evn/GRCh38/folds/README
     - data/processed/evn/GRCh38/training/README
     - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
@@ -395,6 +396,20 @@ stages:
     - data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.bed
     - data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.fa
     outs:
+    - data/processed/evn/GRCh38/training/train_100_pos.bed
+    - data/processed/evn/GRCh38/training/train_100_pos.fa
+    - data/processed/evn/GRCh38/training/train_100_neg.bed
+    - data/processed/evn/GRCh38/training/train_100_neg.fa
+    - data/processed/evn/GRCh38/training/train_100_manifest.tsv
+    - data/processed/evn/GRCh38/training/train_100_summary.json
+    - data/processed/evn/GRCh38/training/validation_pos.bed
+    - data/processed/evn/GRCh38/training/validation_pos.fa
+    - data/processed/evn/GRCh38/training/validation_neg.bed
+    - data/processed/evn/GRCh38/training/validation_neg.fa
+    - data/processed/evn/GRCh38/training/test_pos.bed
+    - data/processed/evn/GRCh38/training/test_pos.fa
+    - data/processed/evn/GRCh38/training/test_neg.bed
+    - data/processed/evn/GRCh38/training/test_neg.fa
     - data/processed/evn/GRCh38/folds/fold1/fold1.bed
     - data/processed/evn/GRCh38/folds/fold1/fold1.fa
     - data/processed/evn/GRCh38/folds/fold1/neg1x_fold1.bed
@@ -448,9 +463,56 @@ stages:
     - data/processed/evn/GRCh38/training/outer4/validation_neg.bed
     - data/processed/evn/GRCh38/training/outer4/validation_neg.fa
   learning_curve_subsets_GRCh38:
-    cmd: python src/make_GRCh38_learning_curves.py --input-dir data/processed/evn/GRCh38/training --output-dir data/processed/evn/GRCh38/learning_curves --seed 42 --outers 1 2 3 4
+    cmd: python src/make_GRCh38_learning_curves.py --input-dir data/processed/evn/GRCh38/training --output-dir data/processed/evn/GRCh38/learning_curves --seed 42
     deps:
     - src/make_GRCh38_learning_curves.py
+    - data/processed/evn/GRCh38/training/train_100_pos.bed
+    - data/processed/evn/GRCh38/training/train_100_pos.fa
+    - data/processed/evn/GRCh38/training/train_100_neg.bed
+    - data/processed/evn/GRCh38/training/train_100_neg.fa
+    outs:
+    - data/processed/evn/GRCh38/learning_curves/train_10_pos.bed
+    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_10_neg.bed
+    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_pos.bed
+    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_neg.bed
+    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_pos.bed
+    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_neg.bed
+    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_pos.bed
+    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_neg.bed
+    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_pos.bed
+    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_neg.bed
+    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_pos.bed
+    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_neg.bed
+    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/learning_curve_summary.json
+  train_ls_gkm_GRC38:
+    cmd: sbatch --wait slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - ../lsgkm/bin/gkmtrain
+    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
     - data/processed/evn/GRCh38/training/outer1/train_pos.fa
     - data/processed/evn/GRCh38/training/outer1/train_neg.fa
     - data/processed/evn/GRCh38/training/outer2/train_pos.fa
@@ -460,51 +522,13 @@ stages:
     - data/processed/evn/GRCh38/training/outer4/train_pos.fa
     - data/processed/evn/GRCh38/training/outer4/train_neg.fa
     outs:
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_100_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer1/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_100_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer2/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_100_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer3/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_100_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/outer4/train_10_neg.fa
+    - models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+    - models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+    - models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+    - models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+    - models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+    - models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+    - models/evn/GRCh38/ls-gkm/outer1/outer1.model.txt
+    - models/evn/GRCh38/ls-gkm/outer2/outer2.model.txt
+    - models/evn/GRCh38/ls-gkm/outer3/outer3.model.txt
+    - models/evn/GRCh38/ls-gkm/outer4/outer4.model.txt
