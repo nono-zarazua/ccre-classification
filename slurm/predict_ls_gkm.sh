@@ -20,7 +20,7 @@
 #SBATCH --mem=100G
 #SBATCH --time=05-00:00:00
 # --qos=long
-#SBATCH --array=1-5
+#SBATCH --array=1-10%5
 ################################################################################
 ### Safer Bash behavior
 ################################################################################
@@ -29,6 +29,7 @@ set -euo pipefail
 ### Job Info
 ################################################################################
 echo "Job ID: ${SLURM_JOB_ID}"
+echo "Array task ID: ${SLURM_ARRAY_TASK_ID}"
 echo "Node: $(hostname)"
 echo "Working directory: $(pwd)"
 echo "Start time: $(date)"
@@ -55,43 +56,83 @@ set -euo pipefail
 
 echo "Conda environment: ${CONDA_PREFIX}"
 
-TEST_FOLD="${SLURM_ARRAY_TASK_ID}"
+task_id="${SLURM_ARRAY_TASK_ID}"
+if (( task_id < 1 || task_id > 10 )); then
+    echo "ERROR: SLURM_ARRAY_TASK_ID must be between 1 and 10" >&2
+    exit 1
+fi
 
-FOLD_DIR="data/processed/evn/folds"
-MODEL="models/evn/ls-gkm/outer${TEST_FOLD}.model.txt"
-OUTPUT_DIR="predictions/evn/ls-gkm/outer${TEST_FOLD}"
+percentages=(10 20 40 60 80 100)
+if (( task_id <= 6 )); then
+    percentage="${percentages[task_id - 1]}"
+    dataset_name="learning_curve_${percentage}"
+    validation_pos="data/processed/evn/GRCh38/training/validation_pos.fa"
+    validation_neg="data/processed/evn/GRCh38/training/validation_neg.fa"
+    test_pos="data/processed/evn/GRCh38/training/test_pos.fa"
+    test_neg="data/processed/evn/GRCh38/training/test_neg.fa"
+    model="models/evn/GRCh38/ls-gkm/learning_curves/${percentage}/learning_curve_${percentage}.model.txt"
+    output_dir="predictions/evn/GRCh38/ls-gkm/learning_curves/${percentage}"
+    echo "Dataset type: fixed learning curve"
+    echo "Predicting fraction: ${percentage}%"
+else
+    outer="$((task_id - 6))"
+    dataset_name="outer${outer}"
+    validation_pos="data/processed/evn/GRCh38/training/outer${outer}/validation_pos.fa"
+    validation_neg="data/processed/evn/GRCh38/training/outer${outer}/validation_neg.fa"
+    test_pos="data/processed/evn/GRCh38/folds/fold5/fold5.fa"
+    test_neg="data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa"
+    model="models/evn/GRCh38/ls-gkm/outer${outer}/outer${outer}.model.txt"
+    output_dir="predictions/evn/GRCh38/ls-gkm/outer${outer}"
+    echo "Dataset type: chromosome-based outer"
+    echo "Outer set: ${outer}"
+fi
 
-TEST_POS="${FOLD_DIR}/fold${TEST_FOLD}/fold${TEST_FOLD}.fa"
-TEST_NEG="${FOLD_DIR}/fold${TEST_FOLD}/neg1x_fold${TEST_FOLD}.fa"
-
-OUT_POS="${OUTPUT_DIR}/pos_scores.txt"
-OUT_NEG="${OUTPUT_DIR}/neg_scores.txt"
-
-mkdir -p "${OUTPUT_DIR}"
-
-for FILE in "${TEST_POS}" "${TEST_NEG}" "${MODEL}"; do
-    if [[ ! -s "${FILE}" ]]; then
-        echo "ERROR: missing or empty file: ${FILE}" >&2
+for input_file in \
+    "${model}" \
+    "${validation_pos}" \
+    "${validation_neg}" \
+    "${test_pos}" \
+    "${test_neg}"; do
+    if [[ ! -s "${input_file}" ]]; then
+        echo "ERROR: missing or empty input: ${input_file}" >&2
         exit 1
     fi
 done
 
-echo "Positive predictions outer${TEST_FOLD}"
+mkdir -p "${output_dir}"
 
-/work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict \
-        -T "${SLURM_CPUS_PER_TASK}" \
-        "${TEST_POS}" \
-        "${MODEL}" \
-        "${OUT_POS}"
+for split in validation test; do
+    for class_name in pos neg; do
+        input_variable="${split}_${class_name}"
+        input_fasta="${!input_variable}"
+        output_file="${output_dir}/${split}_${class_name}_scores.txt"
 
+        if [[ -s "${output_file}" ]]; then
+            echo "SKIP: non-empty prediction already exists: ${output_file}"
+            continue
+        fi
+        if [[ -e "${output_file}" ]]; then
+            echo "ERROR: existing prediction file is empty: ${output_file}" >&2
+            exit 1
+        fi
 
-echo "Negative predictions outer${TEST_FOLD}"
+        echo "Predicting ${dataset_name}: ${split} ${class_name}"
+        echo "Input: ${input_fasta}"
+        echo "Model: ${model}"
+        echo "Output: ${output_file}"
 
-/work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict \
-        -T "${SLURM_CPUS_PER_TASK}" \
-        "${TEST_NEG}" \
-        "${MODEL}" \
-        "${OUT_NEG}"
+        /work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict \
+            -T "${SLURM_CPUS_PER_TASK}" \
+            "${input_fasta}" \
+            "${model}" \
+            "${output_file}"
+
+        if [[ ! -s "${output_file}" ]]; then
+            echo "ERROR: gkmpredict did not create ${output_file}" >&2
+            exit 1
+        fi
+    done
+done
 
 ################################################################################
 ### Runtime

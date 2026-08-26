@@ -15,7 +15,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=100G
 #SBATCH --time=05-00:00:00
-#SBATCH --array=1-24
+#SBATCH --array=1-23
 ################################################################################
 ### Safer Bash behavior
 ################################################################################
@@ -56,8 +56,8 @@ else
     exit 1
 fi
 
-input_bed="data/processed/evn/GRCh38/chroms/chrom${i}/chrom${i}_GRCh38_ELS.bed"
-negative_bed="data/processed/evn/GRCh38/chroms/chrom${i}/neg1x_chrom${i}_GRCh38_ELS.bed"
+input_bed="data/processed/svn/GRCh38/chroms/chrom${i}/chrom${i}_GRCh38_Silencer_ELS.bed"
+negative_bed="data/processed/svn/GRCh38/chroms/chrom${i}/neg1x_chrom${i}_GRCh38_Silencer_ELS.bed"
 
 echo "Array task ID: ${task_id}"
 echo "Chromosome: ${i}"
