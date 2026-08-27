@@ -9,6 +9,34 @@ params:
    results_dir: null
 ---
 
+## Fold Information
+Folds were made using combinations of chromosomes to have a similar loci count between them.
+
+| Fold       | Chromosomes                     | ELS loci          | Missing negs |
+| ---------- | ------------------------------- | ----------------- | ------------ |
+| 1          | chr1, chr20, chr14, chr22       |             9,744 |           17 |
+| 2          | chr2, chr12, chr9, chr13        |             9,583 |           10 |
+| 3          | chr17, chr11, chr7, chr15, chrX |             9,995 |           20 |
+| 4          | chr6, chr19, chr5, chr4, chr21  |             9,874 |           15 |
+| 5          | chr3, chr16, chr10, chr8, chr18 |            10,229 |           15 |
+
+<br/><br/>
+An outer represents groups of folds on which a specific fold was left out of training and only used for testing. For instance the "outer1" model was trained using all folds except fold1 and then tested on fold1.
+
+## LS-GKM SVM Params
+LS-GKM SVM stands for large-scale, gapped k-mer support vector machine. This model uses a gapped-kmer tool to extract sequence features than can be used to train the vector machine. The following params were used:
+
+ - alphabet size( ${b}$): 4
+ - 1X negative synthetic data created from positive regulatory sequences
+ - ${\ell}$-mer with truncated function
+ - ${\ell}$-mer size (${\ell}$): 11
+ - number of informative columns (${k}$): 7
+ - max umber of mismatches: 4
+
+The GKM tool creates a matrix M by N, where M is the number of all the possible gapped-kmer combinations, given ${\ell}$ and ${k}$, and N the total number of ungapped possibilites. The number of features depends on ${k}$, ${\ell}$, and ${b}$:
+
+$$M = \binom{\ell}{k} b^k$$
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo = FALSE,
@@ -568,7 +596,7 @@ ggplot(
   geom_text(
     data = roc_labels,
     aes(
-      x = 0.62,
+      x = 0.30,
       y = 0.08,
       label = label
     ),
