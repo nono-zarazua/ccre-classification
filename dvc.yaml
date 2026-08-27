@@ -657,6 +657,38 @@ stages:
     - results/evn/GRCh38/ls-gkm/outer2.tsv
     - results/evn/GRCh38/ls-gkm/outer3.tsv
     - results/evn/GRCh38/ls-gkm/outer4.tsv
+  render_lsgkm_report_GRCh38_evn:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh
+    deps:
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/lsgkm_GRCh38_results.Rmd
+    - slurm/train_ls_gkm.sh
+    - src/build_negs.R
+    - src/make_GRCh38_learning_curves.py
+    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
+    - results/evn/GRCh38/ls-gkm/outer1.tsv
+    - results/evn/GRCh38/ls-gkm/outer2.tsv
+    - results/evn/GRCh38/ls-gkm/outer3.tsv
+    - results/evn/GRCh38/ls-gkm/outer4.tsv
+    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+    outs:
+    - reports/rendered/evn/lsgkm_GRCh38_results.html
   prepare_GRCh38_els_svn:
     cmd: bash src/get_whole_body_silencers.sh
     deps:
@@ -695,35 +727,98 @@ stages:
     - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
-  render_lsgkm_report_GRCh38_evn:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh
+  build_negatives_GRCh38_svn:
+    cmd: for i in $(seq 1 22) X Y; do Rscript --vanilla src/build_negs.R data/processed/svn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_ELS.bed; done
     deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/lsgkm_GRCh38_results.Rmd
-    - slurm/train_ls_gkm.sh
     - src/build_negs.R
-    - src/make_GRCh38_learning_curves.py
-    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/evn/GRCh38/ls-gkm/outer1.tsv
-    - results/evn/GRCh38/ls-gkm/outer2.tsv
-    - results/evn/GRCh38/ls-gkm/outer3.tsv
-    - results/evn/GRCh38/ls-gkm/outer4.tsv
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+    - slurm/build_negs.sh
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
     outs:
-    - reports/rendered/evn/lsgkm_GRCh38_results.html
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
