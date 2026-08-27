@@ -1,0 +1,30 @@
+# GRCh38 silencer chromosome groups
+
+The group files are derived from the native silencer chromosome distribution
+after balancing each chromosome to its available positive/negative pair count.
+They contain the training chromosomes only: chr1 is reserved for fixed
+validation, chr2 for fixed testing, and the silencer ELS input contains no
+chrY records. Counts below are therefore paired records per class.
+
+| group | chromosomes | paired records per class |
+|:-----:|:------------|-------------------------:|
+| 1 | chr6, chr7, chr12, chr14, chrX | 38,704 |
+| 2 | chr11, chr15, chr17, chr20, chr19 | 39,791 |
+| 3 | chr4, chr3, chr16, chr8, chr21 | 39,693 |
+| 4 | chr9, chr5, chr10, chr22, chr18, chr13 | 39,900 |
+| **Total** | chr3-chr22 and chrX, excluding chr1 and chr2 | **158,088** |
+
+The proposed positive-only totals were 38,712, 39,813, 39,701, and 39,911.
+The paired totals are slightly smaller because `genNullSeqs()` left 70
+silencer negatives unmatched across the complete source dataset.
+
+Each group directory contains:
+
+- `foldN.bed` and `foldN.fa`: selected positive silencer records;
+- `neg1x_foldN.bed` and `neg1x_foldN.fa`: paired synthetic negative records.
+
+The four groups support the chromosome-composition outer experiments. Outer N
+omits group N from training. These omitted groups are not the final test set:
+all outer models use the fixed chr2 test files in `../training/`. Each outer
+also removes one chromosome from its included groups for validation, as
+documented in `../training/README`.

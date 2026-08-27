@@ -2829,8 +2829,8 @@ stages:
       size: 64678
     - path: slurm/build_negs.sh
       hash: md5
-      md5: fe751fd72c199474c962fb361e6823b6
-      size: 2390
+      md5: 7a8a9c803b5fc399d937338249d3fe1a
+      size: 2349
       isexec: true
     - path: src/build_negs.R
       hash: md5
@@ -3139,7 +3139,7 @@ stages:
       md5: 861284501214deb48eab6d97a890ebed
       size: 580322
   make_folds_outers_GRCh38_evn:
-    cmd: bash src/make_GRCh38_folds_outer_files.sh
+    cmd: bash src/make_GRCh38_folds_outer_files.sh evn
     deps:
     - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
       hash: md5
@@ -3548,13 +3548,13 @@ stages:
       size: 3050
     - path: src/make_GRCh38_folds_outer_files.sh
       hash: md5
-      md5: 8a629f38d343133bcef4ef1abf50d6bc
-      size: 769
+      md5: 0651eb358c0c03633f79940538eefc09
+      size: 1698
       isexec: true
-    - path: src/make_GRCh38_master_training.py
+    - path: src/make_GRCh38_master_training_evn.py
       hash: md5
-      md5: f6daa6c648c72050d2097c93fef873dd
-      size: 17413
+      md5: 64218608ffd03ff418b94e5a1b0cd29a
+      size: 17431
       isexec: true
     outs:
     - path: data/processed/evn/GRCh38/folds/fold1/fold1.bed
@@ -4039,7 +4039,7 @@ stages:
       size: 33189079
     - path: slurm/train_ls_gkm.sh
       hash: md5
-      md5: 35d16411fa8f12b0c34a596328001c59
+      md5: 91702c13c319c33f77ef78df8b9fa940
       size: 4792
       isexec: true
     outs:
@@ -4866,7 +4866,7 @@ stages:
       size: 8250292
     - path: slurm/train_ls_gkm.sh
       hash: md5
-      md5: 35d16411fa8f12b0c34a596328001c59
+      md5: 91702c13c319c33f77ef78df8b9fa940
       size: 4792
       isexec: true
     - path: src/build_negs.R
@@ -4889,8 +4889,9 @@ stages:
       md5: 6c13cd14fee98a63936bf4967cfbd7c2
       size: 2548564
   build_negatives_GRCh38_svn:
-    cmd: for i in $(seq 1 22) X Y; do Rscript --vanilla src/build_negs.R 
-      data/processed/svn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_ELS.bed; done
+    cmd: for i in $(seq 1 22) X; do Rscript --vanilla src/build_negs.R 
+      data/processed/svn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_Silencer_ELS.bed;
+      done
     deps:
     - path: 
         data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
@@ -5009,8 +5010,8 @@ stages:
       size: 53344
     - path: slurm/build_negs.sh
       hash: md5
-      md5: fe751fd72c199474c962fb361e6823b6
-      size: 2390
+      md5: 7a8a9c803b5fc399d937338249d3fe1a
+      size: 2349
       isexec: true
     - path: src/build_negs.R
       hash: md5
@@ -5203,6 +5204,21 @@ stages:
       md5: 74b4fcf28217fa17b3b841d7d409a3c8
       size: 2174838
     - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 83289fe3c680ca8792366a44c02e9351
+      size: 176991
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 3daf8e46671860b1653ebdebb17836d4
+      size: 2178526
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 4c97cefa0062848a974830c312ba211f
+      size: 831352
+    - path: 
         data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
       hash: md5
       md5: 671d1fbf65453378516fb80573e0b0a5
@@ -5347,3 +5363,853 @@ stages:
       hash: md5
       md5: efe927c4a2ad14b602da6e754f93a957
       size: 442570
+  make_folds_outers_GRCh38_svn:
+    cmd: bash src/make_GRCh38_folds_outer_files.sh svn
+    deps:
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4293f07483ae949f7f9e3ae71063a8f6
+      size: 1090164
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 4c5e147936fd0c0bfd22abafddf8af67
+      size: 9077687
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c3b5228d9451f5fadfc63a1039fa849a
+      size: 737028
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 37a33998d805c9e32f14c47907f27ed5
+      size: 9101232
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 85a68f48856611a3e682cb8d779fe002
+      size: 297402
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 60f9c34abd60f9fc02e54576c024da87
+      size: 2449088
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 28895f09e95e79eb706c65bb690099b8
+      size: 198633
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 295e72f3004c8b729edc7c4ca5ed1dd2
+      size: 2452670
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 018c2f8fbea93c2d1076cacbf00d4391
+      size: 468899
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: eae5571f21314e29d648a4cebcba37f2
+      size: 3800153
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: cc1e379d25c1508d14eb67711cc29182
+      size: 310863
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: af4ac33b2de10979336f99f3ffd52b63
+      size: 3802293
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 0e570bd4d3b424d6f469ba8f21a71aec
+      size: 291127
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 699200043382736132bf79fc9aae56e6
+      size: 2370101
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: df4a3a595a774b0e382698d0abe18114
+      size: 192629
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 57c21387fd474f7eb5dc7e0efb81e847
+      size: 2372216
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 72267df8478a968ef3d8070600888681
+      size: 54035
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: a32a9ffdf9561d701626f84842f504ca
+      size: 439724
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 833fe659ed49e774813afb2daf385a95
+      size: 35453
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 7bcbf074cd5ade54949430b41150d9f0
+      size: 439993
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 1b58ec240a3f1ea0e542031fb72d1b41
+      size: 153160
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 0be14205d245ba83dca6710b0c6d28f2
+      size: 1257408
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7aa183103c62fe0b57d715f6b4678717
+      size: 101929
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: ed730dffd4b14983f5776aac425d71ad
+      size: 1259775
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 735d1aabd722f1c1aabdca152025c2ae
+      size: 329178
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 3bbb9936e3fb20373c0d6b51d6240700
+      size: 2708186
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7ca8fd086d1921cc2659644f7aee1c46
+      size: 220786
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 8d2cc6b8f8b8ab475afc1017afbba049
+      size: 2716445
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: ddcf12d6a9d524d12411e201e5e907cc
+      size: 310268
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 735257ac1d2ae99e4be60b0af42e7515
+      size: 2584213
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b66e8551998d59da367b0c5982f411b6
+      size: 211029
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 148bd550238e33c4dde273a4e89ad2b3
+      size: 2592416
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 86669957d89d6141fbe66f5c66ca9286
+      size: 300117
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: fb649ed22739ae09eda8196daddd9d81
+      size: 2459631
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 172a50ea18826559721478ab5a7d5e61
+      size: 201704
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 8862fc3575b65e99314081f7904edb95
+      size: 2463581
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d757b2f2e080bc75e637dfa85cc9e89d
+      size: 134420
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 872ad77b1114d3bca19446be14ed00a7
+      size: 1123695
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 08e7556f5c217b59c930fdea2af45644
+      size: 90682
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: a63df43dbd243a9e1e887bd2d564ffb0
+      size: 1127599
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 51194a86682f7cfcdf613abea0168ce5
+      size: 111613
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 91ec49d809d23e7812b497d4483456c9
+      size: 916220
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 8a4d9386366e7d1b0fa7d1bb2c4d223e
+      size: 75871
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: a60e0f9eee395f4576dc6199b089d763
+      size: 919975
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 355710f5daeed5a526cef2a53e50d74d
+      size: 540230
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 42d38c2e5e7fb4f726283083f536c684
+      size: 4452056
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7b463b873956e1151edc51b847f5fc57
+      size: 360880
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: ecad11e8f2ea56da884f67f50b5e7a12
+      size: 4461108
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d2ff6abe4383ca14766e26526c40d59b
+      size: 264546
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 74b4fcf28217fa17b3b841d7d409a3c8
+      size: 2174838
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 83289fe3c680ca8792366a44c02e9351
+      size: 176991
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 3daf8e46671860b1653ebdebb17836d4
+      size: 2178526
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b82b668aef069633ca4cb9ec006e7390
+      size: 101452
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 4c97cefa0062848a974830c312ba211f
+      size: 831352
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 671d1fbf65453378516fb80573e0b0a5
+      size: 67969
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 59400ad612cadff85b010c371db33c1b
+      size: 833108
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 8b2394c6f762cf8a7bbf44d01d315e4e
+      size: 185999
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 96fede00110d706b0cc8dfadce6bb461
+      size: 1504269
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 6ab1eae196a1ef78dcda19adbe208314
+      size: 124581
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 6a838a4d7f890db4113da3933e54ba53
+      size: 1507180
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d086409726e9aae37a17cb41f50a41c5
+      size: 356142
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 2412349da37294e8be872e742caabea2
+      size: 2953195
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 1bd2116327cb468f0432cc3591bcb146
+      size: 240909
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 6cd87148621d3fcb49d0fbe0bd77d1dc
+      size: 2964227
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 83ee81098dd1a6909013018591b84aea
+      size: 406648
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 712eb84eb33044e5211bb279607c7cc1
+      size: 3365728
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 6e94f3b24c3d710bcd7e9446f58a078c
+      size: 273051
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 6bc46bfd304f0b1330df703017cf4f4d
+      size: 3374569
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b8f4854abc3666e03735730f2a9cb56d
+      size: 396648
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 5f98e38cd97c119395319f34b3761a88
+      size: 3285796
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b8ca8439bc73eb1c8b255a5171f5d780
+      size: 267268
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 58f2e261b7859f29e2c57b958df532bd
+      size: 3296354
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2c445f2a01389e0233d860292c9fb757
+      size: 605636
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 227f3fa9fca51599f3b6b285f6d25be1
+      size: 5085634
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: eabbcd95fa6fe5b62181733eafe4240d
+      size: 411029
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 7aee2224192a687e2bea31bf3e7caf91
+      size: 5104365
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 69057cfd160d91bee43f788fa8255920
+      size: 324362
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: c80afec75bd8e01e1b270bd49a8251dd
+      size: 2665546
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 416386b6e9938b8835d5cfe28f2ccb6e
+      size: 215663
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: f83caf4f35f3b87a60b86d6b43968981
+      size: 2669193
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: e78aa0f257f7678183879128391fc231
+      size: 278100
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: eee12a09320a0a20fb70dc05460a57de
+      size: 2324644
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c9fcb161a0eacda44a97fe00bced2e6c
+      size: 188972
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 519d1a299af8034151bc3119b7c6ad8b
+      size: 2334608
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d8ed3eb213042ff7482c1a7890988bad
+      size: 409142
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 5608ed756f04e2bdd96809b35e0b3e13
+      size: 3302834
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7a4e210b7086020361063caae40314f3
+      size: 270015
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 00dea3c341808237b99a98a5b2c63a03
+      size: 3302429
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b4a91cecdfbe06ef2616cde1cef9179a
+      size: 53344
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: 8287d9d0b096c5978512acef7d9fb94c
+      size: 441497
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2b8066df285ddf1efd7f9de8000e43d3
+      size: 35619
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
+      hash: md5
+      md5: efe927c4a2ad14b602da6e754f93a957
+      size: 442570
+    - path: src/make_GRCh38_folds_outer_files.sh
+      hash: md5
+      md5: 0651eb358c0c03633f79940538eefc09
+      size: 1698
+      isexec: true
+    - path: src/make_GRCh38_master_training_svn.py
+      hash: md5
+      md5: b273bedef43c6c48e88b18f1cfa900f1
+      size: 16733
+      isexec: true
+    outs:
+    - path: data/processed/svn/GRCh38/folds/fold1/fold1.bed
+      hash: md5
+      md5: 31bfdeea0329c494923a6bc798b7fb34
+      size: 1427333
+    - path: data/processed/svn/GRCh38/folds/fold1/fold1.fa
+      hash: md5
+      md5: 75b57f4f4096bc30685aee9daacb3a8d
+      size: 11817547
+    - path: data/processed/svn/GRCh38/folds/fold1/neg1x_fold1.bed
+      hash: md5
+      md5: 24e9ae06173846dab22e309cfd09125e
+      size: 956869
+    - path: data/processed/svn/GRCh38/folds/fold1/neg1x_fold1.fa
+      hash: md5
+      md5: 88a8d6072d8ddb8caad7cb378400edbf
+      size: 11848119
+    - path: data/processed/svn/GRCh38/folds/fold2/fold2.bed
+      hash: md5
+      md5: f1887c37870cda74bda960c9a3b297ae
+      size: 1473535
+    - path: data/processed/svn/GRCh38/folds/fold2/fold2.fa
+      hash: md5
+      md5: 0a60b97bc568cffd570793e4107031b9
+      size: 12052301
+    - path: data/processed/svn/GRCh38/folds/fold2/neg1x_fold2.bed
+      hash: md5
+      md5: 2d1cf6ae1bb14cc72b0222749b4870b3
+      size: 986215
+    - path: data/processed/svn/GRCh38/folds/fold2/neg1x_fold2.fa
+      hash: md5
+      md5: 216d9bdedbeb40754353e894b09d116a
+      size: 12080820
+    - path: data/processed/svn/GRCh38/folds/fold3/fold3.bed
+      hash: md5
+      md5: dc6c390c60ce802519984e9499f29264
+      size: 1452321
+    - path: data/processed/svn/GRCh38/folds/fold3/fold3.fa
+      hash: md5
+      md5: 871da0d8ba63a8d4b251d7c1dee7e783
+      size: 12056815
+    - path: data/processed/svn/GRCh38/folds/fold3/neg1x_fold3.bed
+      hash: md5
+      md5: 728f6f76d7ca6951b9ccec63689b1efe
+      size: 981930
+    - path: data/processed/svn/GRCh38/folds/fold3/neg1x_fold3.fa
+      hash: md5
+      md5: f3138f8549057fc35c67a571ea1fa2fd
+      size: 12098928
+    - path: data/processed/svn/GRCh38/folds/fold4/fold4.bed
+      hash: md5
+      md5: 702802423a9f248a70c5ae32ed05a906
+      size: 1477240
+    - path: data/processed/svn/GRCh38/folds/fold4/fold4.fa
+      hash: md5
+      md5: b24f0f7f8f6cbda6ec491c97a05dd16f
+      size: 12101996
+    - path: data/processed/svn/GRCh38/folds/fold4/neg1x_fold4.bed
+      hash: md5
+      md5: 74d0858c93d54c0691caf2bb1db89899
+      size: 986632
+    - path: data/processed/svn/GRCh38/folds/fold4/neg1x_fold4.fa
+      hash: md5
+      md5: 98a4375792cabc60f70adb6439f6134d
+      size: 12126225
+    - path: data/processed/svn/GRCh38/training/outer1/train_neg.bed
+      hash: md5
+      md5: f46d000c75c4b319c7e13e665bdacc59
+      size: 2713868
+    - path: data/processed/svn/GRCh38/training/outer1/train_neg.fa
+      hash: md5
+      md5: 900442d4a9aef53c8da6a744f69e7c3d
+      size: 33341746
+    - path: data/processed/svn/GRCh38/training/outer1/train_pos.bed
+      hash: md5
+      md5: 9751bad544b0279c6ea3362ebce17d69
+      size: 4046954
+    - path: data/processed/svn/GRCh38/training/outer1/train_pos.fa
+      hash: md5
+      md5: 352c06a8d76415cd6b4551eacb9a3f72
+      size: 33257917
+    - path: data/processed/svn/GRCh38/training/outer1/validation_neg.bed
+      hash: md5
+      md5: 1bd2116327cb468f0432cc3591bcb146
+      size: 240909
+    - path: data/processed/svn/GRCh38/training/outer1/validation_neg.fa
+      hash: md5
+      md5: 6cd87148621d3fcb49d0fbe0bd77d1dc
+      size: 2964227
+    - path: data/processed/svn/GRCh38/training/outer1/validation_pos.bed
+      hash: md5
+      md5: d086409726e9aae37a17cb41f50a41c5
+      size: 356142
+    - path: data/processed/svn/GRCh38/training/outer1/validation_pos.fa
+      hash: md5
+      md5: 2412349da37294e8be872e742caabea2
+      size: 2953195
+    - path: data/processed/svn/GRCh38/training/outer2/train_neg.bed
+      hash: md5
+      md5: 5308659f8a8a20c15effd881ef51556c
+      size: 2514402
+    - path: data/processed/svn/GRCh38/training/outer2/train_neg.fa
+      hash: md5
+      md5: 964f3568618fa78b5d6ea1aab4b1b310
+      size: 30968907
+    - path: data/processed/svn/GRCh38/training/outer2/train_pos.bed
+      hash: md5
+      md5: c5a34a77e7fd89c466ee9348ee073577
+      size: 3751554
+    - path: data/processed/svn/GRCh38/training/outer2/train_pos.fa
+      hash: md5
+      md5: 6ce2f1265720b712f812381b5bcab5e0
+      size: 30893363
+    - path: data/processed/svn/GRCh38/training/outer2/validation_neg.bed
+      hash: md5
+      md5: eabbcd95fa6fe5b62181733eafe4240d
+      size: 411029
+    - path: data/processed/svn/GRCh38/training/outer2/validation_neg.fa
+      hash: md5
+      md5: 7aee2224192a687e2bea31bf3e7caf91
+      size: 5104365
+    - path: data/processed/svn/GRCh38/training/outer2/validation_pos.bed
+      hash: md5
+      md5: 8b8fbca6d48cfaf8ac65711df1b90006
+      size: 605340
+    - path: data/processed/svn/GRCh38/training/outer2/validation_pos.fa
+      hash: md5
+      md5: a7076619e51e05bec27f84aa35376075
+      size: 5082995
+    - path: data/processed/svn/GRCh38/training/outer3/train_neg.bed
+      hash: md5
+      md5: 8c1b69281e4ad6ea0123593e83a5494c
+      size: 2518687
+    - path: data/processed/svn/GRCh38/training/outer3/train_neg.fa
+      hash: md5
+      md5: 1df04324dc7c2673dd1aa37000dc18e1
+      size: 30950799
+    - path: data/processed/svn/GRCh38/training/outer3/train_pos.bed
+      hash: md5
+      md5: 8d391cf86657bda56459bad0e1838a81
+      size: 3772768
+    - path: data/processed/svn/GRCh38/training/outer3/train_pos.fa
+      hash: md5
+      md5: 135bdff361e3dd0217736a7b95db2ef8
+      size: 30888849
+    - path: data/processed/svn/GRCh38/training/outer3/validation_neg.bed
+      hash: md5
+      md5: eabbcd95fa6fe5b62181733eafe4240d
+      size: 411029
+    - path: data/processed/svn/GRCh38/training/outer3/validation_neg.fa
+      hash: md5
+      md5: 7aee2224192a687e2bea31bf3e7caf91
+      size: 5104365
+    - path: data/processed/svn/GRCh38/training/outer3/validation_pos.bed
+      hash: md5
+      md5: 8b8fbca6d48cfaf8ac65711df1b90006
+      size: 605340
+    - path: data/processed/svn/GRCh38/training/outer3/validation_pos.fa
+      hash: md5
+      md5: a7076619e51e05bec27f84aa35376075
+      size: 5082995
+    - path: data/processed/svn/GRCh38/training/outer4/train_neg.bed
+      hash: md5
+      md5: 5aad84b70feafe6e667b21679155ae8d
+      size: 2513985
+    - path: data/processed/svn/GRCh38/training/outer4/train_neg.fa
+      hash: md5
+      md5: 0c57b05aef92cc714f889e01ac19e7cc
+      size: 30923502
+    - path: data/processed/svn/GRCh38/training/outer4/train_pos.bed
+      hash: md5
+      md5: 960a1c98d2c96c14b6b56cb99c584b71
+      size: 3747849
+    - path: data/processed/svn/GRCh38/training/outer4/train_pos.fa
+      hash: md5
+      md5: ae7a704282502e1b33545207f64850b4
+      size: 30843668
+    - path: data/processed/svn/GRCh38/training/outer4/validation_neg.bed
+      hash: md5
+      md5: eabbcd95fa6fe5b62181733eafe4240d
+      size: 411029
+    - path: data/processed/svn/GRCh38/training/outer4/validation_neg.fa
+      hash: md5
+      md5: 7aee2224192a687e2bea31bf3e7caf91
+      size: 5104365
+    - path: data/processed/svn/GRCh38/training/outer4/validation_pos.bed
+      hash: md5
+      md5: 8b8fbca6d48cfaf8ac65711df1b90006
+      size: 605340
+    - path: data/processed/svn/GRCh38/training/outer4/validation_pos.fa
+      hash: md5
+      md5: a7076619e51e05bec27f84aa35376075
+      size: 5082995
+    - path: data/processed/svn/GRCh38/training/test_neg.bed
+      hash: md5
+      md5: 7b463b873956e1151edc51b847f5fc57
+      size: 360880
+    - path: data/processed/svn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: ecad11e8f2ea56da884f67f50b5e7a12
+      size: 4461108
+    - path: data/processed/svn/GRCh38/training/test_pos.bed
+      hash: md5
+      md5: c94d5f57e8adf58eecc2c07bf4356ab4
+      size: 540118
+    - path: data/processed/svn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 04ecb343c2e1ba85fc55d21e3ecd3999
+      size: 4451060
+    - path: data/processed/svn/GRCh38/training/train_100_manifest.tsv
+      hash: md5
+      md5: cef896d414f6531a069bca65a8a35f67
+      size: 32612125
+    - path: data/processed/svn/GRCh38/training/train_100_neg.bed
+      hash: md5
+      md5: 25445973516b5b27eac7902fbf7065b2
+      size: 3911646
+    - path: data/processed/svn/GRCh38/training/train_100_neg.fa
+      hash: md5
+      md5: 86c56ea0e9794aa95d4954165619a1b6
+      size: 48154092
+    - path: data/processed/svn/GRCh38/training/train_100_pos.bed
+      hash: md5
+      md5: be84e2e385c5fa5a8f334c56927547b3
+      size: 5830429
+    - path: data/processed/svn/GRCh38/training/train_100_pos.fa
+      hash: md5
+      md5: 95c8662b205b725dcdf14a9ed7b142b9
+      size: 48028659
+    - path: data/processed/svn/GRCh38/training/train_100_summary.json
+      hash: md5
+      md5: 3e1be105050290d3fd9b8cf98b3655f3
+      size: 4799
+    - path: data/processed/svn/GRCh38/training/validation_neg.bed
+      hash: md5
+      md5: c3b5228d9451f5fadfc63a1039fa849a
+      size: 737028
+    - path: data/processed/svn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 37a33998d805c9e32f14c47907f27ed5
+      size: 9101232
+    - path: data/processed/svn/GRCh38/training/validation_pos.bed
+      hash: md5
+      md5: 4c199999769274738700f487f7737a24
+      size: 1089514
+    - path: data/processed/svn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 90486f3df3468d7d36a24c0104c62589
+      size: 9071774
+  learning_curve_subsets_GRCh38_svn:
+    cmd: python src/make_GRCh38_learning_curves.py --input-dir 
+      data/processed/svn/GRCh38/training --output-dir 
+      data/processed/svn/GRCh38/learning_curves --seed 42
+    deps:
+    - path: data/processed/svn/GRCh38/training/train_100_neg.bed
+      hash: md5
+      md5: 25445973516b5b27eac7902fbf7065b2
+      size: 3911646
+    - path: data/processed/svn/GRCh38/training/train_100_neg.fa
+      hash: md5
+      md5: 86c56ea0e9794aa95d4954165619a1b6
+      size: 48154092
+    - path: data/processed/svn/GRCh38/training/train_100_pos.bed
+      hash: md5
+      md5: be84e2e385c5fa5a8f334c56927547b3
+      size: 5830429
+    - path: data/processed/svn/GRCh38/training/train_100_pos.fa
+      hash: md5
+      md5: 95c8662b205b725dcdf14a9ed7b142b9
+      size: 48028659
+    - path: src/make_GRCh38_learning_curves.py
+      hash: md5
+      md5: dd5fa421ed136b58ba683e3e9d13a9de
+      size: 9857
+      isexec: true
+    outs:
+    - path: 
+        data/processed/svn/GRCh38/learning_curves/learning_curve_summary.json
+      hash: md5
+      md5: 3e081718bcb1a635d79298f3c957b575
+      size: 122020
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_neg.bed
+      hash: md5
+      md5: d9cbf1f9e16c12e5a8e246c027d61c16
+      size: 3911646
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: 860ccdfd6929e5d4962c35643bfdb9ab
+      size: 48154092
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_pos.bed
+      hash: md5
+      md5: 87f37551d30e6b48bdd742953283800b
+      size: 5830429
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: fe12fc6af46e388654dc6469ed2a25a5
+      size: 48028659
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_neg.bed
+      hash: md5
+      md5: bf047e95bd4cc137461d9f3f813fbfb5
+      size: 390820
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: c1401a61b607914a4f9169cdc501342e
+      size: 4820049
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_pos.bed
+      hash: md5
+      md5: cecf74060fec8f77dfc8b818f9f60a24
+      size: 582987
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 431b558abca07299a10f61d0d83b31ff
+      size: 4805820
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_neg.bed
+      hash: md5
+      md5: dac7cfd26f7d5dd972e3a85e8466f6e9
+      size: 782009
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: bff1d395ce926bc7f1280255d234c5c6
+      size: 9635436
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_pos.bed
+      hash: md5
+      md5: a02fe3d7e24fc8da5dc2e5b215b3aaa1
+      size: 1165904
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 41642ae7f8927a364e42e7bb03b27ca4
+      size: 9610686
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_neg.bed
+      hash: md5
+      md5: afc3d3542b24c997ed0af1fc039d1e0b
+      size: 1564030
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f39e9245106b35b40c02858f4d1ef745
+      size: 19279007
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_pos.bed
+      hash: md5
+      md5: acb644480b653daf5b97369d88ec2aad
+      size: 2332127
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: f23898db9bce87e256721607decfa49f
+      size: 19214708
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_neg.bed
+      hash: md5
+      md5: dc083611182345dc2b2a37a84e162a7b
+      size: 2345606
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: a33a06e7325e35c97e8f7a38a7f2da48
+      size: 28910850
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_pos.bed
+      hash: md5
+      md5: 6871891ea3cea9428211561d0c74171d
+      size: 3498612
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 92811cdfd708aa094a8adec467181ea0
+      size: 28823614
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_neg.bed
+      hash: md5
+      md5: a89974e774118958b3d7c1c087451f1e
+      size: 3128917
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: ab58ba16bbbb097b6780cfc7eaf455d5
+      size: 38520744
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_pos.bed
+      hash: md5
+      md5: cd65e3202be2cbe4af0ec3a22ec16817
+      size: 4664671
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 7e2e190fb7a392ab514a354cc372ce6e
+      size: 38421176
