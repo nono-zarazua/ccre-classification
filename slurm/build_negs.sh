@@ -49,10 +49,8 @@ if (( task_id >= 1 && task_id <= 22 )); then
     i="${task_id}"
 elif (( task_id == 23 )); then
     i="X"
-elif (( task_id == 24 )); then
-    i="Y"
 else
-    echo "ERROR: SLURM_ARRAY_TASK_ID must be between 1 and 24" >&2
+    echo "ERROR: SLURM_ARRAY_TASK_ID must be between 1 and 23" >&2
     exit 1
 fi
 
