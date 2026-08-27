@@ -9,6 +9,8 @@ deterministic, chromosome-proportional selection of 202,493 records per class:
 
 All positive and negative BED/FASTA pairs remain synchronized by record position.
 The selection seed is 42.
+For negatives, chromosome split membership follows the chromosome-specific source
+pool recorded in the manifest; the synthetic null BED coordinate may be elsewhere.
 
 ## Fixed learning-curve benchmark
 

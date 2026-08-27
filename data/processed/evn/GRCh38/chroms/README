@@ -6,6 +6,9 @@ negative source pools used by `src/make_GRCh38_master_training.py`.
 BED and FASTA records correspond by position within each chromosome/class pair.
 The negative pools are reused; the master and learning-curve stages do not
 generate new negatives.
+A negative pool is assigned to the chromosome of its source positive input. The
+synthetic null BED coordinate selected by `genNullSeqs()` may lie on a different
+chromosome and does not redefine that source-pool assignment.
 
 | chromosome | source_positive_records | missing_negative_records | selected_benchmark_records_per_class |
 |:-----------|------------------------:|-------------------------:|-------------------------------------:|

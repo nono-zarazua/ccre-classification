@@ -1,0 +1,591 @@
+---
+title: "LS-GKM GRCh38 Evaluation and Learning-Curve Report"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  results_dir: null
+  training_dir: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.width = 8.5, fig.height = 5.5, dpi = 120)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(yardstick)
+  library(gt)
+  library(scales)
+})
+classification_threshold <- 0
+top_fractions <- c(0.01, 0.05, 0.10)
+learning_fractions <- c(10, 20, 40, 60, 80, 100)
+outer_names <- paste0("outer", 1:4)
+model_colors <- c(outer1 = "#0072B2", outer2 = "#D55E00",
+                  outer3 = "#009E73", outer4 = "#CC79A7")
+theme_set(theme_minimal(base_size = 12) +
+  theme(panel.grid.minor = element_blank(), legend.position = "bottom"))
+```
+
+```{r helpers, include=FALSE}
+read_scores <- function(path) {
+  read.delim(path, header = TRUE, sep = "\t", stringsAsFactors = FALSE,
+             check.names = FALSE)
+}
+
+validate_scores <- function(df, path) {
+  required <- c("chrom", "start", "end", "class", "index", "score", "label",
+                "split", "model", "task", "dataset", "seq_length")
+  missing <- setdiff(required, names(df))
+  if (length(missing)) stop("Missing columns in ", path, ": ", paste(missing, collapse = ", "))
+  if (!nrow(df)) stop("No rows in ", path)
+  if (anyNA(df$score) || anyNA(df$label)) stop("Missing score or label in ", path)
+  if (!all(df$label %in% c(0, 1))) stop("Labels must be 0/1 in ", path)
+  if (!all(df$class %in% c("pos", "neg"))) stop("Invalid class in ", path)
+  if (!all(df$label == ifelse(df$class == "pos", 1L, 0L))) stop("Class/label mismatch in ", path)
+  if (!all(df$split %in% c("validation", "test"))) stop("Invalid split in ", path)
+  if (anyNA(df$start) || anyNA(df$end) || any(df$end < df$start)) stop("Invalid coordinates in ", path)
+  if (any(df$seq_length != df$end - df$start)) stop("Invalid sequence length in ", path)
+  df
+}
+
+metric_data <- function(df, threshold = classification_threshold) {
+  df |>
+    mutate(
+      truth = factor(if_else(label == 1, "pos", "neg"), levels = c("pos", "neg")),
+      prediction = factor(if_else(score >= threshold, "pos", "neg"), levels = c("pos", "neg"))
+    )
+}
+
+ranking_metrics <- function(df) {
+  x <- metric_data(df)
+  tibble(
+    n = nrow(x),
+    n_positive = sum(x$label == 1),
+    n_negative = sum(x$label == 0),
+    prevalence = mean(x$label == 1),
+    auroc = roc_auc_vec(x$truth, x$score, event_level = "first"),
+    average_precision = average_precision_vec(x$truth, x$score, event_level = "first")
+  )
+}
+
+threshold_metrics <- function(df, threshold = classification_threshold) {
+  x <- metric_data(df, threshold)
+  tibble(
+    sensitivity = sens_vec(x$truth, x$prediction, event_level = "first"),
+    specificity = spec_vec(x$truth, x$prediction, event_level = "first"),
+    precision = precision_vec(x$truth, x$prediction, event_level = "first"),
+    f1 = f_meas_vec(x$truth, x$prediction, beta = 1, event_level = "first"),
+    balanced_accuracy = bal_accuracy_vec(x$truth, x$prediction, event_level = "first"),
+    mcc = mcc_vec(x$truth, x$prediction)
+  )
+}
+
+count_fasta <- function(path) {
+  con <- file(path, open = "r")
+  on.exit(close(con))
+  total <- 0L
+  repeat {
+    lines <- readLines(con, n = 100000L, warn = FALSE)
+    if (!length(lines)) break
+    total <- total + sum(startsWith(lines, ">"))
+  }
+  total
+}
+
+fmt_range <- function(x) sprintf("%.3f–%.3f", min(x), max(x))
+```
+
+```{r inputs, include=FALSE}
+results_dir <- params$results_dir
+training_dir <- params$training_dir
+if (is.null(results_dir) || !nzchar(results_dir)) stop("params$results_dir is required")
+if (is.null(training_dir) || !nzchar(training_dir)) stop("params$training_dir is required")
+results_dir <- normalizePath(results_dir, mustWork = TRUE)
+training_dir <- normalizePath(training_dir, mustWork = TRUE)
+
+outer_files <- setNames(file.path(results_dir, paste0(outer_names, ".tsv")), outer_names)
+learning_files <- setNames(file.path(results_dir, "learning_curves", paste0(learning_fractions, ".tsv")),
+                           as.character(learning_fractions))
+required_files <- c(outer_files, learning_files)
+missing_files <- required_files[!file.exists(required_files)]
+if (length(missing_files)) stop("Missing report inputs:\n", paste(missing_files, collapse = "\n"))
+
+outer_data <- lapply(outer_files, function(path) validate_scores(read_scores(path), path))
+learning_data <- lapply(learning_files, function(path) validate_scores(read_scores(path), path))
+for (name in outer_names) {
+  if (!identical(unique(outer_data[[name]]$dataset), name)) stop("Dataset mismatch in ", name)
+}
+for (fraction in names(learning_data)) {
+  if (!identical(as.character(unique(learning_data[[fraction]]$dataset)), fraction)) stop("Dataset mismatch at ", fraction, "%")
+}
+
+training_table <- bind_rows(lapply(learning_fractions, function(fraction) {
+  pos_file <- file.path(training_dir, paste0("train_", fraction, "_pos.fa"))
+  neg_file <- file.path(training_dir, paste0("train_", fraction, "_neg.fa"))
+  if (!file.exists(pos_file) || !file.exists(neg_file)) stop("Missing learning-curve FASTA at ", fraction, "%")
+  tibble(training_fraction = fraction,
+         n_training_positive = count_fasta(pos_file),
+         n_training_negative = count_fasta(neg_file)) |>
+    mutate(n_training_total = n_training_positive + n_training_negative)
+}))
+
+evaluation_reference <- learning_data[["100"]]
+input_inventory <- bind_rows(
+  tibble(file = unname(outer_files), dataset = names(outer_files), role = "chromosome robustness"),
+  tibble(file = unname(learning_files), dataset = paste0(names(learning_files), "%"), role = "learning curve")
+) |>
+  mutate(number_of_rows = vapply(file, function(path) nrow(read_scores(path)), integer(1)),
+         file = sub(paste0("^", results_dir, "/?"), "", file))
+```
+
+# Dataset and experimental design
+
+The GRCh38 enhancer-versus-negative experiment contains two complementary designs. Four chromosome-based outer experiments compare models trained with different chromosome compositions. Each has a training set, a validation split used for model-development decisions where applicable, and a held-out test split that remains unseen during training. Their test results are compared descriptively to assess whether chromosome composition produces meaningful performance instability; they are not pooled as an out-of-fold estimate.
+
+The learning-curve experiment is separate from the four outer experiments. It uses one fixed validation set and one fixed test set while varying only the amount of training data through six strictly nested subsets (10%, 20%, 40%, 60%, 80%, and 100%). Thus, these are six models on one fixed learning-curve design, not four-fold learning curves.
+
+```{r dataset-summary}
+dataset_summary <- evaluation_reference |>
+  summarise(
+    `Total observations` = n(),
+    `Positive sequences` = sum(label == 1),
+    `Negative sequences` = sum(label == 0),
+    `Positive prevalence` = mean(label == 1),
+    `Minimum sequence length` = min(seq_length),
+    `Median sequence length` = median(seq_length),
+    `Maximum sequence length` = max(seq_length),
+    `Outer sets` = length(outer_names),
+    `Learning-curve sizes` = length(learning_fractions)
+  )
+
+dataset_summary |>
+  gt() |>
+  tab_header(title = "Fixed validation and test dataset summary") |>
+  fmt_integer(columns = c(`Total observations`, `Positive sequences`, `Negative sequences`,
+                          `Minimum sequence length`, `Median sequence length`,
+                          `Maximum sequence length`)) |>
+  fmt_percent(columns = `Positive prevalence`, decimals = 1)
+```
+
+The summary counts the fixed validation and test observations once, using the 100% learning-curve model table; predictions from the other five models are repeated measurements on the same sequences and are not counted as additional observations.
+
+```{r training-size-table}
+training_table |>
+  rename(`Training fraction (%)` = training_fraction,
+         `Training positives` = n_training_positive,
+         `Training negatives` = n_training_negative,
+         `Total training observations` = n_training_total) |>
+  gt() |>
+  tab_header(title = "Strictly nested learning-curve training sets") |>
+  fmt_integer(columns = c(`Training positives`, `Training negatives`, `Total training observations`))
+```
+
+# Training configuration and model metadata
+
+LS-GKM v0.1.2 is a large-scale gapped k-mer support vector machine. It represents DNA sequences through gapped k-mer similarity features and trains an SVM on those sequence-derived features. The number of features depends on ${k}$, ${\ell}$, and ${b}$: 
+ 
+$$M = \binom{\ell}{k} b^k$$
+
+The training command supplied only thread and cache options, so the remaining model settings below are the documented defaults reported by the actual binary.
+
+```{r model-metadata}
+model_metadata <- tribble(
+  ~Setting, ~Value,
+  "LS-GKM binary/version", "../lsgkm/bin/gkmtrain; v0.1.2",
+  "Kernel", "Estimated l-mer with truncated filter (-t 2; gkm)",
+  "Alphabet size ($b$)", "4 (DNA)",
+  "$\\ell$-mer size ($\\ell$)", "11",
+  "Number of informative columns ($k$)", "7",
+  "Maximum number of mismatches ($d$)", "3",
+  "SVM C", "1.0",
+  "Convergence epsilon", "0.001",
+  "Reverse complements", "Treated as the same feature (-R not set)",
+  "Threads", "16 (-T 16)",
+  "Kernel cache", "160,000 MB (-m 160000)",
+  "Negative:positive ratio", "1:1 target (xfold = 1)",
+  "Genome assembly", "GRCh38 / hg38 masked",
+  "Negative generation", "gkmSVM::genNullSeqs; nMaxTrials = 500",
+  "Learning-curve seed", "42; one shuffle per class, nested prefixes",
+  "Negative-generation seed", "Not explicitly set"
+)
+model_metadata |> gt() |> tab_header(title = "LS-GKM training and dataset-generation configuration")
+```
+
+Computational allocation was one node, 16 CPUs, 200 GB RAM, a five-day time limit, and at most five concurrent array tasks. These are execution resources rather than model hyperparameters.
+
+# Chromosome robustness
+
+Validation curves are shown alongside the held-out test analysis; summary metrics remain focused on the held-out `test` split.
+
+```{r outer-metrics, include=FALSE}
+outer_test <- lapply(outer_data, function(df) filter(df, split == "test"))
+outer_metrics <- bind_rows(lapply(outer_names, function(name) {
+  ranking_metrics(outer_test[[name]]) |> mutate(outer = name, .before = 1)
+})) |>
+  mutate(auroc_difference_from_mean = auroc - mean(auroc),
+         ap_difference_from_mean = average_precision - mean(average_precision))
+outer_summary <- outer_metrics |>
+  summarise(mean_auroc = mean(auroc), sd_auroc = sd(auroc),
+            min_auroc = min(auroc), max_auroc = max(auroc),
+            mean_ap = mean(average_precision), sd_ap = sd(average_precision),
+            min_ap = min(average_precision), max_ap = max(average_precision))
+```
+
+## Overlaid validation ROC curves
+
+```{r outer-validation-roc}
+outer_validation <- lapply(outer_data, function(df) filter(df, split == "validation"))
+validation_metrics <- bind_rows(lapply(outer_names, function(name) {
+  ranking_metrics(outer_validation[[name]]) |> mutate(outer = name, .before = 1)
+}))
+validation_roc <- bind_rows(lapply(outer_names, function(name) {
+  x <- metric_data(outer_validation[[name]])
+  roc_curve(x, truth, score, event_level = "first") |> mutate(outer = name)
+}))
+validation_roc_legend <- setNames(
+  sprintf("%s (AUROC %.3f)", validation_metrics$outer, validation_metrics$auroc),
+  validation_metrics$outer
+)
+
+ggplot(validation_roc, aes(1 - specificity, sensitivity, color = outer)) +
+  geom_line(linewidth = 0.9) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey45") +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1)) +
+  scale_color_manual(values = model_colors, labels = validation_roc_legend) +
+  labs(title = "Validation ROC curves across chromosome outer sets",
+       x = "False-positive rate", y = "True-positive rate", color = NULL)
+```
+
+## Overlaid validation precision-recall curves
+
+```{r outer-validation-pr}
+validation_pr <- bind_rows(lapply(outer_names, function(name) {
+  x <- metric_data(outer_validation[[name]])
+  pr_curve(x, truth, score, event_level = "first") |> mutate(outer = name)
+}))
+validation_pr_legend <- setNames(
+  sprintf("%s (AP %.3f)", validation_metrics$outer, validation_metrics$average_precision),
+  validation_metrics$outer
+)
+mean_validation_prevalence <- mean(validation_metrics$prevalence)
+
+ggplot(validation_pr, aes(recall, precision, color = outer)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = mean_validation_prevalence, linetype = "dashed", color = "grey45") +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+  scale_color_manual(values = model_colors, labels = validation_pr_legend) +
+  labs(title = "Validation precision-recall curves across chromosome outer sets",
+       subtitle = paste0("Dashed line: mean positive prevalence = ",
+                         percent(mean_validation_prevalence, accuracy = 0.1)),
+       x = "Recall", y = "Precision", color = NULL)
+```
+
+## Overlaid held-out test ROC curves
+
+```{r outer-roc}
+outer_roc <- bind_rows(lapply(outer_names, function(name) {
+  x <- metric_data(outer_test[[name]])
+  roc_curve(x, truth, score, event_level = "first") |> mutate(outer = name)
+}))
+outer_legend <- setNames(sprintf("%s (AUROC %.3f)", outer_metrics$outer, outer_metrics$auroc), outer_metrics$outer)
+
+ggplot(outer_roc, aes(1 - specificity, sensitivity, color = outer)) +
+  geom_line(linewidth = 0.9) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "grey45") +
+  coord_equal(xlim = c(0, 1), ylim = c(0, 1)) +
+  scale_color_manual(values = model_colors, labels = outer_legend) +
+  labs(title = "Held-out test ROC curves across chromosome outer sets",
+       x = "False-positive rate", y = "True-positive rate", color = NULL)
+```
+
+## Overlaid held-out test precision-recall curves
+
+```{r outer-pr}
+outer_pr <- bind_rows(lapply(outer_names, function(name) {
+  x <- metric_data(outer_test[[name]])
+  pr_curve(x, truth, score, event_level = "first") |> mutate(outer = name)
+}))
+outer_ap_legend <- setNames(sprintf("%s (AP %.3f)", outer_metrics$outer, outer_metrics$average_precision), outer_metrics$outer)
+mean_test_prevalence <- mean(outer_metrics$prevalence)
+
+ggplot(outer_pr, aes(recall, precision, color = outer)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = mean_test_prevalence, linetype = "dashed", color = "grey45") +
+  coord_cartesian(xlim = c(0, 1), ylim = c(0, 1)) +
+  scale_color_manual(values = model_colors, labels = outer_ap_legend) +
+  labs(title = "Held-out test precision-recall curves across chromosome outer sets",
+       subtitle = paste0("Dashed line: mean positive prevalence = ", percent(mean_test_prevalence, accuracy = 0.1)),
+       x = "Recall", y = "Precision", color = NULL)
+```
+
+## Robustness summary
+
+```{r outer-table}
+outer_metrics |>
+  transmute(`Outer set` = outer, `N test` = n, `Positive prevalence` = prevalence,
+            AUROC = auroc, `Average Precision` = average_precision,
+            `AUROC difference from mean` = auroc_difference_from_mean,
+            `AP difference from mean` = ap_difference_from_mean) |>
+  gt() |>
+  fmt_integer(columns = `N test`) |>
+  fmt_percent(columns = `Positive prevalence`, decimals = 1) |>
+  fmt_number(columns = c(AUROC, `Average Precision`, `AUROC difference from mean`,
+                         `AP difference from mean`), decimals = 4)
+```
+
+Across the four outer tests, mean AUROC is `r sprintf("%.3f ± %.3f", outer_summary$mean_auroc, outer_summary$sd_auroc)` (range `r fmt_range(outer_metrics$auroc)`), and mean AP is `r sprintf("%.3f ± %.3f", outer_summary$mean_ap, outer_summary$sd_ap)` (range `r fmt_range(outer_metrics$average_precision)`). These are descriptive comparisons; no statistical significance test was performed.
+
+# Learning-curve analysis
+
+Validation and held-out test performance are overlaid below. Absolute training observation counts, rather than percentages alone, define the x-axis. Marginal gains, ranking utility, and final-model summaries remain based on the held-out test split.
+
+```{r learning-metrics, include=FALSE}
+learning_split_metrics <- bind_rows(lapply(as.character(learning_fractions), function(fraction) {
+  bind_rows(lapply(c("validation", "test"), function(split_name) {
+    ranking_metrics(filter(learning_data[[fraction]], split == split_name)) |>
+      mutate(training_fraction = as.integer(fraction), split = split_name, .before = 1)
+  }))
+})) |>
+  left_join(training_table, by = "training_fraction") |>
+  arrange(split, n_training_total) |>
+  mutate(ranking_error = 1 - auroc,
+         split = factor(split, levels = c("validation", "test"),
+                        labels = c("Validation", "Test")))
+
+learning_metrics <- learning_split_metrics |>
+  filter(split == "Test") |>
+  arrange(n_training_total)
+```
+
+## Predictive performance
+
+```{r learning-auroc}
+ggplot(learning_split_metrics,
+       aes(n_training_total, auroc, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  geom_text(data = filter(learning_split_metrics, split == "Test"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
+            vjust = -0.7, size = 3.0, show.legend = FALSE) +
+  geom_text(data = filter(learning_split_metrics, split == "Validation"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
+            vjust = 1.7, size = 3.0, show.legend = FALSE) +
+  scale_color_manual(values = c(Validation = "#D55E00", Test = "#0072B2")) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(expand = expansion(mult = c(0.18, 0.25))) +
+  labs(title = "Validation and test AUROC by absolute training-set size",
+       x = "Training observations", y = "AUROC", color = "Split", shape = "Split")
+```
+
+```{r learning-ap}
+ggplot(learning_split_metrics,
+       aes(n_training_total, average_precision, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  geom_text(data = filter(learning_split_metrics, split == "Test"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, average_precision)),
+            vjust = -0.7, size = 3.0, show.legend = FALSE) +
+  geom_text(data = filter(learning_split_metrics, split == "Validation"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, average_precision)),
+            vjust = 1.7, size = 3.0, show.legend = FALSE) +
+  scale_color_manual(values = c(Validation = "#D55E00", Test = "#0072B2")) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(expand = expansion(mult = c(0.18, 0.25))) +
+  labs(title = "Validation and test Average Precision by absolute training-set size",
+       x = "Training observations", y = "Average Precision", color = "Split", shape = "Split")
+```
+
+## Scaling analysis: AUROC ranking error
+
+AUROC is approximately the probability that a randomly selected positive receives a higher score than a randomly selected negative. Therefore, `1 - AUROC` is the **pairwise AUROC ranking error**: approximately the probability/proportion of positive-negative pairs ordered incorrectly, with ties handled according to the AUROC convention. It is neither mean absolute error nor ordinary thresholded classification error.
+
+```{r ranking-error-linear}
+ggplot(learning_split_metrics,
+       aes(n_training_total, ranking_error, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  scale_color_manual(values = c(Validation = "#D55E00", Test = "#0072B2")) +
+  scale_x_continuous(labels = comma) +
+  labs(title = "Validation and test pairwise AUROC ranking error",
+       x = "Training observations", y = "1 - AUROC", color = "Split", shape = "Split")
+```
+
+```{r ranking-error-log}
+log_fit <- lm(log(ranking_error) ~ log(n_training_total), data = learning_metrics)
+log_fit_r2 <- summary(log_fit)$r.squared
+
+ggplot(learning_split_metrics,
+       aes(n_training_total, ranking_error, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  scale_color_manual(values = c(Validation = "#D55E00", Test = "#0072B2")) +
+  scale_x_log10(labels = comma) +
+  scale_y_log10() +
+  labs(title = "Validation and test pairwise AUROC ranking error on log-log axes",
+       subtitle = paste0("Exploratory test-set log-log linear R² = ", sprintf("%.3f", log_fit_r2)),
+       x = "Training observations (log scale)", y = "1 - AUROC (log scale)",
+       color = "Split", shape = "Split")
+```
+
+A saturating power-law model of the form `error(m) = a × m^b + c` is not forced here. With only six empirical sizes and three nonlinear parameters, such a fit can be unstable. The log-log view and its descriptive linear R² are provided only to assess whether a roughly power-law-like region appears plausible.
+
+## Marginal gains
+
+```{r marginal-gains}
+marginal_gains <- learning_metrics |>
+  transmute(training_fraction, n_training_total, auroc, average_precision, ranking_error) |>
+  mutate(from_fraction = lag(training_fraction), from_n = lag(n_training_total),
+         delta_n = n_training_total - from_n,
+         delta_auroc = auroc - lag(auroc),
+         delta_ap = average_precision - lag(average_precision),
+         ranking_error_reduction = lag(ranking_error) - ranking_error,
+         delta_auroc_per_10000 = delta_auroc / delta_n * 10000) |>
+  filter(!is.na(from_fraction)) |>
+  transmute(From = paste0(from_fraction, "%"), To = paste0(training_fraction, "%"),
+            `Additional training observations` = delta_n,
+            `Change in AUROC` = delta_auroc, `Change in AP` = delta_ap,
+            `Reduction in ranking error` = ranking_error_reduction,
+            `AUROC gain per 10,000 observations` = delta_auroc_per_10000)
+
+marginal_gains |>
+  gt() |>
+  fmt_integer(columns = `Additional training observations`) |>
+  fmt_number(columns = c(`Change in AUROC`, `Change in AP`, `Reduction in ranking error`,
+                         `AUROC gain per 10,000 observations`), decimals = 4)
+```
+
+## Biological ranking utility
+
+```{r top-ranking, include=FALSE}
+top_ranking <- bind_rows(lapply(as.character(learning_fractions), function(fraction) {
+  test_df <- filter(learning_data[[fraction]], split == "test") |> arrange(desc(score))
+  prevalence <- mean(test_df$label == 1)
+  bind_rows(lapply(top_fractions, function(top_fraction) {
+    n_selected <- min(nrow(test_df), max(1L, ceiling(nrow(test_df) * top_fraction)))
+    selected <- slice_head(test_df, n = n_selected)
+    precision <- mean(selected$label == 1)
+    tibble(training_fraction = as.integer(fraction), top_fraction = top_fraction,
+           n_selected = n_selected, n_true_positive = sum(selected$label == 1),
+           precision_at_top_fraction = precision,
+           positive_prevalence = prevalence, enrichment = precision / prevalence)
+  }))
+})) |>
+  left_join(select(training_table, training_fraction, n_training_total), by = "training_fraction")
+```
+
+```{r top-ranking-table}
+top_ranking |>
+  transmute(`Training fraction` = paste0(training_fraction, "%"),
+            `Training observations` = n_training_total,
+            `Top fraction` = percent(top_fraction, accuracy = 1),
+            `Selected` = n_selected, `True positives` = n_true_positive,
+            `Precision` = precision_at_top_fraction, `Enrichment` = enrichment) |>
+  gt() |>
+  fmt_integer(columns = c(`Training observations`, Selected, `True positives`)) |>
+  fmt_percent(columns = Precision, decimals = 1) |>
+  fmt_number(columns = Enrichment, decimals = 2)
+```
+
+```{r top-ranking-plot}
+ggplot(top_ranking,
+       aes(n_training_total, enrichment, color = factor(top_fraction), group = top_fraction)) +
+  geom_line(linewidth = 0.9) + geom_point(size = 2.6) +
+  scale_x_continuous(labels = comma) +
+  scale_color_brewer(palette = "Dark2", labels = percent(top_fractions, accuracy = 1)) +
+  labs(title = "Enrichment of true positives among highest-ranked test sequences",
+       x = "Training observations", y = "Enrichment over test prevalence", color = "Rank cutoff")
+```
+
+# Final-model threshold metrics
+
+Threshold-independent AUROC and AP use the continuous score and summarize ranking across possible thresholds. The following metrics instead describe one operating point: the 100% learning-curve model at the natural LS-GKM decision threshold `score = 0`.
+
+```{r final-threshold}
+final_test <- filter(learning_data[["100"]], split == "test")
+final_threshold_metrics <- threshold_metrics(final_test)
+final_threshold_metrics |>
+  rename(Sensitivity = sensitivity, Specificity = specificity, Precision = precision,
+         F1 = f1, `Balanced accuracy` = balanced_accuracy, MCC = mcc) |>
+  gt() |>
+  tab_header(title = "100% model test metrics at score threshold 0") |>
+  fmt_number(everything(), decimals = 3)
+```
+
+```{r confusion-matrix}
+final_metric_data <- metric_data(final_test)
+confusion <- table(Predicted = final_metric_data$prediction, Observed = final_metric_data$truth)
+as.data.frame.matrix(confusion) |>
+  tibble::rownames_to_column("Predicted class") |>
+  gt() |>
+  tab_header(title = "Test confusion matrix at score threshold 0") |>
+  fmt_integer(columns = where(is.numeric))
+```
+
+# Interpretation
+
+```{r interpretation-values, include=FALSE}
+smallest <- slice_head(learning_metrics, n = 1)
+largest <- slice_tail(learning_metrics, n = 1)
+first_gain <- marginal_gains$`Change in AUROC`[1]
+last_gain <- marginal_gains$`Change in AUROC`[nrow(marginal_gains)]
+diminishing_text <- if (last_gain < first_gain) {
+  "The final AUROC increment is smaller than the first increment, consistent with diminishing returns, although six points are insufficient to establish a definitive plateau."
+} else {
+  "The final AUROC increment is not smaller than the first, so a clear saturation pattern is not evident from these six points."
+}
+power_text <- if (log_fit_r2 >= 0.9) {
+  "The empirical points are approximately linear on log-log axes, which is compatible with—but does not establish—power-law-like scaling."
+} else {
+  "The empirical points are not strongly linear on log-log axes, so simple power-law-like scaling is not clearly supported."
+}
+top_small <- filter(top_ranking, training_fraction == min(training_fraction), top_fraction == 0.01)
+top_large <- filter(top_ranking, training_fraction == max(training_fraction), top_fraction == 0.01)
+```
+
+**Chromosome robustness.** Held-out outer-test AUROC averages `r sprintf("%.3f", outer_summary$mean_auroc)` and spans `r fmt_range(outer_metrics$auroc)`; AP averages `r sprintf("%.3f", outer_summary$mean_ap)` and spans `r fmt_range(outer_metrics$average_precision)`. The absolute AUROC range is `r sprintf("%.3f", diff(range(outer_metrics$auroc)))` and the AP range is `r sprintf("%.3f", diff(range(outer_metrics$average_precision)))`. These descriptive differences identify stability or potential outliers but do not imply statistical significance.
+
+**Learning behavior.** From `r comma(smallest$n_training_total)` to `r comma(largest$n_training_total)` training observations, test AUROC changes from `r sprintf("%.3f", smallest$auroc)` to `r sprintf("%.3f", largest$auroc)`, AP from `r sprintf("%.3f", smallest$average_precision)` to `r sprintf("%.3f", largest$average_precision)`, and ranking error from `r sprintf("%.3f", smallest$ranking_error)` to `r sprintf("%.3f", largest$ranking_error)`. `r diminishing_text` `r power_text`
+
+**Ranking utility.** At the top 1% cutoff, precision changes from `r percent(top_small$precision_at_top_fraction, accuracy = 0.1)` to `r percent(top_large$precision_at_top_fraction, accuracy = 0.1)`, corresponding to enrichment of `r sprintf("%.2f×", top_small$enrichment)` and `r sprintf("%.2f×", top_large$enrichment)` over test prevalence. The complete table shows whether this trend also holds at the broader 5% and 10% cutoffs.
+
+**Threshold-specific behavior.** At score zero, the 100% model has sensitivity `r sprintf("%.3f", final_threshold_metrics$sensitivity)`, specificity `r sprintf("%.3f", final_threshold_metrics$specificity)`, precision `r sprintf("%.3f", final_threshold_metrics$precision)`, F1 `r sprintf("%.3f", final_threshold_metrics$f1)`, balanced accuracy `r sprintf("%.3f", final_threshold_metrics$balanced_accuracy)`, and MCC `r sprintf("%.3f", final_threshold_metrics$mcc)`. These values describe this fixed operating point and should be interpreted separately from AUROC and AP.
+
+# Reproducibility
+
+## Input files
+
+```{r input-inventory}
+input_inventory |>
+  rename(File = file, Dataset = dataset, Role = role, `Number of rows` = number_of_rows) |>
+  gt() |>
+  fmt_integer(columns = `Number of rows`)
+```
+
+## Analysis configuration
+
+```{r analysis-config}
+tribble(
+  ~Setting, ~Value,
+  "Results directory", results_dir,
+  "Training-data directory", training_dir,
+  "Threshold", as.character(classification_threshold),
+  "Top-ranking fractions", paste(percent(top_fractions, accuracy = 1), collapse = ", "),
+  "Learning-curve fractions", paste0(paste(learning_fractions, collapse = ", "), "%"),
+  "Positive class", "enhancer (pos; label 1)",
+  "Power-law handling", "No nonlinear fit forced; empirical log-log plot and linear R² shown"
+) |> gt()
+```
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.
+
+## Software environment
+
+```{r session-info}
+sessionInfo()
+```

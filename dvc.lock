@@ -904,8 +904,9 @@ stages:
       size: 426416
     - path: src/prepare_lsgkm_scores.R
       hash: md5
-      md5: 32b69def3377ba7ea1dfbb1d86e32f24
-      size: 1883
+      md5: e913604e202cc329cc67c9b5fced408c
+      size: 2569
+      isexec: true
     outs:
     - path: results/evn/hepg2/ls-gkm/outer1.tsv
       hash: md5
@@ -2473,3 +2474,2298 @@ stages:
       hash: md5
       md5: 3ac309144896e42186044feef2d958c0
       size: 47366548
+  train_ls_gkm_GRCh38:
+    cmd: sbatch --wait slurm/train_ls_gkm.sh
+    deps:
+    - path: ../lsgkm/bin/gkmtrain
+      hash: md5
+      md5: 038f6f2fc057ff25a66b32faa6895343
+      size: 143632
+      isexec: true
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: faee3b83e2524b99455499459169d389
+      size: 51423751
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: bc937ac2c0b44cd910712934aa9e0e5d
+      size: 51258789
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: 58ebe014b12ab2dbc6a5a82d4c39cf19
+      size: 5147940
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 64a1aa5551b4dca490b1f428f623efd9
+      size: 5123704
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: b3945cd09d1b7630117e166597ce96cd
+      size: 10288387
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 15840434ad43e6dc3890c2ea40121f48
+      size: 10245183
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f11eb6645bd295e52583e3f21d353cf1
+      size: 20574781
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: dc0f1189c16070d1ee05c621a0672305
+      size: 20509653
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: 6f785b1812b3ef64ed4b5800327430d6
+      size: 30857944
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 853a41b3876f092813d2bf39093a8aef
+      size: 30772839
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: 77730ccc667f031d03f6779dc7748a06
+      size: 41130063
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 749ce4478f161c94f95d5711ed2606f6
+      size: 41010938
+    - path: data/processed/evn/GRCh38/training/outer1/train_neg.fa
+      hash: md5
+      md5: acb018c0d18f36288f33b31c189689b4
+      size: 33758029
+    - path: data/processed/evn/GRCh38/training/outer1/train_pos.fa
+      hash: md5
+      md5: dcf6e92c94fd20c40a5590d4869ff150
+      size: 33661623
+    - path: data/processed/evn/GRCh38/training/outer2/train_neg.fa
+      hash: md5
+      md5: b5ef1bcbe80d3e93cebe8abb2669e78f
+      size: 33694392
+    - path: data/processed/evn/GRCh38/training/outer2/train_pos.fa
+      hash: md5
+      md5: bb8e9cc28924571d9d35384ef0af8d8d
+      size: 33597184
+    - path: data/processed/evn/GRCh38/training/outer3/train_neg.fa
+      hash: md5
+      md5: 29d1bd8ee4934c9fa24911d95426f5c1
+      size: 33593333
+    - path: data/processed/evn/GRCh38/training/outer3/train_pos.fa
+      hash: md5
+      md5: fcc42d670e7c75f274b15a13cc7df09a
+      size: 33528674
+    - path: data/processed/evn/GRCh38/training/outer4/train_neg.fa
+      hash: md5
+      md5: a18c058d415fb70569f690ad210a8b78
+      size: 33249318
+    - path: data/processed/evn/GRCh38/training/outer4/train_pos.fa
+      hash: md5
+      md5: 8a0967c653fce92e0c5c598dfe65e840
+      size: 33189079
+    - path: slurm/train_ls_gkm.sh
+      hash: md5
+      md5: 35d16411fa8f12b0c34a596328001c59
+      size: 4792
+      isexec: true
+    outs:
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+      hash: md5
+      md5: 7b3d99c0a7641169e14c55fe451b6f2c
+      size: 8265155
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+      hash: md5
+      md5: 805236cb232505041602caf2e6d733fb
+      size: 70276977
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+      hash: md5
+      md5: dbd73d3c13353b1d2c64c1170337a5ae
+      size: 15712271
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+      hash: md5
+      md5: 43ce2f35aa090f14daaab66497f1bcd3
+      size: 29808298
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+      hash: md5
+      md5: c63c3b23286a12ae1cb1dd8fb9663d3f
+      size: 43586111
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+      hash: md5
+      md5: a5ba3ab3312f3469f91b1fd3c868f518
+      size: 57092029
+    - path: models/evn/GRCh38/ls-gkm/outer1/outer1.model.txt
+      hash: md5
+      md5: f1f1266255d92821488eaf713e753b0b
+      size: 47599757
+    - path: models/evn/GRCh38/ls-gkm/outer2/outer2.model.txt
+      hash: md5
+      md5: 0b8b54f27af6c195147f317a9f0135da
+      size: 47024781
+    - path: models/evn/GRCh38/ls-gkm/outer3/outer3.model.txt
+      hash: md5
+      md5: 2ece0b401ed78b4da21fcf4e0d173d38
+      size: 47585466
+    - path: models/evn/GRCh38/ls-gkm/outer4/outer4.model.txt
+      hash: md5
+      md5: 3ac309144896e42186044feef2d958c0
+      size: 47366548
+  prepare_GRCh38_els_evn:
+    cmd: bash src/get_whole_body_ccres.sh
+    deps:
+    - path: src/get_whole_body_ccres.sh
+      hash: md5
+      md5: 1ec8f91176af7e49bf44f47b10e37d38
+      size: 1546
+      isexec: true
+    outs:
+    - path: data/processed/evn/GRCh38/GRCh38_ELS.trimmed.bed
+      hash: md5
+      md5: 93f95cf02982e564e3ef5f461f1d0ffe
+      size: 63420599
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: 178a964e63180d84edf263214f80e68d
+      size: 5652022
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: 0e8d3081e4c4eb99ef5b35b0be38b199
+      size: 3190909
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: bed3afd928b5661f7cc73d0f32183089
+      size: 3194468
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 4e48c1ff48853a22fa3fb52d39b615b8
+      size: 3132189
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: 7e435c18375142a94f9168dc8443f339
+      size: 1789135
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: 4212bb5206eda5981c47df7951cd7489
+      size: 2036443
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: 9e8ee1a604e8ad27f77ed70ac2ad3e67
+      size: 2038263
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: 407cbaa19594446371a3b55cbe9e0f45
+      size: 2063010
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: 96d55ea1678c9409b672f640079b5e96
+      size: 2566025
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: b460bc3ea64cfce77e9cf982d3dacf5e
+      size: 1476513
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: 76c7085179c46a99d43190e7616624ed
+      size: 1736014
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 3c4d4a7d22709936c56f091ec6437312
+      size: 5343555
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: 7453de5b1082decad801f813638b0851
+      size: 1781715
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: d95d0557d5711b44fe01788dc4bf11e3
+      size: 806589
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 105c62d9d0bc067957a9ed452cf28e8e
+      size: 1276426
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: 6daf123c36870e087e35429d7ab732b0
+      size: 4196396
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 9fcc2e066f785f23070a3ea68d91f876
+      size: 3161490
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: 568bffba9a5cb4ddbcb0eeff007318f5
+      size: 3594179
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: efe44c25084603ae380b73094880376d
+      size: 3715546
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: 85b580242d33d18a8ba26a4042db36fc
+      size: 3324447
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 0b11f2a5243c5f3c270825b3a3f92d4d
+      size: 3040036
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 52de02dc8151db619127a2937be11742
+      size: 2724249
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: c814c6fe92e47b1d51493a4e6767b6c2
+      size: 1516302
+    - path: data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
+      hash: md5
+      md5: 1f937b0638d6d816bff4dff4eb6b1602
+      size: 64678
+    - path: data/raw/GRCh38_ELS.bed
+      hash: md5
+      md5: 4850a82745b9623eba73683218658fb8
+      size: 94356641
+  build_negatives_GRCh38_evn:
+    cmd: for i in $(seq 1 22) X Y; do Rscript --vanilla src/build_negs.R 
+      data/processed/evn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_ELS.bed; done
+    deps:
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: 178a964e63180d84edf263214f80e68d
+      size: 5652022
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: 0e8d3081e4c4eb99ef5b35b0be38b199
+      size: 3190909
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: bed3afd928b5661f7cc73d0f32183089
+      size: 3194468
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 4e48c1ff48853a22fa3fb52d39b615b8
+      size: 3132189
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: 7e435c18375142a94f9168dc8443f339
+      size: 1789135
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: 4212bb5206eda5981c47df7951cd7489
+      size: 2036443
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: 9e8ee1a604e8ad27f77ed70ac2ad3e67
+      size: 2038263
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: 407cbaa19594446371a3b55cbe9e0f45
+      size: 2063010
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: 96d55ea1678c9409b672f640079b5e96
+      size: 2566025
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: b460bc3ea64cfce77e9cf982d3dacf5e
+      size: 1476513
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: 76c7085179c46a99d43190e7616624ed
+      size: 1736014
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 3c4d4a7d22709936c56f091ec6437312
+      size: 5343555
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: 7453de5b1082decad801f813638b0851
+      size: 1781715
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: d95d0557d5711b44fe01788dc4bf11e3
+      size: 806589
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 105c62d9d0bc067957a9ed452cf28e8e
+      size: 1276426
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: 6daf123c36870e087e35429d7ab732b0
+      size: 4196396
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 9fcc2e066f785f23070a3ea68d91f876
+      size: 3161490
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: 568bffba9a5cb4ddbcb0eeff007318f5
+      size: 3594179
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: efe44c25084603ae380b73094880376d
+      size: 3715546
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: 85b580242d33d18a8ba26a4042db36fc
+      size: 3324447
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 0b11f2a5243c5f3c270825b3a3f92d4d
+      size: 3040036
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 52de02dc8151db619127a2937be11742
+      size: 2724249
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: c814c6fe92e47b1d51493a4e6767b6c2
+      size: 1516302
+    - path: data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
+      hash: md5
+      md5: 1f937b0638d6d816bff4dff4eb6b1602
+      size: 64678
+    - path: slurm/build_negs.sh
+      hash: md5
+      md5: fe751fd72c199474c962fb361e6823b6
+      size: 2390
+      isexec: true
+    - path: src/build_negs.R
+      hash: md5
+      md5: 9841ef881fbac08c982b4c96b8d18bab
+      size: 1257
+    outs:
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
+      hash: md5
+      md5: f33803edb349f59c23a255615783924c
+      size: 46916656
+    - path: data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: e3bc8c64c6938a89c2e1802800ba3387
+      size: 3780499
+    - path: data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
+      hash: md5
+      md5: 99ded9a158c3d4469937fbc0ef47fb80
+      size: 46998974
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
+      hash: md5
+      md5: c097f7c0a1409effc14318c6ae42f5da
+      size: 26196900
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: 77e0817607c2364625acbcd9821545ec
+      size: 2107803
+    - path: data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
+      hash: md5
+      md5: cc499cc4ae949f35a28bfd89151da16b
+      size: 26220286
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
+      hash: md5
+      md5: 791a8fe0b625880e15437a8003d6e9e4
+      size: 26150571
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: 2cf0f7cb41b9e4101270ab819d98e5f9
+      size: 2113878
+    - path: data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
+      hash: md5
+      md5: a3b9f526eb7128d975b3e0ea80efa50b
+      size: 26168046
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
+      hash: md5
+      md5: 225ee14e51cc503e1beecfad83aaad8a
+      size: 25720762
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 0e38424059e9553b0c2a0b5044c2821d
+      size: 2064652
+    - path: data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
+      hash: md5
+      md5: 321d4bd98a0f475d8f624b82dda29c6f
+      size: 25741815
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
+      hash: md5
+      md5: 70ed99d85f71aaedeba5ff3b40b51744
+      size: 14780349
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: 7f468b100113e465812157fe5229a9f3
+      size: 1176610
+    - path: data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
+      hash: md5
+      md5: 9a013e191d547a6f79e873776d2143de
+      size: 14790614
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
+      hash: md5
+      md5: 0a461277fad49fc7c08a64cd644b9be6
+      size: 16747010
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: fdbdb2ebfaf59d4e58aaa8c72c191afa
+      size: 1347967
+    - path: data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
+      hash: md5
+      md5: 325e2c0e0169cee38a40790d002557e5
+      size: 16762256
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
+      hash: md5
+      md5: 6da9932442a2e33030026bec29a8bab2
+      size: 16791205
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: 1f6bf50d6e53ca85c9c3f07d9eb4b7cb
+      size: 1356939
+    - path: data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
+      hash: md5
+      md5: 372d1f8c20ded48a1a5c27cdc1e19624
+      size: 16824766
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
+      hash: md5
+      md5: 643db8c535ac5f303ab2ea0905b92f76
+      size: 17169411
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: ca3e28be05aaa67224bb54bee0a64e56
+      size: 1395170
+    - path: data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
+      hash: md5
+      md5: dc1cc08ed657bfb449e4f457ec9f059c
+      size: 17215669
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
+      hash: md5
+      md5: 46b77b62a3ba68f34f8f767d552fec86
+      size: 21141647
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: a3f404f0001967b02136b1c4c1066d58
+      size: 1731637
+    - path: data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
+      hash: md5
+      md5: 6efc1b7fdfa2a668c869ed223d17243f
+      size: 21191508
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
+      hash: md5
+      md5: cca4c9057c3a7173c734374a6dbeb97c
+      size: 12365138
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: c04418f2bf73380c5b7d19d2ec9e3fe1
+      size: 992439
+    - path: data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
+      hash: md5
+      md5: df0429cf71e7296e1795581859374763
+      size: 12407936
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
+      hash: md5
+      md5: c9261b9676bd858ac8f4e1c597727c23
+      size: 14218671
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: b1ece599670af39c1ef38f4e69466848
+      size: 1180056
+    - path: data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
+      hash: md5
+      md5: b0870bec848841f310278edc0b8f5c55
+      size: 14262962
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
+      hash: md5
+      md5: 99cc6c4a358f97a39d0d746bd517b287
+      size: 44306058
+    - path: data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 6dd99df5afec77dcfe4d092e906bde52
+      size: 3554553
+    - path: data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
+      hash: md5
+      md5: cfc0338bfcfd4e07cd81adb0261bea37
+      size: 44393912
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
+      hash: md5
+      md5: 2650eec49bd506ad1b2490453edb3f1b
+      size: 14833159
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: e59bdf2235007a7b0a09212f2a3ba96e
+      size: 1200566
+    - path: data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
+      hash: md5
+      md5: 285bdfb520c6a2c23c31df5f2dea3ffa
+      size: 14874956
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
+      hash: md5
+      md5: b216fd65616077abfb988af3c603e120
+      size: 6671846
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: e642df160af50f7f544cdea9b0ab0aa5
+      size: 537533
+    - path: data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
+      hash: md5
+      md5: 8212b172bb528cebb73cc47cd71939d3
+      size: 6682540
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
+      hash: md5
+      md5: 1ab9b332020381fe0b0f9bc065995ebc
+      size: 10410783
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 61dcacea80e804fb27ab2bec9e19e077
+      size: 855728
+    - path: data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
+      hash: md5
+      md5: a631cb77215d6e4bb9b32ab5784cae91
+      size: 10424096
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
+      hash: md5
+      md5: d0eaab7b27476661761b3671273c8bdd
+      size: 34941398
+    - path: data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: b081a912b502e7e88f779b0f75133b59
+      size: 2796859
+    - path: data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
+      hash: md5
+      md5: 9c9d9dde6cb0e0a80a4c6a0f28646c79
+      size: 35029730
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
+      hash: md5
+      md5: 5b57cef6ddacd2ca794dd609efa4440d
+      size: 26577944
+    - path: data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 2ba3aecfa174638f6203636a6c1d3a0e
+      size: 2120764
+    - path: data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
+      hash: md5
+      md5: 048237310c3f11262adaac22d0abc61e
+      size: 26646809
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
+      hash: md5
+      md5: 10f9edc5e04b58961bd00df35e37af96
+      size: 30003725
+    - path: data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: 9967266e5438365f3d2214d5291534cf
+      size: 2400725
+    - path: data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
+      hash: md5
+      md5: 2f41cd48838cfc62f0d29be072734cba
+      size: 30085059
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
+      hash: md5
+      md5: 402d017683fa28625ba276f2a443f0a7
+      size: 31088881
+    - path: data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: ef7fbbdf4cdde71917087c19c63da910
+      size: 2492910
+    - path: data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
+      hash: md5
+      md5: d2f1415850bd23c5b75e419b783fd6df
+      size: 31192001
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
+      hash: md5
+      md5: 0c7d8b53dd011f754e25efb75c25878b
+      size: 27841222
+    - path: data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: 65ad95cffd93026dde4bf6ddda07d643
+      size: 2241779
+    - path: data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
+      hash: md5
+      md5: 7395b680a0dd47042101982432c0d17a
+      size: 27925913
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
+      hash: md5
+      md5: 59e1f4817729a5b39ac1257048d8aab4
+      size: 25533383
+    - path: data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 2411aa19cb190963169702fe8b706226
+      size: 2045364
+    - path: data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
+      hash: md5
+      md5: 6cabb3f2d06a00d78abed998ea45cce3
+      size: 25619766
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
+      hash: md5
+      md5: 02c2d6f6ca0c2b47668e9b8d4bb0c241
+      size: 22688063
+    - path: data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 692e00f433b39a914850f5a2e8b768a5
+      size: 1830319
+    - path: data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
+      hash: md5
+      md5: 682f2cf94ff973592cf918ab29c1375f
+      size: 22758499
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
+      hash: md5
+      md5: c324a2feb75aaa87202dcaebf2e1de2c
+      size: 12806231
+    - path: data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: 2cf6d4ddc4fe9a683b77318326c51264
+      size: 1023334
+    - path: data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
+      hash: md5
+      md5: 50d553750fc6e6da8a292f582e088379
+      size: 12852682
+    - path: data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.fa
+      hash: md5
+      md5: 1f1e6bd6b114d14dc9eb4df20fdd17e9
+      size: 576159
+    - path: data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.bed
+      hash: md5
+      md5: 08b82a65da33980f383420bdea8373e4
+      size: 44893
+    - path: data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.fa
+      hash: md5
+      md5: 861284501214deb48eab6d97a890ebed
+      size: 580322
+  make_folds_outers_GRCh38_evn:
+    cmd: bash src/make_GRCh38_folds_outer_files.sh
+    deps:
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: 178a964e63180d84edf263214f80e68d
+      size: 5652022
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
+      hash: md5
+      md5: f33803edb349f59c23a255615783924c
+      size: 46916656
+    - path: data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: e3bc8c64c6938a89c2e1802800ba3387
+      size: 3780499
+    - path: data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
+      hash: md5
+      md5: 99ded9a158c3d4469937fbc0ef47fb80
+      size: 46998974
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: 0e8d3081e4c4eb99ef5b35b0be38b199
+      size: 3190909
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
+      hash: md5
+      md5: c097f7c0a1409effc14318c6ae42f5da
+      size: 26196900
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: 77e0817607c2364625acbcd9821545ec
+      size: 2107803
+    - path: data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
+      hash: md5
+      md5: cc499cc4ae949f35a28bfd89151da16b
+      size: 26220286
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: bed3afd928b5661f7cc73d0f32183089
+      size: 3194468
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
+      hash: md5
+      md5: 791a8fe0b625880e15437a8003d6e9e4
+      size: 26150571
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: 2cf0f7cb41b9e4101270ab819d98e5f9
+      size: 2113878
+    - path: data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
+      hash: md5
+      md5: a3b9f526eb7128d975b3e0ea80efa50b
+      size: 26168046
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 4e48c1ff48853a22fa3fb52d39b615b8
+      size: 3132189
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
+      hash: md5
+      md5: 225ee14e51cc503e1beecfad83aaad8a
+      size: 25720762
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 0e38424059e9553b0c2a0b5044c2821d
+      size: 2064652
+    - path: data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
+      hash: md5
+      md5: 321d4bd98a0f475d8f624b82dda29c6f
+      size: 25741815
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: 7e435c18375142a94f9168dc8443f339
+      size: 1789135
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
+      hash: md5
+      md5: 70ed99d85f71aaedeba5ff3b40b51744
+      size: 14780349
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: 7f468b100113e465812157fe5229a9f3
+      size: 1176610
+    - path: data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
+      hash: md5
+      md5: 9a013e191d547a6f79e873776d2143de
+      size: 14790614
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: 4212bb5206eda5981c47df7951cd7489
+      size: 2036443
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
+      hash: md5
+      md5: 0a461277fad49fc7c08a64cd644b9be6
+      size: 16747010
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: fdbdb2ebfaf59d4e58aaa8c72c191afa
+      size: 1347967
+    - path: data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
+      hash: md5
+      md5: 325e2c0e0169cee38a40790d002557e5
+      size: 16762256
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: 9e8ee1a604e8ad27f77ed70ac2ad3e67
+      size: 2038263
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
+      hash: md5
+      md5: 6da9932442a2e33030026bec29a8bab2
+      size: 16791205
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: 1f6bf50d6e53ca85c9c3f07d9eb4b7cb
+      size: 1356939
+    - path: data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
+      hash: md5
+      md5: 372d1f8c20ded48a1a5c27cdc1e19624
+      size: 16824766
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: 407cbaa19594446371a3b55cbe9e0f45
+      size: 2063010
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
+      hash: md5
+      md5: 643db8c535ac5f303ab2ea0905b92f76
+      size: 17169411
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: ca3e28be05aaa67224bb54bee0a64e56
+      size: 1395170
+    - path: data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
+      hash: md5
+      md5: dc1cc08ed657bfb449e4f457ec9f059c
+      size: 17215669
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: 96d55ea1678c9409b672f640079b5e96
+      size: 2566025
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
+      hash: md5
+      md5: 46b77b62a3ba68f34f8f767d552fec86
+      size: 21141647
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: a3f404f0001967b02136b1c4c1066d58
+      size: 1731637
+    - path: data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
+      hash: md5
+      md5: 6efc1b7fdfa2a668c869ed223d17243f
+      size: 21191508
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: b460bc3ea64cfce77e9cf982d3dacf5e
+      size: 1476513
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
+      hash: md5
+      md5: cca4c9057c3a7173c734374a6dbeb97c
+      size: 12365138
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: c04418f2bf73380c5b7d19d2ec9e3fe1
+      size: 992439
+    - path: data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
+      hash: md5
+      md5: df0429cf71e7296e1795581859374763
+      size: 12407936
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: 76c7085179c46a99d43190e7616624ed
+      size: 1736014
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
+      hash: md5
+      md5: c9261b9676bd858ac8f4e1c597727c23
+      size: 14218671
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: b1ece599670af39c1ef38f4e69466848
+      size: 1180056
+    - path: data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
+      hash: md5
+      md5: b0870bec848841f310278edc0b8f5c55
+      size: 14262962
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 3c4d4a7d22709936c56f091ec6437312
+      size: 5343555
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
+      hash: md5
+      md5: 99cc6c4a358f97a39d0d746bd517b287
+      size: 44306058
+    - path: data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 6dd99df5afec77dcfe4d092e906bde52
+      size: 3554553
+    - path: data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
+      hash: md5
+      md5: cfc0338bfcfd4e07cd81adb0261bea37
+      size: 44393912
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: 7453de5b1082decad801f813638b0851
+      size: 1781715
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
+      hash: md5
+      md5: 2650eec49bd506ad1b2490453edb3f1b
+      size: 14833159
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: e59bdf2235007a7b0a09212f2a3ba96e
+      size: 1200566
+    - path: data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
+      hash: md5
+      md5: 285bdfb520c6a2c23c31df5f2dea3ffa
+      size: 14874956
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: d95d0557d5711b44fe01788dc4bf11e3
+      size: 806589
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
+      hash: md5
+      md5: b216fd65616077abfb988af3c603e120
+      size: 6671846
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: e642df160af50f7f544cdea9b0ab0aa5
+      size: 537533
+    - path: data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
+      hash: md5
+      md5: 8212b172bb528cebb73cc47cd71939d3
+      size: 6682540
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 105c62d9d0bc067957a9ed452cf28e8e
+      size: 1276426
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
+      hash: md5
+      md5: 1ab9b332020381fe0b0f9bc065995ebc
+      size: 10410783
+    - path: 
+        data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 61dcacea80e804fb27ab2bec9e19e077
+      size: 855728
+    - path: data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
+      hash: md5
+      md5: a631cb77215d6e4bb9b32ab5784cae91
+      size: 10424096
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: 6daf123c36870e087e35429d7ab732b0
+      size: 4196396
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
+      hash: md5
+      md5: d0eaab7b27476661761b3671273c8bdd
+      size: 34941398
+    - path: data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: b081a912b502e7e88f779b0f75133b59
+      size: 2796859
+    - path: data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
+      hash: md5
+      md5: 9c9d9dde6cb0e0a80a4c6a0f28646c79
+      size: 35029730
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 9fcc2e066f785f23070a3ea68d91f876
+      size: 3161490
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
+      hash: md5
+      md5: 5b57cef6ddacd2ca794dd609efa4440d
+      size: 26577944
+    - path: data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 2ba3aecfa174638f6203636a6c1d3a0e
+      size: 2120764
+    - path: data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
+      hash: md5
+      md5: 048237310c3f11262adaac22d0abc61e
+      size: 26646809
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: 568bffba9a5cb4ddbcb0eeff007318f5
+      size: 3594179
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
+      hash: md5
+      md5: 10f9edc5e04b58961bd00df35e37af96
+      size: 30003725
+    - path: data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: 9967266e5438365f3d2214d5291534cf
+      size: 2400725
+    - path: data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
+      hash: md5
+      md5: 2f41cd48838cfc62f0d29be072734cba
+      size: 30085059
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: efe44c25084603ae380b73094880376d
+      size: 3715546
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
+      hash: md5
+      md5: 402d017683fa28625ba276f2a443f0a7
+      size: 31088881
+    - path: data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: ef7fbbdf4cdde71917087c19c63da910
+      size: 2492910
+    - path: data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
+      hash: md5
+      md5: d2f1415850bd23c5b75e419b783fd6df
+      size: 31192001
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: 85b580242d33d18a8ba26a4042db36fc
+      size: 3324447
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
+      hash: md5
+      md5: 0c7d8b53dd011f754e25efb75c25878b
+      size: 27841222
+    - path: data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: 65ad95cffd93026dde4bf6ddda07d643
+      size: 2241779
+    - path: data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
+      hash: md5
+      md5: 7395b680a0dd47042101982432c0d17a
+      size: 27925913
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 0b11f2a5243c5f3c270825b3a3f92d4d
+      size: 3040036
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
+      hash: md5
+      md5: 59e1f4817729a5b39ac1257048d8aab4
+      size: 25533383
+    - path: data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 2411aa19cb190963169702fe8b706226
+      size: 2045364
+    - path: data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
+      hash: md5
+      md5: 6cabb3f2d06a00d78abed998ea45cce3
+      size: 25619766
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 52de02dc8151db619127a2937be11742
+      size: 2724249
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
+      hash: md5
+      md5: 02c2d6f6ca0c2b47668e9b8d4bb0c241
+      size: 22688063
+    - path: data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 692e00f433b39a914850f5a2e8b768a5
+      size: 1830319
+    - path: data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
+      hash: md5
+      md5: 682f2cf94ff973592cf918ab29c1375f
+      size: 22758499
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: c814c6fe92e47b1d51493a4e6767b6c2
+      size: 1516302
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
+      hash: md5
+      md5: c324a2feb75aaa87202dcaebf2e1de2c
+      size: 12806231
+    - path: data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: 2cf6d4ddc4fe9a683b77318326c51264
+      size: 1023334
+    - path: data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
+      hash: md5
+      md5: 50d553750fc6e6da8a292f582e088379
+      size: 12852682
+    - path: data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
+      hash: md5
+      md5: 1f937b0638d6d816bff4dff4eb6b1602
+      size: 64678
+    - path: data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.fa
+      hash: md5
+      md5: 1f1e6bd6b114d14dc9eb4df20fdd17e9
+      size: 576159
+    - path: data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.bed
+      hash: md5
+      md5: 08b82a65da33980f383420bdea8373e4
+      size: 44893
+    - path: data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.fa
+      hash: md5
+      md5: 861284501214deb48eab6d97a890ebed
+      size: 580322
+    - path: data/processed/evn/GRCh38/folds/README
+      hash: md5
+      md5: 5584df40836d9403b2adff59878e21a6
+      size: 1055
+    - path: data/processed/evn/GRCh38/training/README
+      hash: md5
+      md5: dccf35b443d025c5b4d8d17b3954a80e
+      size: 3050
+    - path: src/make_GRCh38_folds_outer_files.sh
+      hash: md5
+      md5: 8a629f38d343133bcef4ef1abf50d6bc
+      size: 769
+      isexec: true
+    - path: src/make_GRCh38_master_training.py
+      hash: md5
+      md5: f6daa6c648c72050d2097c93fef873dd
+      size: 17413
+      isexec: true
+    outs:
+    - path: data/processed/evn/GRCh38/folds/fold1/fold1.bed
+      hash: md5
+      md5: 73b257aa0f0f7b0a6a1708a3da37e22d
+      size: 1481151
+    - path: data/processed/evn/GRCh38/folds/fold1/fold1.fa
+      hash: md5
+      md5: ea4873dc4f81c685bea59e55058b9abe
+      size: 12368949
+    - path: data/processed/evn/GRCh38/folds/fold1/neg1x_fold1.bed
+      hash: md5
+      md5: 0023f7f006f05fce69968310b248727c
+      size: 995171
+    - path: data/processed/evn/GRCh38/folds/fold1/neg1x_fold1.fa
+      hash: md5
+      md5: 180b12d639205f9b0baf16a4ac48fa8a
+      size: 12384367
+    - path: data/processed/evn/GRCh38/folds/fold2/fold2.bed
+      hash: md5
+      md5: 2144503320bb331ffc9bb6317e84a288
+      size: 1507126
+    - path: data/processed/evn/GRCh38/folds/fold2/fold2.fa
+      hash: md5
+      md5: 9bc6a6a3e398e1336d1f2cad25aa5c5e
+      size: 12433388
+    - path: data/processed/evn/GRCh38/folds/fold2/neg1x_fold2.bed
+      hash: md5
+      md5: c3776cdadeac5696f32502a05ffcd938
+      size: 1006047
+    - path: data/processed/evn/GRCh38/folds/fold2/neg1x_fold2.fa
+      hash: md5
+      md5: 62409ec1f4b15a006c2d97cc7e328ebd
+      size: 12448004
+    - path: data/processed/evn/GRCh38/folds/fold3/fold3.bed
+      hash: md5
+      md5: d076909f60e74a5b5e3390dfabfa8a35
+      size: 1499560
+    - path: data/processed/evn/GRCh38/folds/fold3/fold3.fa
+      hash: md5
+      md5: ee64deec5514957878a9817f24fd5016
+      size: 12501898
+    - path: data/processed/evn/GRCh38/folds/fold3/neg1x_fold3.bed
+      hash: md5
+      md5: 1283ae610087ecadc420f9773726ef7a
+      size: 1005130
+    - path: data/processed/evn/GRCh38/folds/fold3/neg1x_fold3.fa
+      hash: md5
+      md5: 4be79fae638d0fadd823558f5d84ab25
+      size: 12549063
+    - path: data/processed/evn/GRCh38/folds/fold4/fold4.bed
+      hash: md5
+      md5: ccc7f072be770f87f484a85fe0aa3c7b
+      size: 1494077
+    - path: data/processed/evn/GRCh38/folds/fold4/fold4.fa
+      hash: md5
+      md5: 379e5f9ecac0ea6685e7b2405b94dd3f
+      size: 12396280
+    - path: data/processed/evn/GRCh38/folds/fold4/neg1x_fold4.bed
+      hash: md5
+      md5: 2b4050c6c2a8b662e7312fcf64300f53
+      size: 996471
+    - path: data/processed/evn/GRCh38/folds/fold4/neg1x_fold4.fa
+      hash: md5
+      md5: 6282ccb7ebadae1ee093db2ebbeb48ec
+      size: 12439430
+    - path: data/processed/evn/GRCh38/folds/fold5/fold5.bed
+      hash: md5
+      md5: 7a55518d932ea0244e1be1133ab61a47
+      size: 1490672
+    - path: data/processed/evn/GRCh38/folds/fold5/fold5.fa
+      hash: md5
+      md5: a6b867a36b5aad8cc200dee1a8c6002a
+      size: 12324102
+    - path: data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.bed
+      hash: md5
+      md5: 55c7115ef0fdab518b1ae13dfcb3f768
+      size: 993437
+    - path: data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
+      hash: md5
+      md5: 51061495578014787896b76708808712
+      size: 12370025
+    - path: data/processed/evn/GRCh38/training/outer1/train_neg.bed
+      hash: md5
+      md5: 4530a1f6d7c61b0240d6b9684d673afd
+      size: 2712882
+    - path: data/processed/evn/GRCh38/training/outer1/train_neg.fa
+      hash: md5
+      md5: acb018c0d18f36288f33b31c189689b4
+      size: 33758029
+    - path: data/processed/evn/GRCh38/training/outer1/train_pos.bed
+      hash: md5
+      md5: 3a24103e2e65cb76b38e99a5e252bd2d
+      size: 4062389
+    - path: data/processed/evn/GRCh38/training/outer1/train_pos.fa
+      hash: md5
+      md5: dcf6e92c94fd20c40a5590d4869ff150
+      size: 33661623
+    - path: data/processed/evn/GRCh38/training/outer1/validation_neg.bed
+      hash: md5
+      md5: e0554c0a97f40fc39faa21d281a15590
+      size: 294766
+    - path: data/processed/evn/GRCh38/training/outer1/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer1/validation_pos.bed
+      hash: md5
+      md5: 03971ee0cf80e9a069a43526905c19ce
+      size: 438374
+    - path: data/processed/evn/GRCh38/training/outer1/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer2/train_neg.bed
+      hash: md5
+      md5: 141db91909d148b158e066450a270bab
+      size: 2702006
+    - path: data/processed/evn/GRCh38/training/outer2/train_neg.fa
+      hash: md5
+      md5: b5ef1bcbe80d3e93cebe8abb2669e78f
+      size: 33694392
+    - path: data/processed/evn/GRCh38/training/outer2/train_pos.bed
+      hash: md5
+      md5: c19325676a6038b4ab02cc710aa98c38
+      size: 4036414
+    - path: data/processed/evn/GRCh38/training/outer2/train_pos.fa
+      hash: md5
+      md5: bb8e9cc28924571d9d35384ef0af8d8d
+      size: 33597184
+    - path: data/processed/evn/GRCh38/training/outer2/validation_neg.bed
+      hash: md5
+      md5: e0554c0a97f40fc39faa21d281a15590
+      size: 294766
+    - path: data/processed/evn/GRCh38/training/outer2/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer2/validation_pos.bed
+      hash: md5
+      md5: 03971ee0cf80e9a069a43526905c19ce
+      size: 438374
+    - path: data/processed/evn/GRCh38/training/outer2/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer3/train_neg.bed
+      hash: md5
+      md5: bf0d9c5a51c7f559bd64e2e6999d43fc
+      size: 2702923
+    - path: data/processed/evn/GRCh38/training/outer3/train_neg.fa
+      hash: md5
+      md5: 29d1bd8ee4934c9fa24911d95426f5c1
+      size: 33593333
+    - path: data/processed/evn/GRCh38/training/outer3/train_pos.bed
+      hash: md5
+      md5: 7286932db674421babee5c297523a18f
+      size: 4043980
+    - path: data/processed/evn/GRCh38/training/outer3/train_pos.fa
+      hash: md5
+      md5: fcc42d670e7c75f274b15a13cc7df09a
+      size: 33528674
+    - path: data/processed/evn/GRCh38/training/outer3/validation_neg.bed
+      hash: md5
+      md5: e0554c0a97f40fc39faa21d281a15590
+      size: 294766
+    - path: data/processed/evn/GRCh38/training/outer3/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer3/validation_pos.bed
+      hash: md5
+      md5: 03971ee0cf80e9a069a43526905c19ce
+      size: 438374
+    - path: data/processed/evn/GRCh38/training/outer3/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer4/train_neg.bed
+      hash: md5
+      md5: a846765c9a42133dba4160e37147d6f3
+      size: 2676703
+    - path: data/processed/evn/GRCh38/training/outer4/train_neg.fa
+      hash: md5
+      md5: a18c058d415fb70569f690ad210a8b78
+      size: 33249318
+    - path: data/processed/evn/GRCh38/training/outer4/train_pos.bed
+      hash: md5
+      md5: 3634e80da0be0a656a696d49dd2b852d
+      size: 3992983
+    - path: data/processed/evn/GRCh38/training/outer4/train_pos.fa
+      hash: md5
+      md5: 8a0967c653fce92e0c5c598dfe65e840
+      size: 33189079
+    - path: data/processed/evn/GRCh38/training/outer4/validation_neg.bed
+      hash: md5
+      md5: 2b5e3ea588e8aa2e49011ad56a7eb448
+      size: 329645
+    - path: data/processed/evn/GRCh38/training/outer4/validation_neg.fa
+      hash: md5
+      md5: 741ea2784bf53ff67e183c0bf429872d
+      size: 4132116
+    - path: data/processed/evn/GRCh38/training/outer4/validation_pos.bed
+      hash: md5
+      md5: 33a91056d52fddf2056b0aa52695ce44
+      size: 494854
+    - path: data/processed/evn/GRCh38/training/outer4/validation_pos.fa
+      hash: md5
+      md5: 9d30a117ba046eca67c08ce2083fe976
+      size: 4115156
+    - path: data/processed/evn/GRCh38/training/test_neg.bed
+      hash: md5
+      md5: 8e5687fe89b5aa9f14b0dc9ef9ec798b
+      size: 419051
+    - path: data/processed/evn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: 508867cee4e2dcb6c1d224dc7d1b66f3
+      size: 5231424
+    - path: data/processed/evn/GRCh38/training/test_pos.bed
+      hash: md5
+      md5: 3824d09ce4d71ea82cc051b33066f0aa
+      size: 630324
+    - path: data/processed/evn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 6ac872b3f28d0aa4a06f6723c12ace39
+      size: 5227515
+    - path: data/processed/evn/GRCh38/training/train_100_manifest.tsv
+      hash: md5
+      md5: d05bc7a9e97e4d52dabf1e60b0c59b65
+      size: 33289809
+    - path: data/processed/evn/GRCh38/training/train_100_neg.bed
+      hash: md5
+      md5: c0aeaceae21641481055a23580e4faf8
+      size: 4131776
+    - path: data/processed/evn/GRCh38/training/train_100_neg.fa
+      hash: md5
+      md5: 83b4cb8d553a1d9c6beab17e31fba424
+      size: 51423751
+    - path: data/processed/evn/GRCh38/training/train_100_pos.bed
+      hash: md5
+      md5: 8e8aac99f8bd368d1c5f95e2f5fcc9a7
+      size: 6175510
+    - path: data/processed/evn/GRCh38/training/train_100_pos.fa
+      hash: md5
+      md5: f09ca40ccd6a47822829e90e85024852
+      size: 51258789
+    - path: data/processed/evn/GRCh38/training/train_100_summary.json
+      hash: md5
+      md5: 017da2f913fc2560845d13e69cbbb48d
+      size: 4900
+    - path: data/processed/evn/GRCh38/training/validation_neg.bed
+      hash: md5
+      md5: f3b5aa6e275220ad26a8ccfc3092d638
+      size: 445429
+    - path: data/processed/evn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 66b655c68b098df1ceaccce66439483c
+      size: 5535714
+    - path: data/processed/evn/GRCh38/training/validation_pos.bed
+      hash: md5
+      md5: a36afa356c7967bfd550bec74695e01b
+      size: 666752
+    - path: data/processed/evn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 6b31fdf9069a5d12696527b16a149c5e
+      size: 5538313
+  learning_curve_subsets_GRCh38_evn:
+    cmd: python src/make_GRCh38_learning_curves.py --input-dir 
+      data/processed/evn/GRCh38/training --output-dir 
+      data/processed/evn/GRCh38/learning_curves --seed 42
+    deps:
+    - path: data/processed/evn/GRCh38/training/train_100_neg.bed
+      hash: md5
+      md5: c0aeaceae21641481055a23580e4faf8
+      size: 4131776
+    - path: data/processed/evn/GRCh38/training/train_100_neg.fa
+      hash: md5
+      md5: 83b4cb8d553a1d9c6beab17e31fba424
+      size: 51423751
+    - path: data/processed/evn/GRCh38/training/train_100_pos.bed
+      hash: md5
+      md5: 8e8aac99f8bd368d1c5f95e2f5fcc9a7
+      size: 6175510
+    - path: data/processed/evn/GRCh38/training/train_100_pos.fa
+      hash: md5
+      md5: f09ca40ccd6a47822829e90e85024852
+      size: 51258789
+    - path: src/make_GRCh38_learning_curves.py
+      hash: md5
+      md5: dd5fa421ed136b58ba683e3e9d13a9de
+      size: 9857
+      isexec: true
+    outs:
+    - path: 
+        data/processed/evn/GRCh38/learning_curves/learning_curve_summary.json
+      hash: md5
+      md5: 9986f0e71df034b312924ffc2e2e1d1c
+      size: 125798
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_neg.bed
+      hash: md5
+      md5: 8a848939bab1f5b802988bb8c04bb971
+      size: 4131776
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: faee3b83e2524b99455499459169d389
+      size: 51423751
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_pos.bed
+      hash: md5
+      md5: 1a62ec48cba6b360a0f95deca25e0806
+      size: 6175510
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: bc937ac2c0b44cd910712934aa9e0e5d
+      size: 51258789
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_neg.bed
+      hash: md5
+      md5: 670a7392d92d121bb196c487a084af2a
+      size: 413878
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: 58ebe014b12ab2dbc6a5a82d4c39cf19
+      size: 5147940
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_pos.bed
+      hash: md5
+      md5: bad1dfb35a9ac51507ad4164b7e79072
+      size: 617440
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 64a1aa5551b4dca490b1f428f623efd9
+      size: 5123704
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_neg.bed
+      hash: md5
+      md5: 22afb59ce860a3385edb4c03b5ae5dfb
+      size: 827413
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: b3945cd09d1b7630117e166597ce96cd
+      size: 10288387
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_pos.bed
+      hash: md5
+      md5: 830250711a2aabc5928976c66eb2ed2b
+      size: 1235062
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 15840434ad43e6dc3890c2ea40121f48
+      size: 10245183
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_neg.bed
+      hash: md5
+      md5: e67c2270f7bb0275178a3f6f44341007
+      size: 1652936
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f11eb6645bd295e52583e3f21d353cf1
+      size: 20574781
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_pos.bed
+      hash: md5
+      md5: 62d5cfd7b34072bbf9390c6769477862
+      size: 2470374
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: dc0f1189c16070d1ee05c621a0672305
+      size: 20509653
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_neg.bed
+      hash: md5
+      md5: c01c24f58efb017edfe4d1d765fe163a
+      size: 2479333
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: 6f785b1812b3ef64ed4b5800327430d6
+      size: 30857944
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_pos.bed
+      hash: md5
+      md5: 4c1a61d281503144acd66554ade099ac
+      size: 3705440
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 853a41b3876f092813d2bf39093a8aef
+      size: 30772839
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_neg.bed
+      hash: md5
+      md5: dfdb93331cf976f5b01924dae503dac6
+      size: 3305777
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: 77730ccc667f031d03f6779dc7748a06
+      size: 41130063
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_pos.bed
+      hash: md5
+      md5: ce582b8162ed217a8f1e4165ad594790
+      size: 4940431
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 749ce4478f161c94f95d5711ed2606f6
+      size: 41010938
+  train_ls_gkm_GRCh38_evn:
+    cmd: sbatch --wait slurm/train_ls_gkm.sh
+    deps:
+    - path: ../lsgkm/bin/gkmtrain
+      hash: md5
+      md5: 038f6f2fc057ff25a66b32faa6895343
+      size: 143632
+      isexec: true
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: faee3b83e2524b99455499459169d389
+      size: 51423751
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: bc937ac2c0b44cd910712934aa9e0e5d
+      size: 51258789
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: 58ebe014b12ab2dbc6a5a82d4c39cf19
+      size: 5147940
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 64a1aa5551b4dca490b1f428f623efd9
+      size: 5123704
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: b3945cd09d1b7630117e166597ce96cd
+      size: 10288387
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 15840434ad43e6dc3890c2ea40121f48
+      size: 10245183
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f11eb6645bd295e52583e3f21d353cf1
+      size: 20574781
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: dc0f1189c16070d1ee05c621a0672305
+      size: 20509653
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: 6f785b1812b3ef64ed4b5800327430d6
+      size: 30857944
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 853a41b3876f092813d2bf39093a8aef
+      size: 30772839
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: 77730ccc667f031d03f6779dc7748a06
+      size: 41130063
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 749ce4478f161c94f95d5711ed2606f6
+      size: 41010938
+    - path: data/processed/evn/GRCh38/training/outer1/train_neg.fa
+      hash: md5
+      md5: acb018c0d18f36288f33b31c189689b4
+      size: 33758029
+    - path: data/processed/evn/GRCh38/training/outer1/train_pos.fa
+      hash: md5
+      md5: dcf6e92c94fd20c40a5590d4869ff150
+      size: 33661623
+    - path: data/processed/evn/GRCh38/training/outer2/train_neg.fa
+      hash: md5
+      md5: b5ef1bcbe80d3e93cebe8abb2669e78f
+      size: 33694392
+    - path: data/processed/evn/GRCh38/training/outer2/train_pos.fa
+      hash: md5
+      md5: bb8e9cc28924571d9d35384ef0af8d8d
+      size: 33597184
+    - path: data/processed/evn/GRCh38/training/outer3/train_neg.fa
+      hash: md5
+      md5: 29d1bd8ee4934c9fa24911d95426f5c1
+      size: 33593333
+    - path: data/processed/evn/GRCh38/training/outer3/train_pos.fa
+      hash: md5
+      md5: fcc42d670e7c75f274b15a13cc7df09a
+      size: 33528674
+    - path: data/processed/evn/GRCh38/training/outer4/train_neg.fa
+      hash: md5
+      md5: a18c058d415fb70569f690ad210a8b78
+      size: 33249318
+    - path: data/processed/evn/GRCh38/training/outer4/train_pos.fa
+      hash: md5
+      md5: 8a0967c653fce92e0c5c598dfe65e840
+      size: 33189079
+    - path: slurm/train_ls_gkm.sh
+      hash: md5
+      md5: 35d16411fa8f12b0c34a596328001c59
+      size: 4792
+      isexec: true
+    outs:
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+      hash: md5
+      md5: 7b3d99c0a7641169e14c55fe451b6f2c
+      size: 8265155
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+      hash: md5
+      md5: 805236cb232505041602caf2e6d733fb
+      size: 70276977
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+      hash: md5
+      md5: dbd73d3c13353b1d2c64c1170337a5ae
+      size: 15712271
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+      hash: md5
+      md5: 43ce2f35aa090f14daaab66497f1bcd3
+      size: 29808298
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+      hash: md5
+      md5: c63c3b23286a12ae1cb1dd8fb9663d3f
+      size: 43586111
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+      hash: md5
+      md5: a5ba3ab3312f3469f91b1fd3c868f518
+      size: 57092029
+    - path: models/evn/GRCh38/ls-gkm/outer1/outer1.model.txt
+      hash: md5
+      md5: f1f1266255d92821488eaf713e753b0b
+      size: 47599757
+    - path: models/evn/GRCh38/ls-gkm/outer2/outer2.model.txt
+      hash: md5
+      md5: 0b8b54f27af6c195147f317a9f0135da
+      size: 47024781
+    - path: models/evn/GRCh38/ls-gkm/outer3/outer3.model.txt
+      hash: md5
+      md5: 2ece0b401ed78b4da21fcf4e0d173d38
+      size: 47585466
+    - path: models/evn/GRCh38/ls-gkm/outer4/outer4.model.txt
+      hash: md5
+      md5: 3ac309144896e42186044feef2d958c0
+      size: 47366548
+  prepare_GRCh38_els_svn:
+    cmd: bash src/get_whole_body_silencers.sh
+    deps:
+    - path: data/raw/Cai-Fullwood-2021.Silencer-cCREs.bed
+      hash: md5
+      md5: d1bf3676a0cbfbcc5d0ec8d385c124cd
+      size: 12190261
+    - path: data/raw/Huan-Ovcharenko-2019.Silencer-cCREs.bed
+      hash: md5
+      md5: 39336eda9d3f3f65f6d40c160e90b448
+      size: 1235068
+    - path: data/raw/Jayavelu-Hawkins-2020.Silencer-cCREs.bed
+      hash: md5
+      md5: 29382de1e4d530269c86d4b96dec7bce
+      size: 142982
+    - path: data/raw/Pang-Snyder-2020.Silencer-cCREs.bed
+      hash: md5
+      md5: fb500d09aec226e8b9c51edfad3d2b91
+      size: 98031
+    - path: data/raw/REST-Silencers.bed
+      hash: md5
+      md5: 272a26f6931d435fb0c865f0ef134734
+      size: 126509
+    - path: data/raw/STARR-Silencers.Robust.bed
+      hash: md5
+      md5: 6151227a1986e798792b48cec0004cfd
+      size: 301340
+    - path: data/raw/STARR-Silencers.Stringent.bed
+      hash: md5
+      md5: 116ec928f3cc8edf9ddb05b74475ae49
+      size: 30330
+    - path: src/get_whole_body_silencers.sh
+      hash: md5
+      md5: eff6318f21217908cf5ada50e7b0e15c
+      size: 3574
+      isexec: true
+    outs:
+    - path: data/processed/svn/GRCh38/GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 799005b7ed2e81b8e9e480c1959ab252
+      size: 11107506
+    - path: data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
+      hash: md5
+      md5: 7307c4e723f9a86f16209816ba9eac2b
+      size: 7462632
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4293f07483ae949f7f9e3ae71063a8f6
+      size: 1090164
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 85a68f48856611a3e682cb8d779fe002
+      size: 297402
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 018c2f8fbea93c2d1076cacbf00d4391
+      size: 468899
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 0e570bd4d3b424d6f469ba8f21a71aec
+      size: 291127
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 72267df8478a968ef3d8070600888681
+      size: 54035
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 1b58ec240a3f1ea0e542031fb72d1b41
+      size: 153160
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 735d1aabd722f1c1aabdca152025c2ae
+      size: 329178
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: ddcf12d6a9d524d12411e201e5e907cc
+      size: 310268
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 86669957d89d6141fbe66f5c66ca9286
+      size: 300117
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d757b2f2e080bc75e637dfa85cc9e89d
+      size: 134420
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 51194a86682f7cfcdf613abea0168ce5
+      size: 111613
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 355710f5daeed5a526cef2a53e50d74d
+      size: 540230
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d2ff6abe4383ca14766e26526c40d59b
+      size: 264546
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b82b668aef069633ca4cb9ec006e7390
+      size: 101452
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 8b2394c6f762cf8a7bbf44d01d315e4e
+      size: 185999
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d086409726e9aae37a17cb41f50a41c5
+      size: 356142
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 83ee81098dd1a6909013018591b84aea
+      size: 406648
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b8f4854abc3666e03735730f2a9cb56d
+      size: 396648
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2c445f2a01389e0233d860292c9fb757
+      size: 605636
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 69057cfd160d91bee43f788fa8255920
+      size: 324362
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: e78aa0f257f7678183879128391fc231
+      size: 278100
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d8ed3eb213042ff7482c1a7890988bad
+      size: 409142
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b4a91cecdfbe06ef2616cde1cef9179a
+      size: 53344
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+  test_ls_gkm_GRCh38_evn:
+    cmd: sbatch --wait slurm/predict_ls_gkm.sh
+    deps:
+    - path: ../lsgkm/bin/gkmpredict
+      hash: md5
+      md5: c55cfc447d7882ad8e41427f06e00e68
+      size: 135016
+      isexec: true
+    - path: data/processed/evn/GRCh38/folds/fold5/fold5.fa
+      hash: md5
+      md5: a6b867a36b5aad8cc200dee1a8c6002a
+      size: 12324102
+    - path: data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
+      hash: md5
+      md5: 51061495578014787896b76708808712
+      size: 12370025
+    - path: data/processed/evn/GRCh38/training/outer1/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer1/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer2/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer2/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer3/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer3/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer4/validation_neg.fa
+      hash: md5
+      md5: 741ea2784bf53ff67e183c0bf429872d
+      size: 4132116
+    - path: data/processed/evn/GRCh38/training/outer4/validation_pos.fa
+      hash: md5
+      md5: 9d30a117ba046eca67c08ce2083fe976
+      size: 4115156
+    - path: data/processed/evn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: 508867cee4e2dcb6c1d224dc7d1b66f3
+      size: 5231424
+    - path: data/processed/evn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 6ac872b3f28d0aa4a06f6723c12ace39
+      size: 5227515
+    - path: data/processed/evn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 66b655c68b098df1ceaccce66439483c
+      size: 5535714
+    - path: data/processed/evn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 6b31fdf9069a5d12696527b16a149c5e
+      size: 5538313
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+      hash: md5
+      md5: 7b3d99c0a7641169e14c55fe451b6f2c
+      size: 8265155
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+      hash: md5
+      md5: 805236cb232505041602caf2e6d733fb
+      size: 70276977
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+      hash: md5
+      md5: dbd73d3c13353b1d2c64c1170337a5ae
+      size: 15712271
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+      hash: md5
+      md5: 43ce2f35aa090f14daaab66497f1bcd3
+      size: 29808298
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+      hash: md5
+      md5: c63c3b23286a12ae1cb1dd8fb9663d3f
+      size: 43586111
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+      hash: md5
+      md5: a5ba3ab3312f3469f91b1fd3c868f518
+      size: 57092029
+    - path: models/evn/GRCh38/ls-gkm/outer1/outer1.model.txt
+      hash: md5
+      md5: f1f1266255d92821488eaf713e753b0b
+      size: 47599757
+    - path: models/evn/GRCh38/ls-gkm/outer2/outer2.model.txt
+      hash: md5
+      md5: 0b8b54f27af6c195147f317a9f0135da
+      size: 47024781
+    - path: models/evn/GRCh38/ls-gkm/outer3/outer3.model.txt
+      hash: md5
+      md5: 2ece0b401ed78b4da21fcf4e0d173d38
+      size: 47585466
+    - path: models/evn/GRCh38/ls-gkm/outer4/outer4.model.txt
+      hash: md5
+      md5: 3ac309144896e42186044feef2d958c0
+      size: 47366548
+    - path: slurm/predict_ls_gkm.sh
+      hash: md5
+      md5: b095eb9f4f06d3cd12ef65522e3efda4
+      size: 5380
+    outs:
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
+      hash: md5
+      md5: 5510a1b836dcf6c9edf1219be23a49af
+      size: 753642
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
+      hash: md5
+      md5: 344f7754a45e30d19822081d2c1482fd
+      size: 740429
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
+      hash: md5
+      md5: 4bc50746ba939efe4d2a9094189c3a47
+      size: 801854
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
+      hash: md5
+      md5: 07df229bf490e8267737e80d9dadc6b1
+      size: 785361
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
+      hash: md5
+      md5: 26f66de20b5241dabb128583f1e18e41
+      size: 750894
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
+      hash: md5
+      md5: b4faa22f2fe826077f8762bf89d2e3d4
+      size: 736875
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
+      hash: md5
+      md5: c862b2680b2efe5c3c819e09321185ab
+      size: 798969
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
+      hash: md5
+      md5: 2db74a8a2d7d8712e1d38739bd71664e
+      size: 781654
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
+      hash: md5
+      md5: fb9599c4ab2dfae1be222f94e37b8640
+      size: 752851
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
+      hash: md5
+      md5: 446e9267ab17fbb280eb5ffe1d2d5f69
+      size: 739322
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
+      hash: md5
+      md5: 098dc2eeea4d0fc849960bc8e38862f1
+      size: 801073
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
+      hash: md5
+      md5: 07c675360147d66b46d0b826b16c778c
+      size: 784432
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
+      hash: md5
+      md5: 727d9fe3cb004f103105ccd98738e246
+      size: 751928
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
+      hash: md5
+      md5: b4ccbe4cadbeec6a4de8071bb8b59a77
+      size: 738241
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
+      hash: md5
+      md5: a052eb7574ef3fc964107f9fad08cc42
+      size: 800129
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
+      hash: md5
+      md5: d75ce570a5f91063ff599c2c3b01f265
+      size: 782966
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
+      hash: md5
+      md5: 7f6ce9a278950f0ecfc561536de566f6
+      size: 751414
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
+      hash: md5
+      md5: 13a338214bf7089fc6564ddd0dda58bd
+      size: 737462
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
+      hash: md5
+      md5: e619a42d8c2e384446f6187e5b336912
+      size: 799583
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
+      hash: md5
+      md5: e3b9c550be1637a2bad8c114499a7996
+      size: 782411
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
+      hash: md5
+      md5: 87b810f8adcc75b4eb052bb29892e0f9
+      size: 751098
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
+      hash: md5
+      md5: ae5e47a5c919234cd85cd506d0a6d2fb
+      size: 737130
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
+      hash: md5
+      md5: eb772e6968083fb95957796740329dce
+      size: 799262
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
+      hash: md5
+      md5: ad0edf8dd26c6da9bad1396bdaef46e3
+      size: 781908
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
+      hash: md5
+      md5: 5b087ea126686f0061c8c70fea5db4ae
+      size: 1763300
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
+      hash: md5
+      md5: eaa7ee81d9ce4e8191fcf72db7c7493b
+      size: 1728708
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
+      hash: md5
+      md5: a37c33c253e6d0ed6c492a2ae865e0c0
+      size: 524117
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
+      hash: md5
+      md5: 02e657f9bb45ef8b8ab613a2cbde5475
+      size: 509474
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
+      hash: md5
+      md5: 802394d243c9b96a17ea4f3d33cce729
+      size: 1763356
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
+      hash: md5
+      md5: 0759c27c0808154ba6eaa9e45383216b
+      size: 1728310
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
+      hash: md5
+      md5: 7d8d581bc8649ec156552ef7cc359b3a
+      size: 523942
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
+      hash: md5
+      md5: 9c2fbe07882507c5cd9f134ef6048918
+      size: 509409
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
+      hash: md5
+      md5: 7195351dc8c16cf18ce732f1128ec85e
+      size: 1763807
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
+      hash: md5
+      md5: 4daf3756995c02cf177ddea3b7dc318c
+      size: 1728847
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
+      hash: md5
+      md5: 4ba2446f745c37370c49b2c38de993e6
+      size: 524152
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
+      hash: md5
+      md5: 7a0e9aff9d0273ef9f5d539db8c96c8e
+      size: 509618
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
+      hash: md5
+      md5: 04d46d4fbb51c7d87e21db4578d3c49c
+      size: 1763871
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
+      hash: md5
+      md5: c8afe623a36aab2bed3c28a54bdce509
+      size: 1728647
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
+      hash: md5
+      md5: 91c23eeb2f92cee1f58274d46021cdd0
+      size: 588717
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
+      hash: md5
+      md5: 3124ff0b3b3a36b3149606f6d9d1a64f
+      size: 576397
+  merge_pos_negs_GRCh38_evn:
+    cmd: for percentage in 10 20 40 60 80 100; do src/prepare_lsgkm_scores.R 
+      predictions/evn/GRCh38/ls-gkm/learning_curves/$percentage; done; for outer
+      in 1 2 3 4; do src/prepare_lsgkm_scores.R 
+      predictions/evn/GRCh38/ls-gkm/outer$outer; done
+    deps:
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
+      hash: md5
+      md5: 5510a1b836dcf6c9edf1219be23a49af
+      size: 753642
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
+      hash: md5
+      md5: 344f7754a45e30d19822081d2c1482fd
+      size: 740429
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
+      hash: md5
+      md5: 4bc50746ba939efe4d2a9094189c3a47
+      size: 801854
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
+      hash: md5
+      md5: 07df229bf490e8267737e80d9dadc6b1
+      size: 785361
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
+      hash: md5
+      md5: 26f66de20b5241dabb128583f1e18e41
+      size: 750894
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
+      hash: md5
+      md5: b4faa22f2fe826077f8762bf89d2e3d4
+      size: 736875
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
+      hash: md5
+      md5: c862b2680b2efe5c3c819e09321185ab
+      size: 798969
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
+      hash: md5
+      md5: 2db74a8a2d7d8712e1d38739bd71664e
+      size: 781654
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
+      hash: md5
+      md5: fb9599c4ab2dfae1be222f94e37b8640
+      size: 752851
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
+      hash: md5
+      md5: 446e9267ab17fbb280eb5ffe1d2d5f69
+      size: 739322
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
+      hash: md5
+      md5: 098dc2eeea4d0fc849960bc8e38862f1
+      size: 801073
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
+      hash: md5
+      md5: 07c675360147d66b46d0b826b16c778c
+      size: 784432
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
+      hash: md5
+      md5: 727d9fe3cb004f103105ccd98738e246
+      size: 751928
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
+      hash: md5
+      md5: b4ccbe4cadbeec6a4de8071bb8b59a77
+      size: 738241
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
+      hash: md5
+      md5: a052eb7574ef3fc964107f9fad08cc42
+      size: 800129
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
+      hash: md5
+      md5: d75ce570a5f91063ff599c2c3b01f265
+      size: 782966
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
+      hash: md5
+      md5: 7f6ce9a278950f0ecfc561536de566f6
+      size: 751414
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
+      hash: md5
+      md5: 13a338214bf7089fc6564ddd0dda58bd
+      size: 737462
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
+      hash: md5
+      md5: e619a42d8c2e384446f6187e5b336912
+      size: 799583
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
+      hash: md5
+      md5: e3b9c550be1637a2bad8c114499a7996
+      size: 782411
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
+      hash: md5
+      md5: 87b810f8adcc75b4eb052bb29892e0f9
+      size: 751098
+    - path: predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
+      hash: md5
+      md5: ae5e47a5c919234cd85cd506d0a6d2fb
+      size: 737130
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
+      hash: md5
+      md5: eb772e6968083fb95957796740329dce
+      size: 799262
+    - path: 
+        predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
+      hash: md5
+      md5: ad0edf8dd26c6da9bad1396bdaef46e3
+      size: 781908
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
+      hash: md5
+      md5: 5b087ea126686f0061c8c70fea5db4ae
+      size: 1763300
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
+      hash: md5
+      md5: eaa7ee81d9ce4e8191fcf72db7c7493b
+      size: 1728708
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
+      hash: md5
+      md5: a37c33c253e6d0ed6c492a2ae865e0c0
+      size: 524117
+    - path: predictions/evn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
+      hash: md5
+      md5: 02e657f9bb45ef8b8ab613a2cbde5475
+      size: 509474
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
+      hash: md5
+      md5: 802394d243c9b96a17ea4f3d33cce729
+      size: 1763356
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
+      hash: md5
+      md5: 0759c27c0808154ba6eaa9e45383216b
+      size: 1728310
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
+      hash: md5
+      md5: 7d8d581bc8649ec156552ef7cc359b3a
+      size: 523942
+    - path: predictions/evn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
+      hash: md5
+      md5: 9c2fbe07882507c5cd9f134ef6048918
+      size: 509409
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
+      hash: md5
+      md5: 7195351dc8c16cf18ce732f1128ec85e
+      size: 1763807
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
+      hash: md5
+      md5: 4daf3756995c02cf177ddea3b7dc318c
+      size: 1728847
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
+      hash: md5
+      md5: 4ba2446f745c37370c49b2c38de993e6
+      size: 524152
+    - path: predictions/evn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
+      hash: md5
+      md5: 7a0e9aff9d0273ef9f5d539db8c96c8e
+      size: 509618
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
+      hash: md5
+      md5: 04d46d4fbb51c7d87e21db4578d3c49c
+      size: 1763871
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
+      hash: md5
+      md5: c8afe623a36aab2bed3c28a54bdce509
+      size: 1728647
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
+      hash: md5
+      md5: 91c23eeb2f92cee1f58274d46021cdd0
+      size: 588717
+    - path: predictions/evn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
+      hash: md5
+      md5: 3124ff0b3b3a36b3149606f6d9d1a64f
+      size: 576397
+    - path: src/prepare_lsgkm_scores.R
+      hash: md5
+      md5: e913604e202cc329cc67c9b5fced408c
+      size: 2569
+      isexec: true
+    outs:
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
+      hash: md5
+      md5: b962c9a73184078b432a5cad7c8b8c51
+      size: 6034664
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
+      hash: md5
+      md5: ec2c007e4ebce2658887110ad649f1cd
+      size: 6162102
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
+      hash: md5
+      md5: a9acce64457412ad978e8f8836086d28
+      size: 6031056
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
+      hash: md5
+      md5: 1f5073db2a82a3345fa9c7ca98cb7c86
+      size: 6026642
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
+      hash: md5
+      md5: 0292332fee0396267b97fb366ead77b1
+      size: 6024248
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
+      hash: md5
+      md5: 3340b87cd5d2cd83b8b294e11773b4ce
+      size: 6022776
+    - path: results/evn/GRCh38/ls-gkm/outer1.tsv
+      hash: md5
+      md5: 2411debfeb25dea892cf1bfbc3161c86
+      size: 8007451
+    - path: results/evn/GRCh38/ls-gkm/outer2.tsv
+      hash: md5
+      md5: f25fee8f54c6cd11ee4740c6a99fe426
+      size: 8006869
+    - path: results/evn/GRCh38/ls-gkm/outer3.tsv
+      hash: md5
+      md5: 5d50389f93d4bbb792b1d4986402aa24
+      size: 8008276
+    - path: results/evn/GRCh38/ls-gkm/outer4.tsv
+      hash: md5
+      md5: b4b99369f5737efa09a0f291876dd678
+      size: 8250292

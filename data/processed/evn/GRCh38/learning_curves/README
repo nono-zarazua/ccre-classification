@@ -10,6 +10,8 @@ The fixed master excludes:
 
 Validation and test files remain in `../training/` and are not copied or
 percentage-subsetted here.
+Negative membership follows manifest source-pool provenance rather than the genomic
+coordinate chosen for the synthetic null sequence by `genNullSeqs()`.
 
 ## Nested-subset strategy
 
@@ -26,12 +28,12 @@ For the current 167,410-record-per-class master:
 
 | percentage | positive records | negative records |
 |-----------:|-----------------:|-----------------:|
-| 10%  | 16,741 | 16,741 |
-| 20%  | 33,482 | 33,482 |
-| 40%  | 66,964 | 66,964 |
-| 60%  | 100,446 | 100,446 |
-| 80%  | 133,928 | 133,928 |
-| 100% | 167,410 | 167,410 |
+| 10%        |           16,741 |           16,741 |
+| 20%        |           33,482 |           33,482 |
+| 40%        |           66,964 |           66,964 |
+| 60%        |          100,446 |          100,446 |
+| 80%        |          133,928 |          133,928 |
+| 100%       |          167,410 |          167,410 |
 
 ## Files
 
