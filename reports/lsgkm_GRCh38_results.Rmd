@@ -122,7 +122,10 @@ for (name in outer_names) {
   if (!identical(unique(outer_data[[name]]$dataset), name)) stop("Dataset mismatch in ", name)
 }
 for (fraction in names(learning_data)) {
-  if (!identical(as.character(unique(learning_data[[fraction]]$dataset)), fraction)) stop("Dataset mismatch at ", fraction, "%")
+  expected_dataset <- paste0("learning_curve_", fraction)
+  if (!identical(unique(learning_data[[fraction]]$dataset), expected_dataset)) {
+    stop("Dataset mismatch at ", fraction, "%: expected ", expected_dataset)
+  }
 }
 
 training_table <- bind_rows(lapply(learning_fractions, function(fraction) {

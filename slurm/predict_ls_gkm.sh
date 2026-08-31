@@ -20,7 +20,7 @@
 #SBATCH --mem=100G
 #SBATCH --time=05-00:00:00
 # --qos=long
-#SBATCH --array=1-10%5
+#SBATCH --array=7-10
 ################################################################################
 ### Safer Bash behavior
 ################################################################################
@@ -66,23 +66,23 @@ percentages=(10 20 40 60 80 100)
 if (( task_id <= 6 )); then
     percentage="${percentages[task_id - 1]}"
     dataset_name="learning_curve_${percentage}"
-    validation_pos="data/processed/evn/GRCh38/training/validation_pos.fa"
-    validation_neg="data/processed/evn/GRCh38/training/validation_neg.fa"
-    test_pos="data/processed/evn/GRCh38/training/test_pos.fa"
-    test_neg="data/processed/evn/GRCh38/training/test_neg.fa"
-    model="models/evn/GRCh38/ls-gkm/learning_curves/${percentage}/learning_curve_${percentage}.model.txt"
-    output_dir="predictions/evn/GRCh38/ls-gkm/learning_curves/${percentage}"
+    validation_pos="data/processed/svn/GRCh38/training/validation_pos.fa"
+    validation_neg="data/processed/svn/GRCh38/training/validation_neg.fa"
+    test_pos="data/processed/svn/GRCh38/training/test_pos.fa"
+    test_neg="data/processed/svn/GRCh38/training/test_neg.fa"
+    model="models/svn/GRCh38/ls-gkm/learning_curves/${percentage}/learning_curve_${percentage}.model.txt"
+    output_dir="predictions/svn/GRCh38/ls-gkm/learning_curves/${percentage}"
     echo "Dataset type: fixed learning curve"
     echo "Predicting fraction: ${percentage}%"
 else
     outer="$((task_id - 6))"
     dataset_name="outer${outer}"
-    validation_pos="data/processed/evn/GRCh38/training/outer${outer}/validation_pos.fa"
-    validation_neg="data/processed/evn/GRCh38/training/outer${outer}/validation_neg.fa"
-    test_pos="data/processed/evn/GRCh38/folds/fold5/fold5.fa"
-    test_neg="data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa"
-    model="models/evn/GRCh38/ls-gkm/outer${outer}/outer${outer}.model.txt"
-    output_dir="predictions/evn/GRCh38/ls-gkm/outer${outer}"
+    validation_pos="data/processed/svn/GRCh38/training/outer${outer}/validation_pos.fa"
+    validation_neg="data/processed/svn/GRCh38/training/outer${outer}/validation_neg.fa"
+    test_pos="data/processed/svn/GRCh38/folds/fold5/fold5.fa"
+    test_neg="data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa"
+    model="models/svn/GRCh38/ls-gkm/outer${outer}/outer${outer}.model.txt"
+    output_dir="predictions/svn/GRCh38/ls-gkm/outer${outer}"
     echo "Dataset type: chromosome-based outer"
     echo "Outer set: ${outer}"
 fi

@@ -14,7 +14,7 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #
 ### Array / Node / CPU / Memory Settings
-#SBATCH --array=1-10%5
+#SBATCH --array=1-10
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=16

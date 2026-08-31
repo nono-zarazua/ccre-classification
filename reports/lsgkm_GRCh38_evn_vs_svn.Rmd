@@ -1,0 +1,297 @@
+---
+title: "LS-GKM GRCh38 Enhancer-versus-Silencer Comparison"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  evn_results_dir: null
+  svn_results_dir: null
+  evn_training_dir: null
+  svn_training_dir: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.width = 9, fig.height = 5.5, dpi = 120)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(yardstick)
+  library(gt)
+  library(scales)
+})
+
+learning_fractions <- c(10, 20, 40, 60, 80, 100)
+top_fractions <- c(0.01, 0.05, 0.10)
+task_colors <- c("Enhancer vs negative" = "#0072B2",
+                 "Silencer vs negative" = "#D55E00")
+
+theme_set(theme_minimal(base_size = 12) +
+  theme(panel.grid.minor = element_blank(), legend.position = "bottom"))
+```
+
+```{r helpers, include=FALSE}
+read_scores <- function(path, expected_dataset) {
+  required <- c("chrom", "start", "end", "class", "index", "score", "label",
+                "split", "model", "task", "dataset", "seq_length")
+  df <- read.delim(path, header = TRUE, sep = "\t", stringsAsFactors = FALSE,
+                   check.names = FALSE)
+  missing <- setdiff(required, names(df))
+  if (length(missing)) stop("Missing columns in ", path, ": ", paste(missing, collapse = ", "))
+  if (!nrow(df)) stop("No rows in ", path)
+  if (anyNA(df$score) || anyNA(df$label)) stop("Missing score or label in ", path)
+  if (!all(df$label %in% c(0, 1))) stop("Labels must be 0/1 in ", path)
+  if (!all(df$class %in% c("pos", "neg"))) stop("Invalid class in ", path)
+  if (!all(df$label == ifelse(df$class == "pos", 1L, 0L))) stop("Class/label mismatch in ", path)
+  if (!setequal(unique(df$split), c("validation", "test"))) {
+    stop("Expected validation and test rows in ", path)
+  }
+  if (!identical(unique(df$model), "lsgkm")) stop("Model mismatch in ", path)
+  if (!identical(unique(df$task), "GRCh38")) stop("Task mismatch in ", path)
+  if (!identical(unique(df$dataset), expected_dataset)) {
+    stop("Dataset mismatch in ", path, ": expected ", expected_dataset)
+  }
+  if (anyNA(df$start) || anyNA(df$end) || any(df$end < df$start)) {
+    stop("Invalid coordinates in ", path)
+  }
+  if (any(df$seq_length != df$end - df$start)) stop("Invalid sequence length in ", path)
+  df
+}
+
+count_fasta <- function(path) {
+  if (!file.exists(path)) stop("Missing training FASTA: ", path)
+  con <- file(path, open = "r")
+  on.exit(close(con))
+  total <- 0L
+  repeat {
+    lines <- readLines(con, n = 100000L, warn = FALSE)
+    if (!length(lines)) break
+    total <- total + sum(startsWith(lines, ">"))
+  }
+  total
+}
+
+ranking_metrics <- function(df) {
+  truth <- factor(ifelse(df$label == 1, "pos", "neg"), levels = c("pos", "neg"))
+  tibble(
+    n = nrow(df),
+    prevalence = mean(df$label == 1),
+    auroc = roc_auc_vec(truth, df$score, event_level = "first"),
+    average_precision = average_precision_vec(truth, df$score, event_level = "first")
+  )
+}
+```
+
+```{r inputs, include=FALSE}
+task_specs <- tibble(
+  comparison = c("Enhancer vs negative", "Silencer vs negative"),
+  results_dir = c(params$evn_results_dir, params$svn_results_dir),
+  training_dir = c(params$evn_training_dir, params$svn_training_dir)
+)
+
+if (any(vapply(task_specs$results_dir, is.null, logical(1))) ||
+    any(vapply(task_specs$training_dir, is.null, logical(1)))) {
+  stop("All four report directory parameters are required")
+}
+task_specs$results_dir <- vapply(task_specs$results_dir, normalizePath,
+                                 character(1), mustWork = TRUE)
+task_specs$training_dir <- vapply(task_specs$training_dir, normalizePath,
+                                  character(1), mustWork = TRUE)
+
+score_data <- bind_rows(lapply(seq_len(nrow(task_specs)), function(i) {
+  bind_rows(lapply(learning_fractions, function(fraction) {
+    path <- file.path(task_specs$results_dir[[i]], "learning_curves",
+                      paste0(fraction, ".tsv"))
+    if (!file.exists(path)) stop("Missing score table: ", path)
+    read_scores(path, paste0("learning_curve_", fraction)) |>
+      mutate(comparison = task_specs$comparison[[i]],
+             training_fraction = fraction,
+             source_file = path)
+  }))
+}))
+
+training_sizes <- bind_rows(lapply(seq_len(nrow(task_specs)), function(i) {
+  bind_rows(lapply(learning_fractions, function(fraction) {
+    pos_file <- file.path(task_specs$training_dir[[i]], paste0("train_", fraction, "_pos.fa"))
+    neg_file <- file.path(task_specs$training_dir[[i]], paste0("train_", fraction, "_neg.fa"))
+    n_positive <- count_fasta(pos_file)
+    n_negative <- count_fasta(neg_file)
+    tibble(comparison = task_specs$comparison[[i]], training_fraction = fraction,
+           n_training_positive = n_positive, n_training_negative = n_negative,
+           n_training_total = n_positive + n_negative)
+  }))
+}))
+
+split_metrics <- score_data |>
+  group_by(comparison, training_fraction, split) |>
+  group_modify(~ ranking_metrics(.x)) |>
+  ungroup() |>
+  left_join(training_sizes, by = c("comparison", "training_fraction")) |>
+  mutate(ranking_error = 1 - auroc,
+         comparison = factor(comparison, levels = names(task_colors)),
+         split = factor(split, levels = c("validation", "test"),
+                        labels = c("Validation", "Test"))) |>
+  arrange(split, comparison, n_training_total)
+
+top_ranking <- score_data |>
+  filter(split == "test") |>
+  group_by(comparison, training_fraction) |>
+  group_modify(function(.x, .y) {
+    ranked <- arrange(.x, desc(score))
+    prevalence <- mean(ranked$label == 1)
+    bind_rows(lapply(top_fractions, function(top_fraction) {
+      n_selected <- min(nrow(ranked), max(1L, ceiling(nrow(ranked) * top_fraction)))
+      selected <- slice_head(ranked, n = n_selected)
+      precision <- mean(selected$label == 1)
+      tibble(top_fraction = top_fraction, n_selected = n_selected,
+             precision = precision, prevalence = prevalence,
+             enrichment = precision / prevalence)
+    }))
+  }) |>
+  ungroup() |>
+  left_join(training_sizes, by = c("comparison", "training_fraction")) |>
+  mutate(comparison = factor(comparison, levels = names(task_colors)),
+         rank_cutoff = factor(top_fraction, levels = top_fractions,
+                              labels = paste("Top", percent(top_fractions, accuracy = 1))))
+```
+
+# Scope and interpretation
+
+This report compares how LS-GKM performance scales with training-set size for two
+binary tasks: enhancer versus matched synthetic negative sequences (EVN), and
+silencer versus matched synthetic negative sequences (SVN). The same metric
+definitions are used in both analyses.
+
+The comparison is descriptive rather than a paired benchmark. EVN and SVN use
+different positive classes and different validation/test loci, so a vertical
+difference between their curves may reflect both biological task difficulty and
+evaluation-cohort composition. Absolute training-observation counts are therefore
+used on the x-axis instead of treating equal percentages as equal sample sizes.
+
+```{r training-sizes}
+training_sizes |>
+  mutate(`Training fraction` = paste0(training_fraction, "%")) |>
+  select(Task = comparison, `Training fraction`,
+         `Training positives` = n_training_positive,
+         `Training negatives` = n_training_negative,
+         `Total training observations` = n_training_total) |>
+  gt(groupname_col = "Task") |>
+  tab_header(title = "Learning-curve training-set sizes") |>
+  fmt_integer(columns = c(`Training positives`, `Training negatives`,
+                          `Total training observations`))
+```
+
+# AUROC learning curves
+
+AUROC summarizes score ranking across all possible thresholds. Validation and test
+results are shown in separate panels so that generalization trends can be compared
+without conflating the two evaluation splits.
+
+```{r auroc-curves}
+ggplot(split_metrics,
+       aes(n_training_total, auroc, color = comparison, shape = comparison,
+           group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~split, ncol = 2, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  labs(title = "AUROC learning curves",
+       x = "Training observations", y = "AUROC", color = NULL, shape = NULL)
+```
+
+# Average-precision learning curves
+
+Average precision summarizes positive-class ranking and complements AUROC. It is
+shown because enrichment among the highest-ranked loci is a central downstream use
+of these models.
+
+```{r ap-curves}
+ggplot(split_metrics,
+       aes(n_training_total, average_precision, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~split, ncol = 2, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  labs(title = "Average-precision learning curves",
+       x = "Training observations", y = "Average Precision",
+       color = NULL, shape = NULL)
+```
+
+# Pairwise AUROC ranking error
+
+`1 - AUROC` is the pairwise AUROC ranking error: approximately the probability that
+a positive-negative pair is ordered incorrectly, with ties handled by the AUROC
+convention. It is not thresholded classification error.
+
+```{r ranking-error-curves}
+ggplot(split_metrics,
+       aes(n_training_total, ranking_error, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~split, ncol = 2, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  labs(title = "Pairwise AUROC ranking-error curves",
+       x = "Training observations", y = "1 - AUROC",
+       color = NULL, shape = NULL)
+```
+
+# Highest-ranked test-locus enrichment
+
+For each model, test loci are ordered by decreasing LS-GKM score. Enrichment is the
+positive-class precision within the selected top fraction divided by the positive
+prevalence of that task's complete test set.
+
+```{r top-enrichment-curves}
+ggplot(top_ranking,
+       aes(n_training_total, enrichment, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~rank_cutoff, nrow = 1, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.10, 0.14))) +
+  labs(title = "Enrichment of positives among highest-ranked test loci",
+       x = "Training observations", y = "Enrichment over test prevalence",
+       color = NULL, shape = NULL)
+```
+
+# Full-training comparison
+
+```{r final-summary}
+split_metrics |>
+  filter(training_fraction == 100) |>
+  transmute(Task = comparison, Split = split,
+            `Training observations` = n_training_total,
+            `Evaluation observations` = n,
+            `Positive prevalence` = prevalence,
+            AUROC = auroc, `Average Precision` = average_precision,
+            `Ranking error` = ranking_error) |>
+  gt(groupname_col = "Task") |>
+  tab_header(title = "100% training-set performance") |>
+  fmt_integer(columns = c(`Training observations`, `Evaluation observations`)) |>
+  fmt_percent(columns = `Positive prevalence`, decimals = 1) |>
+  fmt_number(columns = c(AUROC, `Average Precision`, `Ranking error`), decimals = 4)
+```
+
+# Reproducibility notes
+
+- The report reads the six merged learning-curve TSV files for each task.
+- The `score` column is the continuous LS-GKM decision score; no threshold is used
+  for AUROC, average precision, ranking error, or enrichment.
+- Training sizes are counted directly from each positive and negative FASTA.
+- Top-fraction sizes use `ceiling(N × fraction)`, are capped at `N`, and contain at
+  least one sequence, matching the task-specific LS-GKM reports.
+

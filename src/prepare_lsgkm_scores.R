@@ -44,29 +44,30 @@ if (length(args) != 1) {
 	stop(
 		"Usage: Rscript src/prepare_lsgkm_scores.R <prediction_dir>\n",
 		"Examples:\n",
-		"  Rscript src/prepare_lsgkm_scores.R predictions/evn/GRCh38/ls-gkm/outer1\n",
-		"  Rscript src/prepare_lsgkm_scores.R predictions/evn/GRCh38/ls-gkm/learning_curves/10"
+		"  Rscript src/prepare_lsgkm_scores.R predictions/svn/GRCh38/ls-gkm/outer1\n",
+		"  Rscript src/prepare_lsgkm_scores.R predictions/svn/GRCh38/ls-gkm/learning_curves/10"
 	)
 }
 
 dir_path <- normalizePath(args[1], mustWork = TRUE)
-dataset <- basename(dir_path)
+run_name <- basename(dir_path)
 parent_name <- basename(dirname(dir_path))
 
 if (parent_name == "learning_curves") {
-	model <- paste0("learning_curve_", dataset)
+	dataset <- paste0("learning_curve_", run_name)
 	output_subdir <- "learning_curves"
-} else if (grepl("^outer[1-9][0-9]*$", dataset)) {
-	model <- dataset
+} else if (grepl("^outer[1-9][0-9]*$", run_name)) {
+	dataset <- run_name
 	output_subdir <- ""
 } else {
 	stop("Unrecognized prediction directory layout: ", dir_path)
 }
 
+model <- "lsgkm"
 task <- "GRCh38"
-results_dir <- file.path("results", "evn", task, "ls-gkm", output_subdir)
+results_dir <- file.path("results", "svn", task, "ls-gkm", output_subdir)
 dir.create(results_dir, recursive = TRUE, showWarnings = FALSE)
-out_file <- file.path(results_dir, paste0(dataset, ".tsv"))
+out_file <- file.path(results_dir, paste0(run_name, ".tsv"))
 
 score_specs <- expand.grid(
 	split = c("validation", "test"),

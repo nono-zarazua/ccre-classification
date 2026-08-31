@@ -5,8 +5,9 @@ For each chromosome, the usable paired count is the smaller positive/negative
 pool. The same count is selected from both classes, which retains every
 available synthetic negative, drops only unmatched positives, and avoids
 imposing the enhancer-vs-negative chromosome distribution on this dataset.
-chr1 and chr2 are fixed validation and test sets; the remaining chromosomes are
-partitioned into four balanced chromosome groups for outer experiments.
+chr1 and chr2 remain the fixed validation and test sets for the independent
+learning-curve benchmark. Separately, all chromosomes are partitioned into five
+balanced chromosome folds for outer experiments; fold5 is the common test fold.
 """
 
 from __future__ import annotations
@@ -29,16 +30,16 @@ TRAINING_CHROMOSOMES = tuple(
     if chromosome not in FIXED_SPLIT_CHROMOSOME.values()
 )
 FOLD_CHROMOSOMES = {
-    1: ("6", "7", "12", "14", "X"),
-    2: ("11", "15", "17", "20", "19"),
-    3: ("4", "3", "16", "8", "21"),
-    4: ("9", "5", "10", "22", "18", "13"),
+    1: ("5", "11", "12", "17", "X"),
+    2: ("4", "7", "9", "13", "19", "22"),
+    3: ("6", "10", "14", "15", "21"),
+    4: ("2", "3", "8", "16"),
+    5: ("1", "18", "20"),
 }
-OUTER_FOLDS = {
-    outer: tuple(fold for fold in FOLD_CHROMOSOMES if fold != outer)
-    for outer in FOLD_CHROMOSOMES
-}
-VALIDATION_CHROMOSOME = {1: "3", 2: "6", 3: "6", 4: "6"}
+# Outer N trains on the other three development folds. Fold5 is never used for
+# training or validation and is the common test fold for all four outer models.
+OUTER_FOLDS = {1: (2, 3, 4), 2: (1, 3, 4), 3: (1, 2, 4), 4: (1, 2, 3)}
+VALIDATION_CHROMOSOME = {1: "4", 2: "11", 3: "11", 4: "11"}
 CHROMOSOME_FOLD = {
     chromosome: fold
     for fold, chromosomes in FOLD_CHROMOSOMES.items()
@@ -68,7 +69,8 @@ def parse_args() -> argparse.Namespace:
         description=(
             "Build a balanced silencer-vs-negative benchmark using every available "
             "negative, then route chr1 to validation, chr2 to test, and all others "
-            "to training and chromosome outer groups."
+            "to the fixed learning-curve split and independently derive five "
+            "chromosome folds plus four outer training sets."
         )
     )
     parser.add_argument(
@@ -320,6 +322,7 @@ def write_outputs(
             "seed": seed,
             "excluded_chromosomes_from_training": ["chr1", "chr2"],
             "fixed_split_chromosomes": {"validation": "chr1", "test": "chr2"},
+            "outer_test_fold": 5,
             "quota_method": "per-chromosome minimum of positive and negative availability",
             "bed_fasta_pairing": "record position within each chromosome source pair",
             "folds": {
@@ -335,7 +338,8 @@ def write_outputs(
                         if chrom != VALIDATION_CHROMOSOME[outer]
                     ),
                     "validation_per_class": quotas[VALIDATION_CHROMOSOME[outer]],
-                    "omitted_fold": outer,
+                    "omitted_development_fold": outer,
+                    "test_fold": 5,
                 }
                 for outer, included_folds in OUTER_FOLDS.items()
             },

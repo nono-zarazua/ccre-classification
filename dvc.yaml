@@ -830,6 +830,8 @@ stages:
     deps:
     - src/make_GRCh38_folds_outer_files.sh
     - src/make_GRCh38_master_training_svn.py
+    - data/processed/svn/GRCh38/folds/README
+    - data/processed/svn/GRCh38/training/README
     - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
     - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
@@ -953,6 +955,10 @@ stages:
     - data/processed/svn/GRCh38/folds/fold4/fold4.fa
     - data/processed/svn/GRCh38/folds/fold4/neg1x_fold4.bed
     - data/processed/svn/GRCh38/folds/fold4/neg1x_fold4.fa
+    - data/processed/svn/GRCh38/folds/fold5/fold5.bed
+    - data/processed/svn/GRCh38/folds/fold5/fold5.fa
+    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.bed
+    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
     - data/processed/svn/GRCh38/training/outer1/train_pos.bed
     - data/processed/svn/GRCh38/training/outer1/train_pos.fa
     - data/processed/svn/GRCh38/training/outer1/train_neg.bed
@@ -1019,3 +1025,240 @@ stages:
     - data/processed/svn/GRCh38/learning_curves/train_100_neg.bed
     - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
     - data/processed/svn/GRCh38/learning_curves/learning_curve_summary.json
+  train_ls_gkm_GRCh38_svn:
+    cmd: sbatch --wait slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - ../lsgkm/bin/gkmtrain
+    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+    - data/processed/svn/GRCh38/training/outer1/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer1/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer2/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer2/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer3/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer3/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer4/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer4/train_neg.fa
+    outs:
+    - models/svn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+    - models/svn/GRCh38/ls-gkm/outer1/outer1.model.txt
+    - models/svn/GRCh38/ls-gkm/outer2/outer2.model.txt
+    - models/svn/GRCh38/ls-gkm/outer3/outer3.model.txt
+    - models/svn/GRCh38/ls-gkm/outer4/outer4.model.txt
+  test_ls_gkm_GRCh38_svn:
+    cmd: sbatch --wait slurm/predict_ls_gkm.sh
+    deps:
+    - slurm/predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - models/svn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+    - models/svn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+    - models/svn/GRCh38/ls-gkm/outer1/outer1.model.txt
+    - models/svn/GRCh38/ls-gkm/outer2/outer2.model.txt
+    - models/svn/GRCh38/ls-gkm/outer3/outer3.model.txt
+    - models/svn/GRCh38/ls-gkm/outer4/outer4.model.txt
+    - data/processed/svn/GRCh38/training/validation_pos.fa
+    - data/processed/svn/GRCh38/training/validation_neg.fa
+    - data/processed/svn/GRCh38/training/test_pos.fa
+    - data/processed/svn/GRCh38/training/test_neg.fa
+    - data/processed/svn/GRCh38/training/outer1/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer1/validation_neg.fa
+    - data/processed/svn/GRCh38/training/outer2/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer2/validation_neg.fa
+    - data/processed/svn/GRCh38/training/outer3/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer3/validation_neg.fa
+    - data/processed/svn/GRCh38/training/outer4/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer4/validation_neg.fa
+    - data/processed/svn/GRCh38/folds/fold5/fold5.fa
+    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
+    outs:
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
+  merge_pos_negs_GRCh38_svn:
+    cmd: for percentage in 10 20 40 60 80 100; do src/prepare_lsgkm_scores.R predictions/svn/GRCh38/ls-gkm/learning_curves/$percentage; done; for outer in 1 2 3 4; do src/prepare_lsgkm_scores.R predictions/svn/GRCh38/ls-gkm/outer$outer; done
+    deps:
+    - src/prepare_lsgkm_scores.R
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
+    - predictions/svn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
+    outs:
+    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
+    - results/svn/GRCh38/ls-gkm/outer1.tsv
+    - results/svn/GRCh38/ls-gkm/outer2.tsv
+    - results/svn/GRCh38/ls-gkm/outer3.tsv
+    - results/svn/GRCh38/ls-gkm/outer4.tsv
+  render_lsgkm_report_GRCh38_svn:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh
+    deps:
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/lsgkm_GRCh38_results.Rmd
+    - slurm/train_ls_gkm.sh
+    - src/build_negs.R
+    - src/make_GRCh38_learning_curves.py
+    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
+    - results/svn/GRCh38/ls-gkm/outer1.tsv
+    - results/svn/GRCh38/ls-gkm/outer2.tsv
+    - results/svn/GRCh38/ls-gkm/outer3.tsv
+    - results/svn/GRCh38/ls-gkm/outer4.tsv
+    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+    outs:
+    - reports/rendered/svn/lsgkm_GRCh38_results_svn.html
+
+  render_lsgkm_comparison_GRCh38:
+    cmd: bash src/render_GRCh38_lsgkm_comparison_report.sh
+    deps:
+    - src/render_GRCh38_lsgkm_comparison_report.sh
+    - reports/lsgkm_GRCh38_evn_vs_svn.Rmd
+    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
+    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
+    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
+    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
+    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+    outs:
+    - reports/rendered/comparison/lsgkm_GRCh38_evn_vs_svn.html
