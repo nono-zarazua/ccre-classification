@@ -86,7 +86,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--weights",
         type=Path,
-        default=Path("alphagenome_trial/finetune_files/weights/fold_0_weights.safetensors"),
+        default=Path("weights/fold_0_weights.safetensors"),
         help="Pretrained AlphaGenome weights (default: %(default)s).",
     )
     parser.add_argument("--sequence-length", type=int, default=256)

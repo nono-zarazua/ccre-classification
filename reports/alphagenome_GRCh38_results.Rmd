@@ -1,0 +1,463 @@
+---
+title: "AlphaGenome GRCh38 Evaluation and Learning-Curve Report"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  results_dir: null
+  analysis_name: null
+  positive_class: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.width = 8.5, fig.height = 5.5, dpi = 120)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(gt)
+  library(scales)
+})
+
+learning_fractions <- c(10, 20, 40, 60, 80, 100)
+outer_names <- paste0("outer", 1:4)
+split_colors <- c(Validation = "#D55E00", Test = "#0072B2")
+outer_colors <- c(outer1 = "#0072B2", outer2 = "#D55E00",
+                  outer3 = "#009E73", outer4 = "#CC79A7")
+theme_set(theme_minimal(base_size = 12) +
+  theme(panel.grid.minor = element_blank(), legend.position = "bottom"))
+```
+
+```{r inputs, include=FALSE}
+results_dir <- params$results_dir
+analysis_name <- params$analysis_name
+positive_class <- params$positive_class
+if (is.null(results_dir) || !nzchar(results_dir)) stop("params$results_dir is required")
+if (is.null(analysis_name) || !nzchar(analysis_name)) stop("params$analysis_name is required")
+if (is.null(positive_class) || !nzchar(positive_class)) stop("params$positive_class is required")
+results_dir <- normalizePath(results_dir, mustWork = TRUE)
+metrics_path <- file.path(results_dir, "metrics.tsv")
+history_path <- file.path(results_dir, "history.tsv")
+if (!file.exists(metrics_path) || !file.exists(history_path)) {
+  stop("Missing AlphaGenome aggregate input under ", results_dir)
+}
+
+metrics <- read.delim(metrics_path, sep = "\t", stringsAsFactors = FALSE,
+                      check.names = FALSE)
+history <- read.delim(history_path, sep = "\t", stringsAsFactors = FALSE,
+                      check.names = FALSE)
+
+required_metrics <- c(
+  "model", "task", "dataset", "dataset_type", "training_fraction", "split",
+  "n_training_positive", "n_training_negative", "n_training_total",
+  "n_evaluation_positive", "n_evaluation_negative", "n_evaluation_total",
+  "best_epoch", "epochs_completed", "selection_metric", "elapsed_seconds",
+  "loss", "accuracy", "auroc", "auprc", "precision", "recall", "f1"
+)
+missing_metrics <- setdiff(required_metrics, names(metrics))
+if (length(missing_metrics)) stop("Missing metrics columns: ", paste(missing_metrics, collapse = ", "))
+if (nrow(metrics) != 20) stop("Expected 20 metric rows; found ", nrow(metrics))
+if (!identical(sort(unique(metrics$dataset)), sort(c(paste0("learning_curve_", learning_fractions), outer_names)))) {
+  stop("Unexpected AlphaGenome dataset inventory")
+}
+if (!all(metrics$model == "alphagenome") || !all(metrics$task == "GRCh38")) {
+  stop("Model/task metadata mismatch")
+}
+if (!all(metrics$selection_metric == "validation_auprc")) {
+  stop("Unexpected checkpoint selection metric")
+}
+if (!all(metrics$split %in% c("validation", "test"))) stop("Invalid split")
+if (anyNA(metrics$auroc) || anyNA(metrics$auprc)) stop("Missing ranking metric")
+
+metrics <- metrics |>
+  mutate(split = factor(split, levels = c("validation", "test"),
+                        labels = c("Validation", "Test")),
+         ranking_error = 1 - auroc)
+learning_metrics <- metrics |>
+  filter(dataset_type == "learning_curve") |>
+  arrange(split, n_training_total)
+outer_metrics <- metrics |>
+  filter(dataset_type == "outer") |>
+  mutate(dataset = factor(dataset, levels = outer_names)) |>
+  arrange(split, dataset)
+test_learning <- learning_metrics |> filter(split == "Test") |> arrange(n_training_total)
+
+training_table <- learning_metrics |>
+  filter(split == "Validation") |>
+  select(training_fraction, n_training_positive, n_training_negative, n_training_total)
+
+config_fields <- c("sequence_length", "hidden_size", "dropout", "batch_size", "epochs",
+                   "learning_rate", "weight_decay", "patience", "seed", "threshold",
+                   "max_shift", "rc_prob", "shift_prob", "device_name", "torch_version",
+                   "numpy_version", "weights")
+for (field in config_fields) {
+  if (length(unique(metrics[[field]])) != 1) stop("Configuration mismatch: ", field)
+}
+config <- metrics[1, config_fields, drop = FALSE]
+```
+
+# Dataset and experimental design
+
+The GRCh38 `r analysis_name` experiment uses a frozen pretrained AlphaGenome
+encoder and an independently initialized binary classification head for every run.
+`r positive_class` sequences are label 1 and matched synthetic negatives are label 0.
+
+Two designs are reported separately. The main learning curve uses six strictly nested
+training subsets with one fixed chr1 validation set and one fixed held-out chr2 test
+set. The four chromosome-composition stability experiments use outer-specific training
+and validation chromosomes while reserving fold 5 as their common held-out test set.
+Validation AUPRC selects the checkpoint and controls early stopping. The test split is
+evaluated only after the selected checkpoint has been restored.
+
+```{r training-size-table}
+training_table |>
+  mutate(`Training fraction` = paste0(training_fraction, "%")) |>
+  select(`Training fraction`,
+         `Training positives` = n_training_positive,
+         `Training negatives` = n_training_negative,
+         `Total training observations` = n_training_total) |>
+  gt() |>
+  tab_header(title = "Strictly nested learning-curve training sets") |>
+  fmt_integer(columns = c(`Training positives`, `Training negatives`,
+                          `Total training observations`))
+```
+
+```{r evaluation-size-table}
+metrics |>
+  distinct(dataset_type, dataset, split, n_evaluation_positive,
+           n_evaluation_negative, n_evaluation_total) |>
+  mutate(Design = if_else(dataset_type == "learning_curve", "Fixed learning curve", "Outer stability")) |>
+  select(Design, Dataset = dataset, Split = split,
+         Positives = n_evaluation_positive, Negatives = n_evaluation_negative,
+         `Total observations` = n_evaluation_total) |>
+  gt(groupname_col = "Design") |>
+  tab_header(title = "Validation and test-set sizes") |>
+  fmt_integer(columns = c(Positives, Negatives, `Total observations`))
+```
+
+# Model and training configuration
+
+The pretrained AlphaGenome trunk is loaded without its original output heads and kept
+fully frozen. Encoder tensors are normalized to `(batch, positions, 1536)`; in this
+installation a 256-bp input produces two encoder positions. The classifier applies
+layer normalization, flattens the encoder representation, and uses a
+`3072 → 1024 → 1` MLP with ReLU and dropout. Its scalar output is an unbounded logit,
+optimized with binary cross-entropy with logits.
+
+```{r model-metadata}
+tribble(
+  ~Setting, ~Value,
+  "Pretrained weights", as.character(config$weights),
+  "Encoder", "Pretrained AlphaGenome trunk; frozen",
+  "Input sequence length", as.character(config$sequence_length),
+  "Encoder representation", "2 positions × 1536 channels",
+  "Classification head", paste0("LayerNorm; flatten; Linear(3072, ", config$hidden_size,
+                                "); ReLU; dropout; Linear(", config$hidden_size, ", 1)"),
+  "Loss", "Binary cross-entropy with logits",
+  "Positive class", paste0(positive_class, " (label 1)"),
+  "Dropout", as.character(config$dropout),
+  "Batch size", as.character(config$batch_size),
+  "Maximum epochs", as.character(config$epochs),
+  "Learning rate", as.character(config$learning_rate),
+  "Weight decay", as.character(config$weight_decay),
+  "Early-stopping patience", as.character(config$patience),
+  "Checkpoint selection", "Maximum validation AUPRC",
+  "Random seed", as.character(config$seed),
+  "Augmentation", paste0("reverse-complement p=", config$rc_prob,
+                         "; shift p=", config$shift_prob,
+                         "; maximum shift=", config$max_shift, " bp"),
+  "Mixed precision", "CUDA bfloat16 autocast",
+  "GPU", as.character(config$device_name),
+  "PyTorch", as.character(config$torch_version),
+  "NumPy", as.character(config$numpy_version)
+) |>
+  gt() |>
+  tab_header(title = "Frozen AlphaGenome training configuration")
+```
+
+# Chromosome-composition stability
+
+The outer experiments assess sensitivity to chromosome composition. Their validation
+sets differ by outer design, whereas every outer model is evaluated on the same held-out
+fold 5 test data. These are descriptive stability comparisons, not pooled cross-validation
+estimates.
+
+```{r outer-ranking-plots}
+outer_long <- outer_metrics |>
+  select(dataset, split, auroc, auprc) |>
+  pivot_longer(c(auroc, auprc), names_to = "metric", values_to = "value") |>
+  mutate(metric = recode(metric, auroc = "AUROC", auprc = "Average Precision"))
+
+ggplot(outer_long,
+       aes(dataset, value, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 3) +
+  facet_wrap(~metric, scales = "free_y") +
+  scale_color_manual(values = split_colors) +
+  scale_y_continuous(expand = expansion(mult = c(0.15, 0.18))) +
+  labs(title = "Validation and held-out test ranking performance across outer sets",
+       x = "Outer set", y = NULL, color = "Split", shape = "Split")
+```
+
+```{r outer-table}
+outer_metrics |>
+  select(`Outer set` = dataset, Split = split,
+         `Evaluation observations` = n_evaluation_total,
+         `Best epoch` = best_epoch, AUROC = auroc,
+         `Average Precision` = auprc, `Ranking error` = ranking_error) |>
+  gt(groupname_col = "Outer set") |>
+  fmt_integer(columns = c(`Evaluation observations`, `Best epoch`)) |>
+  fmt_number(columns = c(AUROC, `Average Precision`, `Ranking error`), decimals = 4)
+```
+
+```{r outer-summary, include=FALSE}
+outer_test <- outer_metrics |> filter(split == "Test")
+outer_auroc_mean <- mean(outer_test$auroc)
+outer_ap_mean <- mean(outer_test$auprc)
+```
+
+Held-out fold 5 AUROC averages `r sprintf("%.4f", outer_auroc_mean)` and spans
+`r sprintf("%.4f–%.4f", min(outer_test$auroc), max(outer_test$auroc))`. Average
+precision averages `r sprintf("%.4f", outer_ap_mean)` and spans
+`r sprintf("%.4f–%.4f", min(outer_test$auprc), max(outer_test$auprc))`.
+
+# Learning-curve analysis
+
+Absolute training observations define the x-axis. Validation and held-out test results
+are overlaid because every learning-curve model uses the same evaluation loci.
+
+## AUROC
+
+```{r learning-auroc}
+ggplot(learning_metrics,
+       aes(n_training_total, auroc, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  geom_text(data = filter(learning_metrics, split == "Test"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
+            vjust = -0.8, size = 3, show.legend = FALSE) +
+  geom_text(data = filter(learning_metrics, split == "Validation"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
+            vjust = 1.8, size = 3, show.legend = FALSE) +
+  scale_color_manual(values = split_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(expand = expansion(mult = c(0.22, 0.25))) +
+  labs(title = "Validation and test AUROC by absolute training-set size",
+       x = "Training observations", y = "AUROC", color = "Split", shape = "Split")
+```
+
+## Average precision
+
+```{r learning-ap}
+ggplot(learning_metrics,
+       aes(n_training_total, auprc, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  geom_text(data = filter(learning_metrics, split == "Test"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auprc)),
+            vjust = -0.8, size = 3, show.legend = FALSE) +
+  geom_text(data = filter(learning_metrics, split == "Validation"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auprc)),
+            vjust = 1.8, size = 3, show.legend = FALSE) +
+  scale_color_manual(values = split_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(expand = expansion(mult = c(0.22, 0.25))) +
+  labs(title = "Validation and test Average Precision by absolute training-set size",
+       x = "Training observations", y = "Average Precision",
+       color = "Split", shape = "Split")
+```
+
+## Pairwise AUROC ranking error
+
+`1 - AUROC` is the pairwise AUROC ranking error: approximately the probability that
+a positive-negative pair is ordered incorrectly, with ties handled according to the
+AUROC convention. It is not thresholded classification error.
+
+```{r ranking-error}
+ggplot(learning_metrics,
+       aes(n_training_total, ranking_error, color = split,
+           shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  scale_color_manual(values = split_colors) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(expand = expansion(mult = c(0.12, 0.14))) +
+  labs(title = "Validation and test pairwise AUROC ranking error",
+       x = "Training observations", y = "1 - AUROC",
+       color = "Split", shape = "Split")
+```
+
+## Marginal held-out test gains
+
+```{r marginal-gains}
+marginal_gains <- test_learning |>
+  transmute(training_fraction, n_training_total, auroc, auprc, ranking_error) |>
+  mutate(from_fraction = lag(training_fraction), from_n = lag(n_training_total),
+         delta_n = n_training_total - from_n,
+         delta_auroc = auroc - lag(auroc),
+         delta_ap = auprc - lag(auprc),
+         ranking_error_reduction = lag(ranking_error) - ranking_error,
+         delta_auroc_per_10000 = delta_auroc / delta_n * 10000) |>
+  filter(!is.na(from_fraction)) |>
+  transmute(From = paste0(from_fraction, "%"), To = paste0(training_fraction, "%"),
+            `Additional training observations` = delta_n,
+            `Change in AUROC` = delta_auroc, `Change in AP` = delta_ap,
+            `Reduction in ranking error` = ranking_error_reduction,
+            `AUROC gain per 10,000 observations` = delta_auroc_per_10000)
+
+marginal_gains |>
+  gt() |>
+  fmt_integer(columns = `Additional training observations`) |>
+  fmt_number(columns = c(`Change in AUROC`, `Change in AP`,
+                         `Reduction in ranking error`,
+                         `AUROC gain per 10,000 observations`), decimals = 4)
+```
+
+# Training dynamics and early stopping
+
+Each percentage starts from a newly initialized classification head. The curves below
+show the per-epoch validation AUPRC used for checkpoint selection; points identify the
+restored best epoch. Runs can contain more epochs than the selected checkpoint because
+training continues until the patience criterion is reached or the ten-epoch maximum is
+completed.
+
+```{r history-auprc}
+learning_history <- history |>
+  filter(dataset_type == "learning_curve") |>
+  mutate(training_fraction = factor(training_fraction, levels = learning_fractions,
+                                    labels = paste0(learning_fractions, "%")))
+best_history <- learning_history |> filter(epoch == best_epoch)
+
+ggplot(learning_history,
+       aes(epoch, validation_auprc, color = training_fraction,
+           group = training_fraction)) +
+  geom_line(linewidth = 0.85) +
+  geom_point(data = best_history, size = 2.8) +
+  scale_color_brewer(palette = "Dark2") +
+  scale_x_continuous(breaks = seq_len(max(history$epoch))) +
+  labs(title = "Validation AUPRC during learning-curve training",
+       subtitle = "Points mark validation-selected checkpoints",
+       x = "Epoch", y = "Validation AUPRC", color = "Training fraction")
+```
+
+```{r history-loss}
+loss_history <- learning_history |>
+  select(dataset, training_fraction, epoch, train_loss, validation_loss) |>
+  pivot_longer(c(train_loss, validation_loss), names_to = "split", values_to = "loss") |>
+  mutate(split = recode(split, train_loss = "Training", validation_loss = "Validation"))
+
+ggplot(loss_history, aes(epoch, loss, color = split, group = split)) +
+  geom_line(linewidth = 0.75) +
+  facet_wrap(~training_fraction, scales = "free_y") +
+  scale_color_manual(values = c(Training = "#009E73", Validation = "#D55E00")) +
+  scale_x_continuous(breaks = c(1, 5, 10)) +
+  labs(title = "Training and validation loss by epoch",
+       x = "Epoch", y = "Binary cross-entropy", color = NULL)
+```
+
+# Runtime scaling
+
+Elapsed time includes model loading, training, repeated validation, restoration of the
+best checkpoint, and final test evaluation. It is therefore an end-to-end run time,
+not training-only GPU time.
+
+```{r runtime}
+runtime_data <- learning_metrics |>
+  filter(split == "Test") |>
+  mutate(elapsed_minutes = elapsed_seconds / 60)
+
+ggplot(runtime_data, aes(n_training_total, elapsed_minutes)) +
+  geom_line(color = "#0072B2", linewidth = 0.9) +
+  geom_point(color = "#0072B2", size = 2.8) +
+  geom_text(aes(label = sprintf("%d%%\n%.1f min", training_fraction, elapsed_minutes)),
+            vjust = -0.7, size = 3) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(expand = expansion(mult = c(0.05, 0.22))) +
+  labs(title = "End-to-end runtime by training-set size",
+       x = "Training observations", y = "Elapsed minutes")
+```
+
+# Final-model metrics
+
+AUROC and average precision are threshold-independent ranking metrics. Accuracy,
+precision, recall, and F1 below use `sigmoid(logit) ≥ 0.5`, the fixed threshold encoded
+in the training configuration; it was not selected on the test set.
+
+```{r final-metrics}
+learning_metrics |>
+  filter(training_fraction == 100) |>
+  select(Split = split, `Evaluation observations` = n_evaluation_total,
+         `Best epoch` = best_epoch, Loss = loss, Accuracy = accuracy,
+         AUROC = auroc, `Average Precision` = auprc,
+         Precision = precision, Recall = recall, F1 = f1) |>
+  gt() |>
+  tab_header(title = "100% AlphaGenome model performance") |>
+  fmt_integer(columns = c(`Evaluation observations`, `Best epoch`)) |>
+  fmt_number(columns = c(Loss, Accuracy, AUROC, `Average Precision`,
+                         Precision, Recall, F1), decimals = 4)
+```
+
+# Interpretation
+
+```{r interpretation-values, include=FALSE}
+smallest <- slice_head(test_learning, n = 1)
+largest <- slice_tail(test_learning, n = 1)
+best_test <- test_learning |> slice_max(auroc, n = 1, with_ties = FALSE)
+```
+
+From `r comma(smallest$n_training_total)` to `r comma(largest$n_training_total)`
+training observations, held-out test AUROC changes from
+`r sprintf("%.4f", smallest$auroc)` to `r sprintf("%.4f", largest$auroc)`, and
+average precision changes from `r sprintf("%.4f", smallest$auprc)` to
+`r sprintf("%.4f", largest$auprc)`. The highest observed test AUROC is
+`r sprintf("%.4f", best_test$auroc)` at `r paste0(best_test$training_fraction, "%")`.
+The small difference between the 80% and 100% points should not be treated as evidence
+that additional data is intrinsically harmful: each model is a stochastic independent
+fit, and there is one run per training size rather than repeated seeds.
+
+The narrow fold 5 performance range across outer models supports chromosome-composition
+stability for this design. It does not estimate uncertainty from model initialization,
+which would require repeated seeds.
+
+# Scope limitation
+
+The saved AlphaGenome artifacts contain aggregate metrics and epoch histories, not
+per-sequence logits. Consequently, this report cannot reconstruct full ROC or
+precision-recall traces, confusion matrices, alternative thresholds, or top-1/5/10%
+enrichment. Those analyses would require either retaining sequence-level scores or
+computing the desired summaries inside the evaluator. This does not affect the main
+AUROC/AUPRC learning-curve analysis presented here.
+
+# Reproducibility
+
+```{r artifact-summary}
+metrics |>
+  distinct(dataset, dataset_type, n_training_total, best_epoch, epochs_completed,
+           elapsed_seconds) |>
+  mutate(`Elapsed minutes` = elapsed_seconds / 60,
+         Design = recode(dataset_type,
+                         learning_curve = "Fixed learning curve",
+                         outer = "Outer stability")) |>
+  select(Design, Dataset = dataset, `Training observations` = n_training_total,
+         `Best epoch` = best_epoch, `Epochs completed` = epochs_completed,
+         `Elapsed minutes`) |>
+  gt(groupname_col = "Design") |>
+  fmt_integer(columns = c(`Training observations`, `Best epoch`, `Epochs completed`)) |>
+  fmt_number(columns = `Elapsed minutes`, decimals = 1)
+```
+
+The report reads `metrics.tsv` and `history.tsv`, generated by
+`src/prepare_alphagenome_results.py`. That script validates the complete five-artifact
+set for every run, verifies one frozen configuration, checks validation-AUPRC checkpoint
+selection and restored epoch consistency, and counts the FASTA records referenced by
+each run configuration.
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.
+
+```{r session-info}
+sessionInfo()
+```

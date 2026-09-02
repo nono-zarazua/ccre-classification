@@ -1262,3 +1262,220 @@ stages:
     - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
     outs:
     - reports/rendered/comparison/lsgkm_GRCh38_evn_vs_svn.html
+
+  prepare_alphagenome_results_GRCh38_evn:
+    cmd: src/prepare_alphagenome_results.py
+    deps:
+    - src/prepare_alphagenome_results.py
+    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.config.json
+    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.history.tsv
+    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.test_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.config.json
+    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.history.tsv
+    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.test_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.config.json
+    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.history.tsv
+    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.test_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.config.json
+    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.history.tsv
+    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.test_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.config.json
+    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.history.tsv
+    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.test_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.config.json
+    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.history.tsv
+    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.test_metrics.json
+    - models/evn/GRCh38/alphagenome/outer1/outer1.best_head.pt
+    - models/evn/GRCh38/alphagenome/outer1/outer1.config.json
+    - models/evn/GRCh38/alphagenome/outer1/outer1.history.tsv
+    - models/evn/GRCh38/alphagenome/outer1/outer1.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/outer1/outer1.test_metrics.json
+    - models/evn/GRCh38/alphagenome/outer2/outer2.best_head.pt
+    - models/evn/GRCh38/alphagenome/outer2/outer2.config.json
+    - models/evn/GRCh38/alphagenome/outer2/outer2.history.tsv
+    - models/evn/GRCh38/alphagenome/outer2/outer2.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/outer2/outer2.test_metrics.json
+    - models/evn/GRCh38/alphagenome/outer3/outer3.best_head.pt
+    - models/evn/GRCh38/alphagenome/outer3/outer3.config.json
+    - models/evn/GRCh38/alphagenome/outer3/outer3.history.tsv
+    - models/evn/GRCh38/alphagenome/outer3/outer3.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/outer3/outer3.test_metrics.json
+    - models/evn/GRCh38/alphagenome/outer4/outer4.best_head.pt
+    - models/evn/GRCh38/alphagenome/outer4/outer4.config.json
+    - models/evn/GRCh38/alphagenome/outer4/outer4.history.tsv
+    - models/evn/GRCh38/alphagenome/outer4/outer4.validation_metrics.json
+    - models/evn/GRCh38/alphagenome/outer4/outer4.test_metrics.json
+    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+    - data/processed/evn/GRCh38/training/validation_pos.fa
+    - data/processed/evn/GRCh38/training/validation_neg.fa
+    - data/processed/evn/GRCh38/training/test_pos.fa
+    - data/processed/evn/GRCh38/training/test_neg.fa
+    - data/processed/evn/GRCh38/training/outer1/train_pos.fa
+    - data/processed/evn/GRCh38/training/outer1/train_neg.fa
+    - data/processed/evn/GRCh38/training/outer1/validation_pos.fa
+    - data/processed/evn/GRCh38/training/outer1/validation_neg.fa
+    - data/processed/evn/GRCh38/training/outer2/train_pos.fa
+    - data/processed/evn/GRCh38/training/outer2/train_neg.fa
+    - data/processed/evn/GRCh38/training/outer2/validation_pos.fa
+    - data/processed/evn/GRCh38/training/outer2/validation_neg.fa
+    - data/processed/evn/GRCh38/training/outer3/train_pos.fa
+    - data/processed/evn/GRCh38/training/outer3/train_neg.fa
+    - data/processed/evn/GRCh38/training/outer3/validation_pos.fa
+    - data/processed/evn/GRCh38/training/outer3/validation_neg.fa
+    - data/processed/evn/GRCh38/training/outer4/train_pos.fa
+    - data/processed/evn/GRCh38/training/outer4/train_neg.fa
+    - data/processed/evn/GRCh38/training/outer4/validation_pos.fa
+    - data/processed/evn/GRCh38/training/outer4/validation_neg.fa
+    - data/processed/evn/GRCh38/folds/fold5/fold5.fa
+    - data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
+    outs:
+    - results/evn/GRCh38/alphagenome/metrics.tsv
+    - results/evn/GRCh38/alphagenome/history.tsv
+  render_alphagenome_report_GRCh38_evn:
+    cmd: bash src/render_GRCh38_alphagenome_report.sh
+    deps:
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/alphagenome_GRCh38_results.Rmd
+    - src/train_alphagenome.py
+    - slurm/train_alphagenome.sh
+    - results/evn/GRCh38/alphagenome/metrics.tsv
+    - results/evn/GRCh38/alphagenome/history.tsv
+    outs:
+    - reports/rendered/evn/alphagenome_GRCh38_results.html
+
+  prepare_alphagenome_results_GRCh38_svn:
+    cmd: src/prepare_alphagenome_results.py --model-dir models/svn/GRCh38/alphagenome --output-dir results/svn/GRCh38/alphagenome
+    deps:
+    - src/prepare_alphagenome_results.py
+    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.config.json
+    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.history.tsv
+    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.test_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.config.json
+    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.history.tsv
+    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.test_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.config.json
+    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.history.tsv
+    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.test_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.config.json
+    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.history.tsv
+    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.test_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.config.json
+    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.history.tsv
+    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.test_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.config.json
+    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.history.tsv
+    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.test_metrics.json
+    - models/svn/GRCh38/alphagenome/outer1/outer1.best_head.pt
+    - models/svn/GRCh38/alphagenome/outer1/outer1.config.json
+    - models/svn/GRCh38/alphagenome/outer1/outer1.history.tsv
+    - models/svn/GRCh38/alphagenome/outer1/outer1.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/outer1/outer1.test_metrics.json
+    - models/svn/GRCh38/alphagenome/outer2/outer2.best_head.pt
+    - models/svn/GRCh38/alphagenome/outer2/outer2.config.json
+    - models/svn/GRCh38/alphagenome/outer2/outer2.history.tsv
+    - models/svn/GRCh38/alphagenome/outer2/outer2.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/outer2/outer2.test_metrics.json
+    - models/svn/GRCh38/alphagenome/outer3/outer3.best_head.pt
+    - models/svn/GRCh38/alphagenome/outer3/outer3.config.json
+    - models/svn/GRCh38/alphagenome/outer3/outer3.history.tsv
+    - models/svn/GRCh38/alphagenome/outer3/outer3.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/outer3/outer3.test_metrics.json
+    - models/svn/GRCh38/alphagenome/outer4/outer4.best_head.pt
+    - models/svn/GRCh38/alphagenome/outer4/outer4.config.json
+    - models/svn/GRCh38/alphagenome/outer4/outer4.history.tsv
+    - models/svn/GRCh38/alphagenome/outer4/outer4.validation_metrics.json
+    - models/svn/GRCh38/alphagenome/outer4/outer4.test_metrics.json
+    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+    - data/processed/svn/GRCh38/training/validation_pos.fa
+    - data/processed/svn/GRCh38/training/validation_neg.fa
+    - data/processed/svn/GRCh38/training/test_pos.fa
+    - data/processed/svn/GRCh38/training/test_neg.fa
+    - data/processed/svn/GRCh38/training/outer1/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer1/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer1/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer1/validation_neg.fa
+    - data/processed/svn/GRCh38/training/outer2/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer2/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer2/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer2/validation_neg.fa
+    - data/processed/svn/GRCh38/training/outer3/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer3/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer3/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer3/validation_neg.fa
+    - data/processed/svn/GRCh38/training/outer4/train_pos.fa
+    - data/processed/svn/GRCh38/training/outer4/train_neg.fa
+    - data/processed/svn/GRCh38/training/outer4/validation_pos.fa
+    - data/processed/svn/GRCh38/training/outer4/validation_neg.fa
+    - data/processed/svn/GRCh38/folds/fold5/fold5.fa
+    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
+    outs:
+    - results/svn/GRCh38/alphagenome/metrics.tsv
+    - results/svn/GRCh38/alphagenome/history.tsv
+
+  render_alphagenome_report_GRCh38_svn:
+    cmd: bash src/render_GRCh38_alphagenome_report.sh svn
+    deps:
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/alphagenome_GRCh38_results.Rmd
+    - src/train_alphagenome.py
+    - slurm/train_alphagenome.sh
+    - results/svn/GRCh38/alphagenome/metrics.tsv
+    - results/svn/GRCh38/alphagenome/history.tsv
+    outs:
+    - reports/rendered/svn/alphagenome_GRCh38_results.html
+
+  render_alphagenome_comparison_GRCh38:
+    cmd: bash src/render_GRCh38_alphagenome_comparison_report.sh
+    deps:
+    - src/render_GRCh38_alphagenome_comparison_report.sh
+    - reports/alphagenome_GRCh38_evn_vs_svn.Rmd
+    - results/evn/GRCh38/alphagenome/metrics.tsv
+    - results/svn/GRCh38/alphagenome/metrics.tsv
+    outs:
+    - reports/rendered/comparison/alphagenome_GRCh38_evn_vs_svn.html

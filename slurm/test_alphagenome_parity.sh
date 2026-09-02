@@ -30,8 +30,14 @@ set +u
 source activate alphagenome
 set -u
 
+python_bin="${CONDA_PREFIX}/bin/python"
+if [[ ! -x "${python_bin}" ]]; then
+    echo "ERROR: AlphaGenome Python is not executable: ${python_bin}" >&2
+    exit 1
+fi
 echo "Conda environment: ${CONDA_PREFIX}"
-echo "Python: $(command -v python)"
+echo "Python: ${python_bin}"
+"${python_bin}" -c 'import numpy, torch, sklearn, alphagenome_pytorch; print("AlphaGenome environment import preflight: PASS")'
 
 train_records_per_class=256
 evaluation_records_per_class=128
@@ -81,7 +87,7 @@ take_fasta_prefix \
 
 output_prefix="models/evn/GRCh38/alphagenome/parity/parity_smoke"
 
-python src/train_alphagenome.py \
+"${python_bin}" src/train_alphagenome.py \
     "${parity_tmp}/train_pos.fa" \
     "${parity_tmp}/train_neg.fa" \
     "${parity_tmp}/validation_pos.fa" \

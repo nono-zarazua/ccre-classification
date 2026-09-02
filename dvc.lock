@@ -7172,3 +7172,865 @@ stages:
       hash: md5
       md5: 86636218de6458d9982b2a11234f836c
       size: 1815973
+  prepare_alphagenome_results_GRCh38_evn:
+    cmd: src/prepare_alphagenome_results.py
+    deps:
+    - path: data/processed/evn/GRCh38/folds/fold5/fold5.fa
+      hash: md5
+      md5: a6b867a36b5aad8cc200dee1a8c6002a
+      size: 12324102
+    - path: data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
+      hash: md5
+      md5: 51061495578014787896b76708808712
+      size: 12370025
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: faee3b83e2524b99455499459169d389
+      size: 51423751
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: bc937ac2c0b44cd910712934aa9e0e5d
+      size: 51258789
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: 58ebe014b12ab2dbc6a5a82d4c39cf19
+      size: 5147940
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 64a1aa5551b4dca490b1f428f623efd9
+      size: 5123704
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: b3945cd09d1b7630117e166597ce96cd
+      size: 10288387
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 15840434ad43e6dc3890c2ea40121f48
+      size: 10245183
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f11eb6645bd295e52583e3f21d353cf1
+      size: 20574781
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: dc0f1189c16070d1ee05c621a0672305
+      size: 20509653
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: 6f785b1812b3ef64ed4b5800327430d6
+      size: 30857944
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 853a41b3876f092813d2bf39093a8aef
+      size: 30772839
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: 77730ccc667f031d03f6779dc7748a06
+      size: 41130063
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 749ce4478f161c94f95d5711ed2606f6
+      size: 41010938
+    - path: data/processed/evn/GRCh38/training/outer1/train_neg.fa
+      hash: md5
+      md5: acb018c0d18f36288f33b31c189689b4
+      size: 33758029
+    - path: data/processed/evn/GRCh38/training/outer1/train_pos.fa
+      hash: md5
+      md5: dcf6e92c94fd20c40a5590d4869ff150
+      size: 33661623
+    - path: data/processed/evn/GRCh38/training/outer1/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer1/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer2/train_neg.fa
+      hash: md5
+      md5: b5ef1bcbe80d3e93cebe8abb2669e78f
+      size: 33694392
+    - path: data/processed/evn/GRCh38/training/outer2/train_pos.fa
+      hash: md5
+      md5: bb8e9cc28924571d9d35384ef0af8d8d
+      size: 33597184
+    - path: data/processed/evn/GRCh38/training/outer2/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer2/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer3/train_neg.fa
+      hash: md5
+      md5: 29d1bd8ee4934c9fa24911d95426f5c1
+      size: 33593333
+    - path: data/processed/evn/GRCh38/training/outer3/train_pos.fa
+      hash: md5
+      md5: fcc42d670e7c75f274b15a13cc7df09a
+      size: 33528674
+    - path: data/processed/evn/GRCh38/training/outer3/validation_neg.fa
+      hash: md5
+      md5: 65d6f345265e6905f04c0f4769dd0f0a
+      size: 3678468
+    - path: data/processed/evn/GRCh38/training/outer3/validation_pos.fa
+      hash: md5
+      md5: 76879aa70bc9448178ae67c4d7fe40e8
+      size: 3669943
+    - path: data/processed/evn/GRCh38/training/outer4/train_neg.fa
+      hash: md5
+      md5: a18c058d415fb70569f690ad210a8b78
+      size: 33249318
+    - path: data/processed/evn/GRCh38/training/outer4/train_pos.fa
+      hash: md5
+      md5: 8a0967c653fce92e0c5c598dfe65e840
+      size: 33189079
+    - path: data/processed/evn/GRCh38/training/outer4/validation_neg.fa
+      hash: md5
+      md5: 741ea2784bf53ff67e183c0bf429872d
+      size: 4132116
+    - path: data/processed/evn/GRCh38/training/outer4/validation_pos.fa
+      hash: md5
+      md5: 9d30a117ba046eca67c08ce2083fe976
+      size: 4115156
+    - path: data/processed/evn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: 508867cee4e2dcb6c1d224dc7d1b66f3
+      size: 5231424
+    - path: data/processed/evn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 6ac872b3f28d0aa4a06f6723c12ace39
+      size: 5227515
+    - path: data/processed/evn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 66b655c68b098df1ceaccce66439483c
+      size: 5535714
+    - path: data/processed/evn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 6b31fdf9069a5d12696527b16a149c5e
+      size: 5538313
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+      hash: md5
+      md5: 7c7dd060f67979af36e77bcdb317f6d7
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.config.json
+      hash: md5
+      md5: 093a8111c9051f13f1994d888154f02b
+      size: 1741
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.history.tsv
+      hash: md5
+      md5: abffe519032cf7f7709aa18f481cec12
+      size: 2361
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.test_metrics.json
+      hash: md5
+      md5: c50d788eb1be5fbc6923380dbc55b2ea
+      size: 359
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.validation_metrics.json
+      hash: md5
+      md5: a1c78c51d9f03b2d38adf28281e2570f
+      size: 321
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+      hash: md5
+      md5: d07ab188d2a313054682656754e249fc
+      size: 12608504
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.config.json
+      hash: md5
+      md5: 57201c51fb5d06dbd9350c627bfbbc3b
+      size: 1755
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.history.tsv
+      hash: md5
+      md5: 3f6f64ac07852939c53879dddaba0b99
+      size: 2893
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.test_metrics.json
+      hash: md5
+      md5: 6b7dfc38e01da7eab8d11083a46de8ac
+      size: 359
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.validation_metrics.json
+      hash: md5
+      md5: 5fe37676c75e22004c185df0a06054f2
+      size: 319
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+      hash: md5
+      md5: c634a406dc3b667a1aaad2678b4a65cc
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.config.json
+      hash: md5
+      md5: 2a1baefb0d2e985e84f162894586966b
+      size: 1741
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.history.tsv
+      hash: md5
+      md5: 49ccd7e9ae83a4dc71e77935a522e92a
+      size: 2893
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.test_metrics.json
+      hash: md5
+      md5: f5d18c322ac006ba5e6463d90f3e355b
+      size: 358
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.validation_metrics.json
+      hash: md5
+      md5: 8d9febca65ce70d45e67489f1a0c7deb
+      size: 321
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+      hash: md5
+      md5: f5bf15671b631d8812e61c97ef8d03d7
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.config.json
+      hash: md5
+      md5: a6e13ca4c914a35165b09548bfee446a
+      size: 1741
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.history.tsv
+      hash: md5
+      md5: 9d33660f49b3846215a1d7633d42cd6c
+      size: 2355
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.test_metrics.json
+      hash: md5
+      md5: 60e15c5936642e21774a438b8c4d16a0
+      size: 359
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.validation_metrics.json
+      hash: md5
+      md5: e84b77043558b7dfde84769d845236f1
+      size: 320
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+      hash: md5
+      md5: 526a07d9c00f6e9a4cb6e67fdfa889de
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.config.json
+      hash: md5
+      md5: 24417132e684aa6da806c71117ed38da
+      size: 1741
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.history.tsv
+      hash: md5
+      md5: 4dfd892039c79d41190bcd8942df6b03
+      size: 2619
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.test_metrics.json
+      hash: md5
+      md5: b787542a25e460a7b142666e7059c8bc
+      size: 359
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.validation_metrics.json
+      hash: md5
+      md5: fd270eb6f80640740f472739be3a7821
+      size: 319
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+      hash: md5
+      md5: 0884381ff226d60f7daa12fcaed271c5
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.config.json
+      hash: md5
+      md5: e17f3a979039da183229ba64170154f9
+      size: 1741
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.history.tsv
+      hash: md5
+      md5: 8a8bd8837b3b6095a6fdd47bc42092f3
+      size: 2889
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.test_metrics.json
+      hash: md5
+      md5: dc572c056e0b360c7dedd832cfa13834
+      size: 360
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.validation_metrics.json
+      hash: md5
+      md5: 814c1628309ffa394664dc35e459b8c3
+      size: 321
+    - path: models/evn/GRCh38/alphagenome/outer1/outer1.best_head.pt
+      hash: md5
+      md5: 1a2be6418858a7c99e100e06d74e7992
+      size: 12608128
+    - path: models/evn/GRCh38/alphagenome/outer1/outer1.config.json
+      hash: md5
+      md5: 7417b2b937494fc243a09ed146b2585c
+      size: 1617
+    - path: models/evn/GRCh38/alphagenome/outer1/outer1.history.tsv
+      hash: md5
+      md5: eb738bab509758238c858c3b0317551c
+      size: 2627
+    - path: models/evn/GRCh38/alphagenome/outer1/outer1.test_metrics.json
+      hash: md5
+      md5: 49f3da63b11477fe0717c5a388e89df5
+      size: 357
+    - path: models/evn/GRCh38/alphagenome/outer1/outer1.validation_metrics.json
+      hash: md5
+      md5: f018453b4fadb4bc8c2430059194676e
+      size: 318
+    - path: models/evn/GRCh38/alphagenome/outer2/outer2.best_head.pt
+      hash: md5
+      md5: aa1c30a354a6c8242ae2f8e6a0a4eb11
+      size: 12608128
+    - path: models/evn/GRCh38/alphagenome/outer2/outer2.config.json
+      hash: md5
+      md5: 110ee1b15fceeeb69484e4f4fd1bb05b
+      size: 1617
+    - path: models/evn/GRCh38/alphagenome/outer2/outer2.history.tsv
+      hash: md5
+      md5: 33c2b766597e4dd8c6c0ee3622ee0bb2
+      size: 2896
+    - path: models/evn/GRCh38/alphagenome/outer2/outer2.test_metrics.json
+      hash: md5
+      md5: 09fcf0b8dfa74bed97b3cdbfad3eb900
+      size: 359
+    - path: models/evn/GRCh38/alphagenome/outer2/outer2.validation_metrics.json
+      hash: md5
+      md5: 9e59fb8db1cda264d9765348ce692177
+      size: 320
+    - path: models/evn/GRCh38/alphagenome/outer3/outer3.best_head.pt
+      hash: md5
+      md5: 94f1958b94a1ea0dbea43037b8fd6b94
+      size: 12608128
+    - path: models/evn/GRCh38/alphagenome/outer3/outer3.config.json
+      hash: md5
+      md5: 58fafa8d6a8108a1711f3813eab43298
+      size: 1617
+    - path: models/evn/GRCh38/alphagenome/outer3/outer3.history.tsv
+      hash: md5
+      md5: 46c7b9a9a2d5c7156847606f26deaab2
+      size: 2893
+    - path: models/evn/GRCh38/alphagenome/outer3/outer3.test_metrics.json
+      hash: md5
+      md5: 0a4e44d0510a8550a944919dc0a56ef8
+      size: 358
+    - path: models/evn/GRCh38/alphagenome/outer3/outer3.validation_metrics.json
+      hash: md5
+      md5: d0b2b907e295ffb9f8b0bd17482b42da
+      size: 321
+    - path: models/evn/GRCh38/alphagenome/outer4/outer4.best_head.pt
+      hash: md5
+      md5: a7b919e0fff1f34b151c42f0518abf6c
+      size: 12608128
+    - path: models/evn/GRCh38/alphagenome/outer4/outer4.config.json
+      hash: md5
+      md5: 8064a81d82bbf0afdad96b2f50cf99cd
+      size: 1618
+    - path: models/evn/GRCh38/alphagenome/outer4/outer4.history.tsv
+      hash: md5
+      md5: 4b80d05e20db6237edda75cf461bff05
+      size: 2894
+    - path: models/evn/GRCh38/alphagenome/outer4/outer4.test_metrics.json
+      hash: md5
+      md5: fc235791167c5ba79bbcfe23da904466
+      size: 358
+    - path: models/evn/GRCh38/alphagenome/outer4/outer4.validation_metrics.json
+      hash: md5
+      md5: 541c9ab67f466a66405a4d75b179b5ef
+      size: 321
+    - path: src/prepare_alphagenome_results.py
+      hash: md5
+      md5: 449da19071940fc73bdc4a0821e80039
+      size: 10216
+      isexec: true
+    outs:
+    - path: results/evn/GRCh38/alphagenome/history.tsv
+      hash: md5
+      md5: fb8d3dcbb4a562c9c595e1c5b0d28060
+      size: 30501
+    - path: results/evn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: 56e5d7afb2b74511bb3aa6f5bd22c790
+      size: 8122
+  render_alphagenome_report_GRCh38_evn:
+    cmd: bash src/render_GRCh38_alphagenome_report.sh
+    deps:
+    - path: reports/alphagenome_GRCh38_results.Rmd
+      hash: md5
+      md5: 24ef092542b8aedad0a7b268323405a0
+      size: 20753
+    - path: results/evn/GRCh38/alphagenome/history.tsv
+      hash: md5
+      md5: fb8d3dcbb4a562c9c595e1c5b0d28060
+      size: 30501
+    - path: results/evn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: 56e5d7afb2b74511bb3aa6f5bd22c790
+      size: 8122
+    - path: slurm/train_alphagenome.sh
+      hash: md5
+      md5: aa64ae655505b22902a34fac27ff525c
+      size: 7142
+      isexec: true
+    - path: src/render_GRCh38_alphagenome_report.sh
+      hash: md5
+      md5: c71c6738abee88c98fda9485967e2fe3
+      size: 1101
+      isexec: true
+    - path: src/train_alphagenome.py
+      hash: md5
+      md5: a2831a63401639288ef916d7707c0116
+      size: 25672
+      isexec: true
+    outs:
+    - path: reports/rendered/evn/alphagenome_GRCh38_results.html
+      hash: md5
+      md5: f682b929d2624cb769ae1f33b7cdf644
+      size: 2407374
+  prepare_alphagenome_results_GRCh38_svn:
+    cmd: src/prepare_alphagenome_results.py --model-dir 
+      models/svn/GRCh38/alphagenome --output-dir results/svn/GRCh38/alphagenome
+    deps:
+    - path: data/processed/svn/GRCh38/folds/fold5/fold5.fa
+      hash: md5
+      md5: 655f851e893c4e424cb1382c7e640b75
+      size: 12368819
+    - path: data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
+      hash: md5
+      md5: 656c46767c9037c58647ff345881c8f5
+      size: 12407357
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: 860ccdfd6929e5d4962c35643bfdb9ab
+      size: 48154092
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: fe12fc6af46e388654dc6469ed2a25a5
+      size: 48028659
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: c1401a61b607914a4f9169cdc501342e
+      size: 4820049
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 431b558abca07299a10f61d0d83b31ff
+      size: 4805820
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: bff1d395ce926bc7f1280255d234c5c6
+      size: 9635436
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 41642ae7f8927a364e42e7bb03b27ca4
+      size: 9610686
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f39e9245106b35b40c02858f4d1ef745
+      size: 19279007
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: f23898db9bce87e256721607decfa49f
+      size: 19214708
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: a33a06e7325e35c97e8f7a38a7f2da48
+      size: 28910850
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 92811cdfd708aa094a8adec467181ea0
+      size: 28823614
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: ab58ba16bbbb097b6780cfc7eaf455d5
+      size: 38520744
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 7e2e190fb7a392ab514a354cc372ce6e
+      size: 38421176
+    - path: data/processed/svn/GRCh38/training/outer1/train_neg.fa
+      hash: md5
+      md5: 07bbf2063c2ccbd47979d6f53d610265
+      size: 33557492
+    - path: data/processed/svn/GRCh38/training/outer1/train_pos.fa
+      hash: md5
+      md5: 8957f8b76a72bcdb2c49ac0ad0e8cb95
+      size: 33466136
+    - path: data/processed/svn/GRCh38/training/outer1/validation_neg.fa
+      hash: md5
+      md5: 6bc46bfd304f0b1330df703017cf4f4d
+      size: 3374569
+    - path: data/processed/svn/GRCh38/training/outer1/validation_pos.fa
+      hash: md5
+      md5: 18c9414d94ab3a6cd931909bcf62f32f
+      size: 3364899
+    - path: data/processed/svn/GRCh38/training/outer2/train_neg.fa
+      hash: md5
+      md5: b70bdbe34014ab152acd542f53a9d1a2
+      size: 33293443
+    - path: data/processed/svn/GRCh38/training/outer2/train_pos.fa
+      hash: md5
+      md5: 28c71f45148e90ccae5c5373649824b3
+      size: 33193556
+    - path: data/processed/svn/GRCh38/training/outer2/validation_neg.fa
+      hash: md5
+      md5: af4ac33b2de10979336f99f3ffd52b63
+      size: 3802293
+    - path: data/processed/svn/GRCh38/training/outer2/validation_pos.fa
+      hash: md5
+      md5: 746ecfd18c0f0131eae6ab581ef934c9
+      size: 3797863
+    - path: data/processed/svn/GRCh38/training/outer3/train_neg.fa
+      hash: md5
+      md5: cf75836d3fd0c0f10d20ba8ab2a1dc0d
+      size: 33140419
+    - path: data/processed/svn/GRCh38/training/outer3/train_pos.fa
+      hash: md5
+      md5: e99af2fd6c61158f8c9bc197965bbbc4
+      size: 33056655
+    - path: data/processed/svn/GRCh38/training/outer3/validation_neg.fa
+      hash: md5
+      md5: af4ac33b2de10979336f99f3ffd52b63
+      size: 3802293
+    - path: data/processed/svn/GRCh38/training/outer3/validation_pos.fa
+      hash: md5
+      md5: 746ecfd18c0f0131eae6ab581ef934c9
+      size: 3797863
+    - path: data/processed/svn/GRCh38/training/outer4/train_neg.fa
+      hash: md5
+      md5: 5c9d34c7e80b8b8aedc65581ab01baac
+      size: 33154423
+    - path: data/processed/svn/GRCh38/training/outer4/train_pos.fa
+      hash: md5
+      md5: bc0ad392ec94dd3dd24b756200c48699
+      size: 33073187
+    - path: data/processed/svn/GRCh38/training/outer4/validation_neg.fa
+      hash: md5
+      md5: af4ac33b2de10979336f99f3ffd52b63
+      size: 3802293
+    - path: data/processed/svn/GRCh38/training/outer4/validation_pos.fa
+      hash: md5
+      md5: 746ecfd18c0f0131eae6ab581ef934c9
+      size: 3797863
+    - path: data/processed/svn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: ecad11e8f2ea56da884f67f50b5e7a12
+      size: 4461108
+    - path: data/processed/svn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 04ecb343c2e1ba85fc55d21e3ecd3999
+      size: 4451060
+    - path: data/processed/svn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 37a33998d805c9e32f14c47907f27ed5
+      size: 9101232
+    - path: data/processed/svn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 90486f3df3468d7d36a24c0104c62589
+      size: 9071774
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+      hash: md5
+      md5: 69a422b25f88aa8f9dd141506c77adbd
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.config.json
+      hash: md5
+      md5: 6c10b4f4a1b3314a4998960683bcd069
+      size: 1741
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.history.tsv
+      hash: md5
+      md5: 3cfeb323eb171d8c08fada9093d54a05
+      size: 2621
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.test_metrics.json
+      hash: md5
+      md5: 4b1de2934538d425112589834a4323d1
+      size: 358
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.validation_metrics.json
+      hash: md5
+      md5: 26d1f42159407100dc895c7adc43bb9e
+      size: 318
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+      hash: md5
+      md5: 3f46c8781a7289a776fa2da79f8677a0
+      size: 12608504
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.config.json
+      hash: md5
+      md5: cceeafbe7b511ed86efd00da13696601
+      size: 1755
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.history.tsv
+      hash: md5
+      md5: 1168c50a5011cff95d97dcd965d04820
+      size: 2885
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.test_metrics.json
+      hash: md5
+      md5: 42224c9af452243e3d28d66fe37473d5
+      size: 358
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.validation_metrics.json
+      hash: md5
+      md5: b24c9b189527c1870c3dd2fe547a0d1f
+      size: 320
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+      hash: md5
+      md5: 4e0bf16fd071cfa84e943b74f1b8b6fc
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.config.json
+      hash: md5
+      md5: 66e0deb4ee7e7ab260cc8d20f64ef764
+      size: 1741
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.history.tsv
+      hash: md5
+      md5: ec6fd7a4ca64c4bf8b74b85718290ee4
+      size: 2358
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.test_metrics.json
+      hash: md5
+      md5: 78a3672db2267f09a2c3b92969a69c6e
+      size: 360
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.validation_metrics.json
+      hash: md5
+      md5: ded2e62dfc2087625a82fe5d556f7621
+      size: 320
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+      hash: md5
+      md5: f1d7e52c5f5406db7bb6ad9e5af0adfc
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.config.json
+      hash: md5
+      md5: 8c1416318adefbaaa499d6e8dda93f06
+      size: 1741
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.history.tsv
+      hash: md5
+      md5: 2399677afb570a5c048f633d89baca47
+      size: 2361
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.test_metrics.json
+      hash: md5
+      md5: 6002435a17c535e43f3b1513e3b5c18e
+      size: 358
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.validation_metrics.json
+      hash: md5
+      md5: ee3c5911cf761a1b6dd85fbb15954fc3
+      size: 320
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+      hash: md5
+      md5: c565f63d060486490b710c8f1403519b
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.config.json
+      hash: md5
+      md5: 7c0ec64b46a52613e199a4a067592310
+      size: 1741
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.history.tsv
+      hash: md5
+      md5: 2ec3acfa06c2c0a4d96e541e265c141b
+      size: 2893
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.test_metrics.json
+      hash: md5
+      md5: 279789bd4c5cf2bd32834297d8235bb5
+      size: 358
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.validation_metrics.json
+      hash: md5
+      md5: 7903871d51253a9e1bcc60a8cd029a3f
+      size: 319
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+      hash: md5
+      md5: 7923cded4df51697d0b16541c4865a7a
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.config.json
+      hash: md5
+      md5: 21e80648c33e0bbf860a8e2fa4a8c36c
+      size: 1741
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.history.tsv
+      hash: md5
+      md5: 33dd22d364d149da2a7c9d4ad7b7d24e
+      size: 2889
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.test_metrics.json
+      hash: md5
+      md5: b235619c0588fd6a1ddcfb43c296019d
+      size: 359
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.validation_metrics.json
+      hash: md5
+      md5: 655607ef6e9f1ad3be5f616a06f3db12
+      size: 319
+    - path: models/svn/GRCh38/alphagenome/outer1/outer1.best_head.pt
+      hash: md5
+      md5: ef7b9ad8a8c983e809bb1a6d79d5f618
+      size: 12608128
+    - path: models/svn/GRCh38/alphagenome/outer1/outer1.config.json
+      hash: md5
+      md5: 92d5dd6398c631dbbfbf03c84427c67b
+      size: 1617
+    - path: models/svn/GRCh38/alphagenome/outer1/outer1.history.tsv
+      hash: md5
+      md5: 7d50a962719fdb077cd97f38e751ea0a
+      size: 2884
+    - path: models/svn/GRCh38/alphagenome/outer1/outer1.test_metrics.json
+      hash: md5
+      md5: 386522e797947344f9ec0d203a932d25
+      size: 356
+    - path: models/svn/GRCh38/alphagenome/outer1/outer1.validation_metrics.json
+      hash: md5
+      md5: 5176ad4a20a0044d029251ce2880e226
+      size: 320
+    - path: models/svn/GRCh38/alphagenome/outer2/outer2.best_head.pt
+      hash: md5
+      md5: f63a993666f9a15fa1febeb4b39ed863
+      size: 12608128
+    - path: models/svn/GRCh38/alphagenome/outer2/outer2.config.json
+      hash: md5
+      md5: 87389033922b1c9cac54282bbf23edf0
+      size: 1617
+    - path: models/svn/GRCh38/alphagenome/outer2/outer2.history.tsv
+      hash: md5
+      md5: 156050fc43ca99e9d13170db256c2af5
+      size: 2901
+    - path: models/svn/GRCh38/alphagenome/outer2/outer2.test_metrics.json
+      hash: md5
+      md5: 1ba38b30609edfe1e926645a385bfb9f
+      size: 359
+    - path: models/svn/GRCh38/alphagenome/outer2/outer2.validation_metrics.json
+      hash: md5
+      md5: 4046537366c820b0f71f606a55653cf9
+      size: 321
+    - path: models/svn/GRCh38/alphagenome/outer3/outer3.best_head.pt
+      hash: md5
+      md5: f86fd69633b9a2c078fcdde62fb7d2fe
+      size: 12608128
+    - path: models/svn/GRCh38/alphagenome/outer3/outer3.config.json
+      hash: md5
+      md5: 1ffd79fc2e6e20e1e0a5be8c2c564965
+      size: 1617
+    - path: models/svn/GRCh38/alphagenome/outer3/outer3.history.tsv
+      hash: md5
+      md5: 9cede6f52028bf89ae529cb1efe7b9c3
+      size: 2883
+    - path: models/svn/GRCh38/alphagenome/outer3/outer3.test_metrics.json
+      hash: md5
+      md5: 87417d2d2099a9d64302ca9d9f2eb304
+      size: 359
+    - path: models/svn/GRCh38/alphagenome/outer3/outer3.validation_metrics.json
+      hash: md5
+      md5: c1a84804ebc8de5f02066f024dc119e3
+      size: 318
+    - path: models/svn/GRCh38/alphagenome/outer4/outer4.best_head.pt
+      hash: md5
+      md5: f7588a9b71c46c7a4c355cf7edf1c1e0
+      size: 12608128
+    - path: models/svn/GRCh38/alphagenome/outer4/outer4.config.json
+      hash: md5
+      md5: 10d96b3d1f5f81b97d1078f70a8e69ae
+      size: 1618
+    - path: models/svn/GRCh38/alphagenome/outer4/outer4.history.tsv
+      hash: md5
+      md5: 5f8562990f7119af815cff9319827a5d
+      size: 2626
+    - path: models/svn/GRCh38/alphagenome/outer4/outer4.test_metrics.json
+      hash: md5
+      md5: caa5109ac6eb7867897b6dc977f5e628
+      size: 356
+    - path: models/svn/GRCh38/alphagenome/outer4/outer4.validation_metrics.json
+      hash: md5
+      md5: aeda97d24a6c6ddcaff54c0e22540223
+      size: 321
+    - path: src/prepare_alphagenome_results.py
+      hash: md5
+      md5: 449da19071940fc73bdc4a0821e80039
+      size: 10216
+      isexec: true
+    outs:
+    - path: results/svn/GRCh38/alphagenome/history.tsv
+      hash: md5
+      md5: 660165f7508aa8ecfa40b2e41e4ecebd
+      size: 30483
+    - path: results/svn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: e0e0998af474e321e16cb8c47c24f2ce
+      size: 8103
+  render_alphagenome_report_GRCh38_svn:
+    cmd: bash src/render_GRCh38_alphagenome_report.sh svn
+    deps:
+    - path: reports/alphagenome_GRCh38_results.Rmd
+      hash: md5
+      md5: 24ef092542b8aedad0a7b268323405a0
+      size: 20753
+    - path: results/svn/GRCh38/alphagenome/history.tsv
+      hash: md5
+      md5: 660165f7508aa8ecfa40b2e41e4ecebd
+      size: 30483
+    - path: results/svn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: e0e0998af474e321e16cb8c47c24f2ce
+      size: 8103
+    - path: slurm/train_alphagenome.sh
+      hash: md5
+      md5: aa64ae655505b22902a34fac27ff525c
+      size: 7142
+      isexec: true
+    - path: src/render_GRCh38_alphagenome_report.sh
+      hash: md5
+      md5: c71c6738abee88c98fda9485967e2fe3
+      size: 1101
+      isexec: true
+    - path: src/train_alphagenome.py
+      hash: md5
+      md5: a2831a63401639288ef916d7707c0116
+      size: 25672
+      isexec: true
+    outs:
+    - path: reports/rendered/svn/alphagenome_GRCh38_results.html
+      hash: md5
+      md5: 17a0aa97406b6d3e680ed101d61d523d
+      size: 2423342
+  render_alphagenome_comparison_GRCh38:
+    cmd: bash src/render_GRCh38_alphagenome_comparison_report.sh
+    deps:
+    - path: reports/alphagenome_GRCh38_evn_vs_svn.Rmd
+      hash: md5
+      md5: 1b4045b1187d92a21d19bc305f964c42
+      size: 9513
+    - path: results/evn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: 56e5d7afb2b74511bb3aa6f5bd22c790
+      size: 8122
+    - path: results/svn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: e0e0998af474e321e16cb8c47c24f2ce
+      size: 8103
+    - path: src/render_GRCh38_alphagenome_comparison_report.sh
+      hash: md5
+      md5: 896764337ab0f9bf69b8f3cead988de9
+      size: 428
+      isexec: true
+    outs:
+    - path: reports/rendered/comparison/alphagenome_GRCh38_evn_vs_svn.html
+      hash: md5
+      md5: b2825dfa24229cb365757c5462765ee0
+      size: 1878368

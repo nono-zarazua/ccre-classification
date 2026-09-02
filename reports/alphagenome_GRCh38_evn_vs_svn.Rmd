@@ -1,0 +1,248 @@
+---
+title: "AlphaGenome GRCh38 Enhancer-versus-Silencer Comparison"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  evn_results_dir: null
+  svn_results_dir: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.width = 9, fig.height = 5.5, dpi = 120)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+  library(gt)
+  library(scales)
+})
+
+learning_fractions <- c(10, 20, 40, 60, 80, 100)
+outer_names <- paste0("outer", 1:4)
+task_colors <- c("Enhancer vs negative" = "#0072B2",
+                 "Silencer vs negative" = "#D55E00")
+theme_set(theme_minimal(base_size = 12) +
+  theme(panel.grid.minor = element_blank(), legend.position = "bottom"))
+```
+
+```{r inputs, include=FALSE}
+read_metrics <- function(path, comparison) {
+  metrics_path <- file.path(normalizePath(path, mustWork = TRUE), "metrics.tsv")
+  if (!file.exists(metrics_path)) stop("Missing metrics table: ", metrics_path)
+  x <- read.delim(metrics_path, sep = "\t", stringsAsFactors = FALSE,
+                  check.names = FALSE)
+  required <- c("model", "task", "dataset", "dataset_type", "training_fraction",
+                "split", "n_training_total", "n_evaluation_total", "best_epoch",
+                "elapsed_seconds", "auroc", "auprc", "accuracy", "precision",
+                "recall", "f1")
+  missing <- setdiff(required, names(x))
+  if (length(missing)) stop("Missing columns in ", metrics_path, ": ", paste(missing, collapse = ", "))
+  if (nrow(x) != 20) stop("Expected 20 rows in ", metrics_path)
+  if (!all(x$model == "alphagenome") || !all(x$task == "GRCh38")) {
+    stop("Model/task mismatch in ", metrics_path)
+  }
+  if (!identical(sort(unique(x$dataset)), sort(c(paste0("learning_curve_", learning_fractions), outer_names)))) {
+    stop("Dataset inventory mismatch in ", metrics_path)
+  }
+  x |> mutate(comparison = comparison)
+}
+
+if (is.null(params$evn_results_dir) || is.null(params$svn_results_dir)) {
+  stop("Both EVN and SVN result directories are required")
+}
+
+metrics <- bind_rows(
+  read_metrics(params$evn_results_dir, "Enhancer vs negative"),
+  read_metrics(params$svn_results_dir, "Silencer vs negative")
+) |>
+  mutate(comparison = factor(comparison, levels = names(task_colors)),
+         split = factor(split, levels = c("validation", "test"),
+                        labels = c("Validation", "Test")),
+         ranking_error = 1 - auroc)
+
+learning <- metrics |>
+  filter(dataset_type == "learning_curve") |>
+  arrange(split, comparison, n_training_total)
+outer <- metrics |>
+  filter(dataset_type == "outer") |>
+  mutate(dataset = factor(dataset, levels = outer_names))
+```
+
+# Scope and interpretation
+
+This report compares learning behavior and chromosome-composition stability for two
+frozen-encoder AlphaGenome classifiers: enhancer versus matched synthetic negative
+sequences (EVN), and silencer versus matched synthetic negative sequences (SVN). Both
+use the same encoder, classification-head architecture, optimization configuration,
+checkpoint-selection rule, and six nested percentage checkpoints.
+
+The comparison is descriptive rather than paired. EVN and SVN contain different
+positive loci and different validation/test cohorts, and their 100% training pools
+are not exactly the same size. Vertical differences may therefore reflect both
+biological task difficulty and cohort composition. Absolute training-observation
+counts are used on the x-axis.
+
+```{r training-size-table}
+learning |>
+  filter(split == "Validation") |>
+  distinct(comparison, training_fraction, n_training_total) |>
+  mutate(`Training fraction` = paste0(training_fraction, "%")) |>
+  select(Task = comparison, `Training fraction`,
+         `Training observations` = n_training_total) |>
+  gt(groupname_col = "Task") |>
+  tab_header(title = "Task-specific learning-curve sizes") |>
+  fmt_integer(columns = `Training observations`)
+```
+
+# AUROC learning curves
+
+```{r auroc-curves}
+ggplot(learning,
+       aes(n_training_total, auroc, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~split, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  labs(title = "AlphaGenome AUROC learning curves",
+       x = "Training observations", y = "AUROC", color = NULL, shape = NULL)
+```
+
+# Average-precision learning curves
+
+```{r ap-curves}
+ggplot(learning,
+       aes(n_training_total, auprc, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~split, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  labs(title = "AlphaGenome Average-Precision learning curves",
+       x = "Training observations", y = "Average Precision",
+       color = NULL, shape = NULL)
+```
+
+# Pairwise AUROC ranking error
+
+`1 - AUROC` is the pairwise ranking error implied by AUROC, not thresholded
+classification error.
+
+```{r ranking-error-curves}
+ggplot(learning,
+       aes(n_training_total, ranking_error, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  facet_wrap(~split, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
+  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  labs(title = "AlphaGenome pairwise AUROC ranking-error curves",
+       x = "Training observations", y = "1 - AUROC",
+       color = NULL, shape = NULL)
+```
+
+# Chromosome-composition stability
+
+Outer-set numbering is task-specific because the chromosome groupings were balanced
+separately for EVN and SVN. The plots compare each task's stability pattern, not the
+same outer training composition across tasks.
+
+```{r outer-stability}
+outer_long <- outer |>
+  filter(split == "Test") |>
+  select(comparison, dataset, auroc, auprc) |>
+  pivot_longer(c(auroc, auprc), names_to = "metric", values_to = "value") |>
+  mutate(metric = recode(metric, auroc = "AUROC", auprc = "Average Precision"))
+
+ggplot(outer_long,
+       aes(dataset, value, color = comparison, shape = comparison,
+           group = comparison)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  facet_wrap(~metric, scales = "free_y") +
+  scale_color_manual(values = task_colors) +
+  scale_y_continuous(expand = expansion(mult = c(0.16, 0.18))) +
+  labs(title = "Held-out outer-test stability",
+       x = "Task-specific outer set", y = NULL, color = NULL, shape = NULL)
+```
+
+```{r outer-summary}
+outer |>
+  filter(split == "Test") |>
+  group_by(comparison) |>
+  summarise(`Mean AUROC` = mean(auroc), `SD AUROC` = sd(auroc),
+            `Minimum AUROC` = min(auroc), `Maximum AUROC` = max(auroc),
+            `Mean AP` = mean(auprc), `SD AP` = sd(auprc),
+            `Minimum AP` = min(auprc), `Maximum AP` = max(auprc), .groups = "drop") |>
+  rename(Task = comparison) |>
+  gt() |>
+  tab_header(title = "Held-out outer-test summary") |>
+  fmt_number(columns = where(is.numeric), decimals = 4)
+```
+
+# Runtime comparison
+
+Elapsed time covers model loading, training, validation, checkpoint restoration, and
+test evaluation. Both tasks ran on NVIDIA A100-SXM4-40GB GPUs with the same batch size
+and maximum epoch count.
+
+```{r runtime-curves}
+runtime <- learning |>
+  filter(split == "Test") |>
+  mutate(elapsed_minutes = elapsed_seconds / 60)
+
+ggplot(runtime,
+       aes(n_training_total, elapsed_minutes, color = comparison,
+           shape = comparison, group = comparison)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2.8) +
+  scale_color_manual(values = task_colors) +
+  scale_x_continuous(labels = comma) +
+  labs(title = "End-to-end AlphaGenome runtime",
+       x = "Training observations", y = "Elapsed minutes",
+       color = NULL, shape = NULL)
+```
+
+# Full-training comparison
+
+```{r full-training-table}
+learning |>
+  filter(training_fraction == 100) |>
+  select(Task = comparison, Split = split,
+         `Training observations` = n_training_total,
+         `Evaluation observations` = n_evaluation_total,
+         `Best epoch` = best_epoch, Accuracy = accuracy,
+         AUROC = auroc, `Average Precision` = auprc,
+         Precision = precision, Recall = recall, F1 = f1) |>
+  gt(groupname_col = "Task") |>
+  tab_header(title = "100% AlphaGenome model performance") |>
+  fmt_integer(columns = c(`Training observations`, `Evaluation observations`, `Best epoch`)) |>
+  fmt_number(columns = c(Accuracy, AUROC, `Average Precision`, Precision, Recall, F1),
+             decimals = 4)
+```
+
+# Reproducibility notes
+
+- Both inputs are the validated `metrics.tsv` tables produced by
+  `src/prepare_alphagenome_results.py`.
+- Each percentage was trained independently from a newly initialized head.
+- Validation AUPRC selected every checkpoint; test data were evaluated afterward.
+- Aggregate artifacts do not contain per-sequence logits, so full ROC/PR traces and
+  top-fraction enrichment cannot be reconstructed here.
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.
+
+```{r session-info}
+sessionInfo()
+```
