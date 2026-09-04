@@ -24,6 +24,8 @@ suppressPackageStartupMessages({
 
 learning_fractions <- c(10, 20, 40, 60, 80, 100)
 outer_names <- paste0("outer", 1:4)
+performance_y_limits <- c(0.75, 0.85)
+ranking_error_y_limits <- c(0.15, 0.22)
 task_colors <- c("Enhancer vs negative" = "#0072B2",
                  "Silencer vs negative" = "#D55E00")
 theme_set(theme_minimal(base_size = 12) +
@@ -99,7 +101,9 @@ learning |>
   fmt_integer(columns = `Training observations`)
 ```
 
-# AUROC learning curves
+# Learning curves
+
+## AUROC
 
 ```{r auroc-curves}
 ggplot(learning,
@@ -107,15 +111,16 @@ ggplot(learning,
            shape = comparison, group = comparison)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2.8) +
-  facet_wrap(~split, scales = "free_y") +
+  facet_wrap(~split) +
   scale_color_manual(values = task_colors) +
   scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
-  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  scale_y_continuous(limits = performance_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
   labs(title = "AlphaGenome AUROC learning curves",
        x = "Training observations", y = "AUROC", color = NULL, shape = NULL)
 ```
 
-# Average-precision learning curves
+## Average precision
 
 ```{r ap-curves}
 ggplot(learning,
@@ -123,16 +128,17 @@ ggplot(learning,
            shape = comparison, group = comparison)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2.8) +
-  facet_wrap(~split, scales = "free_y") +
+  facet_wrap(~split) +
   scale_color_manual(values = task_colors) +
   scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
-  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  scale_y_continuous(limits = performance_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
   labs(title = "AlphaGenome Average-Precision learning curves",
        x = "Training observations", y = "Average Precision",
        color = NULL, shape = NULL)
 ```
 
-# Pairwise AUROC ranking error
+## Pairwise AUROC ranking error
 
 `1 - AUROC` is the pairwise ranking error implied by AUROC, not thresholded
 classification error.
@@ -143,10 +149,11 @@ ggplot(learning,
            shape = comparison, group = comparison)) +
   geom_line(linewidth = 1) +
   geom_point(size = 2.8) +
-  facet_wrap(~split, scales = "free_y") +
+  facet_wrap(~split) +
   scale_color_manual(values = task_colors) +
   scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.05))) +
-  scale_y_continuous(expand = expansion(mult = c(0.14, 0.18))) +
+  scale_y_continuous(limits = ranking_error_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
   labs(title = "AlphaGenome pairwise AUROC ranking-error curves",
        x = "Training observations", y = "1 - AUROC",
        color = NULL, shape = NULL)
@@ -160,8 +167,7 @@ same outer training composition across tasks.
 
 ```{r outer-stability}
 outer_long <- outer |>
-  filter(split == "Test") |>
-  select(comparison, dataset, auroc, auprc) |>
+  select(comparison, dataset, split, auroc, auprc) |>
   pivot_longer(c(auroc, auprc), names_to = "metric", values_to = "value") |>
   mutate(metric = recode(metric, auroc = "AUROC", auprc = "Average Precision"))
 
@@ -170,10 +176,11 @@ ggplot(outer_long,
            group = comparison)) +
   geom_line(linewidth = 0.9) +
   geom_point(size = 2.8) +
-  facet_wrap(~metric, scales = "free_y") +
+  facet_grid(split ~ metric) +
   scale_color_manual(values = task_colors) +
-  scale_y_continuous(expand = expansion(mult = c(0.16, 0.18))) +
-  labs(title = "Held-out outer-test stability",
+  scale_y_continuous(limits = performance_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  labs(title = "Validation and held-out test stability",
        x = "Task-specific outer set", y = NULL, color = NULL, shape = NULL)
 ```
 
@@ -189,29 +196,6 @@ outer |>
   gt() |>
   tab_header(title = "Held-out outer-test summary") |>
   fmt_number(columns = where(is.numeric), decimals = 4)
-```
-
-# Runtime comparison
-
-Elapsed time covers model loading, training, validation, checkpoint restoration, and
-test evaluation. Both tasks ran on NVIDIA A100-SXM4-40GB GPUs with the same batch size
-and maximum epoch count.
-
-```{r runtime-curves}
-runtime <- learning |>
-  filter(split == "Test") |>
-  mutate(elapsed_minutes = elapsed_seconds / 60)
-
-ggplot(runtime,
-       aes(n_training_total, elapsed_minutes, color = comparison,
-           shape = comparison, group = comparison)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2.8) +
-  scale_color_manual(values = task_colors) +
-  scale_x_continuous(labels = comma) +
-  labs(title = "End-to-end AlphaGenome runtime",
-       x = "Training observations", y = "Elapsed minutes",
-       color = NULL, shape = NULL)
 ```
 
 # Full-training comparison

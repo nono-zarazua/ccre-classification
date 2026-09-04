@@ -1,0 +1,162 @@
+---
+title: "GRCh38 Native-versus-Cross-Task Evaluation"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  metrics: null
+  model: null
+  feature_dir: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
+                      fig.width=9, fig.height=5.8, dpi=120)
+suppressPackageStartupMessages({library(dplyr); library(tidyr); library(ggplot2); library(scales); library(gt)})
+if (is.null(params$metrics) || is.null(params$model)) stop("metrics and model parameters are required")
+all_metrics <- read.delim(params$metrics, check.names=FALSE)
+x <- all_metrics |> filter(model == params$model) |>
+  mutate(`Trained task`=recode(model_task, evn="EVN", svn="SVN"),
+         `Evaluation task`=recode(evaluation_task, evn="EVN", svn="SVN"),
+         Split=factor(recode(split, validation="Validation", test="Test"),
+                      levels=c("Validation","Test")),
+         Mode=factor(recode(evaluation_mode, native="Native", cross="Cross-task"),
+                     levels=c("Native","Cross-task")))
+if (nrow(x) != 48) stop("Expected 48 metric rows for one model family")
+model_name <- if (params$model == "alphagenome") "AlphaGenome" else "LS-GKM"
+auroc_limits <- if (params$model == "alphagenome") c(0.785,0.835) else c(0.67,0.725)
+auprc_limits <- if (params$model == "alphagenome") c(0.77,0.825) else c(0.635,0.695)
+colors <- c(EVN="#0072B2", SVN="#D55E00")
+theme_set(theme_minimal(base_size=12) + theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+```
+
+# Scope and interpretation
+
+This report evaluates each `r model_name` learning-curve model on both its native
+binary task and the other regulatory task. EVN-trained models are transferred to
+SVN validation/test data, and SVN-trained models are transferred to EVN data.
+
+Cross-task AUROC/AP measures positive-versus-negative transfer. It does not measure
+direct enhancer-versus-silencer discrimination. The tasks have different positive
+loci and independently generated negative backgrounds, so differences remain
+descriptive rather than a paired causal comparison.
+
+```{r evaluation-sizes}
+x |> distinct(`Evaluation task`, Split, n_positive, n_negative, n_evaluation_total) |>
+  select(`Evaluation task`, Split, Positives=n_positive, Negatives=n_negative,
+         Total=n_evaluation_total) |> gt() |> fmt_integer(columns=c(Positives,Negatives,Total))
+```
+
+# Learning curves
+
+## AUROC
+
+```{r auroc}
+ggplot(x, aes(n_training_total, auroc, color=`Evaluation task`, linetype=Mode,
+              shape=Mode, group=interaction(`Evaluation task`,Mode))) +
+  geom_line(linewidth=.9) + geom_point(size=2.5) +
+  facet_grid(Split ~ `Trained task`) + scale_color_manual(values=colors) +
+  scale_linetype_manual(values=c(Native="solid", `Cross-task`="dashed")) +
+  scale_shape_manual(values=c(Native=16, `Cross-task`=17)) +
+  scale_x_continuous(labels=comma) +
+  scale_y_continuous(limits=auroc_limits, breaks=pretty_breaks(6)) +
+  labs(title=paste(model_name,"native and cross-task AUROC"),
+       x="Training observations", y="AUROC", color="Evaluation data", linetype="Mode") +
+  guides(shape="none",
+         linetype=guide_legend(override.aes=list(shape=NA, color="black", linewidth=1)))
+```
+
+## Average precision
+
+```{r auprc}
+ggplot(x, aes(n_training_total, auprc, color=`Evaluation task`, linetype=Mode,
+              shape=Mode, group=interaction(`Evaluation task`,Mode))) +
+  geom_line(linewidth=.9) + geom_point(size=2.5) +
+  facet_grid(Split ~ `Trained task`) + scale_color_manual(values=colors) +
+  scale_linetype_manual(values=c(Native="solid", `Cross-task`="dashed")) +
+  scale_shape_manual(values=c(Native=16, `Cross-task`=17)) +
+  scale_x_continuous(labels=comma) +
+  scale_y_continuous(limits=auprc_limits, breaks=pretty_breaks(6)) +
+  labs(title=paste(model_name,"native and cross-task average precision"),
+       x="Training observations", y="Average Precision", color="Evaluation data", linetype="Mode") +
+  guides(shape="none",
+         linetype=guide_legend(override.aes=list(shape=NA, color="black", linewidth=1)))
+```
+
+```{r feature-inputs, include=FALSE}
+has_features <- params$model == "alphagenome" && !is.null(params$feature_dir)
+if (has_features) {
+  feature_importance <- read.delim(file.path(params$feature_dir,"feature_importance.tsv"))
+  feature_similarity <- read.delim(file.path(params$feature_dir,"feature_similarity.tsv"))
+}
+```
+
+```{r feature-section, results='asis'}
+if (has_features) cat("# AlphaGenome head-feature attribution\n\n")
+```
+
+```{r feature-explanation, results='asis'}
+if (has_features) cat("The EVN and SVN heads receive the same 3,072 aligned encoder dimensions. Importance is the summed absolute input-to-hidden-to-output path strength, adjusted by the LayerNorm scale. This measures global connection capacity. It does not include sequence-dependent ReLU gating and does not assign biological names to latent encoder channels.\n\n")
+```
+
+```{r feature-similarity, eval=has_features}
+similarity_long <- feature_similarity |>
+  select(training_fraction, cosine_similarity, spearman_correlation) |>
+  pivot_longer(-training_fraction, names_to="metric", values_to="value") |>
+  mutate(metric=recode(metric, cosine_similarity="Cosine similarity",
+                       spearman_correlation="Spearman correlation"))
+ggplot(similarity_long, aes(training_fraction, value, color=metric)) +
+  geom_line(linewidth=.9) + geom_point(size=2.5) +
+  scale_x_continuous(breaks=c(10,20,40,60,80,100), labels=paste0(c(10,20,40,60,80,100),"%")) +
+  scale_y_continuous(limits=c(0,1)) +
+  labs(title="Similarity of EVN and SVN head importance profiles",
+       x="Training fraction", y="Similarity", color=NULL)
+```
+
+```{r top-overlap, eval=has_features}
+overlap <- feature_similarity |>
+  select(training_fraction, ends_with("overlap_fraction")) |>
+  pivot_longer(-training_fraction, names_to="cutoff", values_to="overlap") |>
+  mutate(cutoff=recode(cutoff, top_1_overlap_fraction="Top 1%",
+                       top_5_overlap_fraction="Top 5%", top_10_overlap_fraction="Top 10%"))
+ggplot(overlap, aes(training_fraction, overlap, color=cutoff)) +
+  geom_line(linewidth=.9) + geom_point(size=2.5) +
+  scale_x_continuous(breaks=c(10,20,40,60,80,100), labels=paste0(c(10,20,40,60,80,100),"%")) +
+  scale_y_continuous(labels=percent, limits=c(0,1)) +
+  labs(title="Overlap of the most strongly connected encoder features",
+       x="Training fraction", y="EVN/SVN feature overlap", color=NULL)
+```
+
+```{r top-features, eval=has_features}
+feature_importance |> filter(training_fraction==100) |>
+  group_by(task) |> slice_max(normalized_importance, n=15, with_ties=FALSE) |> ungroup() |>
+  mutate(Task=recode(task,evn="EVN",svn="SVN")) |>
+  select(Task, `Encoder position`=encoder_position, `Encoder channel`=encoder_channel,
+         `Normalized importance`=normalized_importance) |>
+  gt(groupname_col="Task") |> tab_header(title="Top 15 latent features in each 100% head") |>
+  fmt_number(columns=`Normalized importance`, decimals=6)
+```
+
+# Full-training comparison
+
+```{r full}
+x |> filter(training_fraction==100) |>
+  select(`Trained task`,`Evaluation task`,Mode,Split,
+         `Training observations`=n_training_total,
+         `Evaluation observations`=n_evaluation_total,AUROC=auroc,AP=auprc) |>
+  gt(groupname_col="Trained task") |>
+  fmt_integer(columns=c(`Training observations`,`Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC,AP),decimals=4)
+```
+
+# Reproducibility notes
+
+- Native and cross-task performance use continuous scores, not fixed decisions.
+- AlphaGenome uses logits from validation-selected frozen-encoder heads.
+- LS-GKM uses continuous gkm-SVM decision scores.
+- Every percentage represents an independently trained model.
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.

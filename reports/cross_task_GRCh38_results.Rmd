@@ -1,0 +1,89 @@
+---
+title: "GRCh38 Native-versus-Cross-Task Evaluation"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  metrics: "results/cross_task/GRCh38/native_vs_cross_metrics.tsv"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=7)
+suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(scales); library(gt)})
+x <- read.delim(params$metrics, check.names=FALSE) |>
+  mutate(Model=recode(model, lsgkm="LS-GKM", alphagenome="AlphaGenome"),
+         `Trained task`=recode(model_task, evn="EVN", svn="SVN"),
+         `Evaluation task`=recode(evaluation_task, evn="EVN", svn="SVN"),
+         Split=factor(recode(split, validation="Validation", test="Test"),
+                      levels=c("Validation","Test")),
+         Mode=factor(recode(evaluation_mode, native="Native", cross="Cross-task"),
+                     levels=c("Native","Cross-task")))
+colors <- c(EVN="#0072B2", SVN="#D55E00")
+theme_set(theme_minimal(base_size=12) + theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+```
+
+# Scope and interpretation
+
+Each learning-curve model is evaluated on its native task and on the other task's
+fixed chromosome-matched validation and test cohorts. Cross-task AUROC/AP measures
+transfer to the other positive-versus-negative problem; it is not direct
+enhancer-versus-silencer classification. EVN and SVN use different synthetic-negative
+pools, so native/cross differences can reflect both positive biology and background composition.
+
+# AUROC learning curves
+
+```{r auroc}
+ggplot(x, aes(n_training_total, auroc, color=`Evaluation task`, linetype=Mode,
+              shape=Mode, group=interaction(`Evaluation task`,Mode))) +
+  geom_line(linewidth=.9) + geom_point(size=2.5) +
+  facet_grid(Model ~ Split + `Trained task`, scales="free_y") +
+  scale_color_manual(values=colors) +
+  scale_linetype_manual(values=c(Native="solid", `Cross-task`="dashed")) +
+  scale_shape_manual(values=c(Native=16, `Cross-task`=17)) +
+  scale_x_continuous(labels=comma) +
+  scale_y_continuous(breaks=pretty_breaks(6), expand=expansion(mult=c(.04,.07))) +
+  labs(x="Training observations", y="AUROC", color="Evaluation data", linetype="Mode") +
+  guides(shape="none",
+         linetype=guide_legend(override.aes=list(shape=NA, color="black", linewidth=1)))
+```
+
+# Average-precision learning curves
+
+```{r auprc}
+ggplot(x, aes(n_training_total, auprc, color=`Evaluation task`, linetype=Mode,
+              shape=Mode, group=interaction(`Evaluation task`,Mode))) +
+  geom_line(linewidth=.9) + geom_point(size=2.5) +
+  facet_grid(Model ~ Split + `Trained task`, scales="free_y") +
+  scale_color_manual(values=colors) +
+  scale_linetype_manual(values=c(Native="solid", `Cross-task`="dashed")) +
+  scale_shape_manual(values=c(Native=16, `Cross-task`=17)) +
+  scale_x_continuous(labels=comma) +
+  scale_y_continuous(breaks=pretty_breaks(6), expand=expansion(mult=c(.04,.07))) +
+  labs(x="Training observations", y="Average Precision", color="Evaluation data", linetype="Mode") +
+  guides(shape="none",
+         linetype=guide_legend(override.aes=list(shape=NA, color="black", linewidth=1)))
+```
+
+# Full-training comparison
+
+```{r full}
+x |> filter(training_fraction==100) |>
+  select(Model, `Trained task`, `Evaluation task`, Mode, Split,
+         `Training observations`=n_training_total,
+         `Evaluation observations`=n_evaluation_total, AUROC=auroc, AP=auprc) |>
+  gt(groupname_col="Model") |>
+  fmt_integer(columns=c(`Training observations`,`Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC,AP), decimals=4)
+```
+
+# Reproducibility notes
+
+- Native AlphaGenome metrics come from validation-selected checkpoints.
+- Cross-task AlphaGenome metrics are computed from exported per-sequence logits.
+- LS-GKM metrics use its continuous decision scores.
+- All evaluations retain the original task-specific positive and negative labels.
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.

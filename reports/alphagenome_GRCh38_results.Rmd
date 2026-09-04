@@ -25,6 +25,8 @@ suppressPackageStartupMessages({
 
 learning_fractions <- c(10, 20, 40, 60, 80, 100)
 outer_names <- paste0("outer", 1:4)
+performance_y_limits <- c(0.75, 0.85)
+ranking_error_y_limits <- c(0.15, 0.22)
 split_colors <- c(Validation = "#D55E00", Test = "#0072B2")
 outer_colors <- c(outer1 = "#0072B2", outer2 = "#D55E00",
                   outer3 = "#009E73", outer4 = "#CC79A7")
@@ -100,7 +102,7 @@ for (field in config_fields) {
 config <- metrics[1, config_fields, drop = FALSE]
 ```
 
-# Dataset and experimental design
+# Scope and interpretation
 
 The GRCh38 `r analysis_name` experiment uses a frozen pretrained AlphaGenome
 encoder and an independently initialized binary classification head for every run.
@@ -139,7 +141,7 @@ metrics |>
   fmt_integer(columns = c(Positives, Negatives, `Total observations`))
 ```
 
-# Model and training configuration
+## Model and training configuration
 
 The pretrained AlphaGenome trunk is loaded without its original output heads and kept
 fully frozen. Encoder tensors are normalized to `(batch, positions, 1536)`; in this
@@ -179,6 +181,77 @@ tribble(
   tab_header(title = "Frozen AlphaGenome training configuration")
 ```
 
+The saved artifacts contain aggregate validation/test metrics and epoch histories, not per-sequence logits. Therefore, this report intentionally focuses on learning curves and chromosome-composition stability rather than full ROC/precision-recall traces or highest-ranked-locus enrichment.
+
+# Learning-curve analysis
+
+Absolute training observations define the x-axis. Validation and held-out test results
+are overlaid because every learning-curve model uses the same evaluation loci.
+
+## AUROC
+
+```{r learning-auroc}
+ggplot(learning_metrics,
+       aes(n_training_total, auroc, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  geom_text(data = filter(learning_metrics, split == "Test"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
+            vjust = -0.8, size = 3, show.legend = FALSE) +
+  geom_text(data = filter(learning_metrics, split == "Validation"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
+            vjust = 1.8, size = 3, show.legend = FALSE) +
+  scale_color_manual(values = split_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(limits = performance_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  labs(title = "Validation and test AUROC by absolute training-set size",
+       x = "Training observations", y = "AUROC", color = "Split", shape = "Split")
+```
+
+## Average precision
+
+```{r learning-ap}
+ggplot(learning_metrics,
+       aes(n_training_total, auprc, color = split, shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  geom_text(data = filter(learning_metrics, split == "Test"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auprc)),
+            vjust = -0.8, size = 3, show.legend = FALSE) +
+  geom_text(data = filter(learning_metrics, split == "Validation"),
+            aes(label = sprintf("%d%%\n%.3f", training_fraction, auprc)),
+            vjust = 1.8, size = 3, show.legend = FALSE) +
+  scale_color_manual(values = split_colors) +
+  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
+  scale_y_continuous(limits = performance_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  labs(title = "Validation and test Average Precision by absolute training-set size",
+       x = "Training observations", y = "Average Precision",
+       color = "Split", shape = "Split")
+```
+
+## Pairwise AUROC ranking error
+
+`1 - AUROC` is the pairwise AUROC ranking error: approximately the probability that
+a positive-negative pair is ordered incorrectly, with ties handled according to the
+AUROC convention. It is not thresholded classification error.
+
+```{r ranking-error}
+ggplot(learning_metrics,
+       aes(n_training_total, ranking_error, color = split,
+           shape = split, group = split)) +
+  geom_line(linewidth = 0.9) +
+  geom_point(size = 2.8) +
+  scale_color_manual(values = split_colors) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(limits = ranking_error_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
+  labs(title = "Validation and test pairwise AUROC ranking error",
+       x = "Training observations", y = "1 - AUROC",
+       color = "Split", shape = "Split")
+```
+
 # Chromosome-composition stability
 
 The outer experiments assess sensitivity to chromosome composition. Their validation
@@ -196,9 +269,10 @@ ggplot(outer_long,
        aes(dataset, value, color = split, shape = split, group = split)) +
   geom_line(linewidth = 0.8) +
   geom_point(size = 3) +
-  facet_wrap(~metric, scales = "free_y") +
+  facet_wrap(~metric) +
   scale_color_manual(values = split_colors) +
-  scale_y_continuous(expand = expansion(mult = c(0.15, 0.18))) +
+  scale_y_continuous(limits = performance_y_limits, breaks = pretty_breaks(n = 6),
+                     expand = expansion(mult = c(0.02, 0.02))) +
   labs(title = "Validation and held-out test ranking performance across outer sets",
        x = "Outer set", y = NULL, color = "Split", shape = "Split")
 ```
@@ -225,163 +299,7 @@ Held-out fold 5 AUROC averages `r sprintf("%.4f", outer_auroc_mean)` and spans
 precision averages `r sprintf("%.4f", outer_ap_mean)` and spans
 `r sprintf("%.4f–%.4f", min(outer_test$auprc), max(outer_test$auprc))`.
 
-# Learning-curve analysis
-
-Absolute training observations define the x-axis. Validation and held-out test results
-are overlaid because every learning-curve model uses the same evaluation loci.
-
-## AUROC
-
-```{r learning-auroc}
-ggplot(learning_metrics,
-       aes(n_training_total, auroc, color = split, shape = split, group = split)) +
-  geom_line(linewidth = 0.9) +
-  geom_point(size = 2.8) +
-  geom_text(data = filter(learning_metrics, split == "Test"),
-            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
-            vjust = -0.8, size = 3, show.legend = FALSE) +
-  geom_text(data = filter(learning_metrics, split == "Validation"),
-            aes(label = sprintf("%d%%\n%.3f", training_fraction, auroc)),
-            vjust = 1.8, size = 3, show.legend = FALSE) +
-  scale_color_manual(values = split_colors) +
-  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
-  scale_y_continuous(expand = expansion(mult = c(0.22, 0.25))) +
-  labs(title = "Validation and test AUROC by absolute training-set size",
-       x = "Training observations", y = "AUROC", color = "Split", shape = "Split")
-```
-
-## Average precision
-
-```{r learning-ap}
-ggplot(learning_metrics,
-       aes(n_training_total, auprc, color = split, shape = split, group = split)) +
-  geom_line(linewidth = 0.9) +
-  geom_point(size = 2.8) +
-  geom_text(data = filter(learning_metrics, split == "Test"),
-            aes(label = sprintf("%d%%\n%.3f", training_fraction, auprc)),
-            vjust = -0.8, size = 3, show.legend = FALSE) +
-  geom_text(data = filter(learning_metrics, split == "Validation"),
-            aes(label = sprintf("%d%%\n%.3f", training_fraction, auprc)),
-            vjust = 1.8, size = 3, show.legend = FALSE) +
-  scale_color_manual(values = split_colors) +
-  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
-  scale_y_continuous(expand = expansion(mult = c(0.22, 0.25))) +
-  labs(title = "Validation and test Average Precision by absolute training-set size",
-       x = "Training observations", y = "Average Precision",
-       color = "Split", shape = "Split")
-```
-
-## Pairwise AUROC ranking error
-
-`1 - AUROC` is the pairwise AUROC ranking error: approximately the probability that
-a positive-negative pair is ordered incorrectly, with ties handled according to the
-AUROC convention. It is not thresholded classification error.
-
-```{r ranking-error}
-ggplot(learning_metrics,
-       aes(n_training_total, ranking_error, color = split,
-           shape = split, group = split)) +
-  geom_line(linewidth = 0.9) +
-  geom_point(size = 2.8) +
-  scale_color_manual(values = split_colors) +
-  scale_x_continuous(labels = comma) +
-  scale_y_continuous(expand = expansion(mult = c(0.12, 0.14))) +
-  labs(title = "Validation and test pairwise AUROC ranking error",
-       x = "Training observations", y = "1 - AUROC",
-       color = "Split", shape = "Split")
-```
-
-## Marginal held-out test gains
-
-```{r marginal-gains}
-marginal_gains <- test_learning |>
-  transmute(training_fraction, n_training_total, auroc, auprc, ranking_error) |>
-  mutate(from_fraction = lag(training_fraction), from_n = lag(n_training_total),
-         delta_n = n_training_total - from_n,
-         delta_auroc = auroc - lag(auroc),
-         delta_ap = auprc - lag(auprc),
-         ranking_error_reduction = lag(ranking_error) - ranking_error,
-         delta_auroc_per_10000 = delta_auroc / delta_n * 10000) |>
-  filter(!is.na(from_fraction)) |>
-  transmute(From = paste0(from_fraction, "%"), To = paste0(training_fraction, "%"),
-            `Additional training observations` = delta_n,
-            `Change in AUROC` = delta_auroc, `Change in AP` = delta_ap,
-            `Reduction in ranking error` = ranking_error_reduction,
-            `AUROC gain per 10,000 observations` = delta_auroc_per_10000)
-
-marginal_gains |>
-  gt() |>
-  fmt_integer(columns = `Additional training observations`) |>
-  fmt_number(columns = c(`Change in AUROC`, `Change in AP`,
-                         `Reduction in ranking error`,
-                         `AUROC gain per 10,000 observations`), decimals = 4)
-```
-
-# Training dynamics and early stopping
-
-Each percentage starts from a newly initialized classification head. The curves below
-show the per-epoch validation AUPRC used for checkpoint selection; points identify the
-restored best epoch. Runs can contain more epochs than the selected checkpoint because
-training continues until the patience criterion is reached or the ten-epoch maximum is
-completed.
-
-```{r history-auprc}
-learning_history <- history |>
-  filter(dataset_type == "learning_curve") |>
-  mutate(training_fraction = factor(training_fraction, levels = learning_fractions,
-                                    labels = paste0(learning_fractions, "%")))
-best_history <- learning_history |> filter(epoch == best_epoch)
-
-ggplot(learning_history,
-       aes(epoch, validation_auprc, color = training_fraction,
-           group = training_fraction)) +
-  geom_line(linewidth = 0.85) +
-  geom_point(data = best_history, size = 2.8) +
-  scale_color_brewer(palette = "Dark2") +
-  scale_x_continuous(breaks = seq_len(max(history$epoch))) +
-  labs(title = "Validation AUPRC during learning-curve training",
-       subtitle = "Points mark validation-selected checkpoints",
-       x = "Epoch", y = "Validation AUPRC", color = "Training fraction")
-```
-
-```{r history-loss}
-loss_history <- learning_history |>
-  select(dataset, training_fraction, epoch, train_loss, validation_loss) |>
-  pivot_longer(c(train_loss, validation_loss), names_to = "split", values_to = "loss") |>
-  mutate(split = recode(split, train_loss = "Training", validation_loss = "Validation"))
-
-ggplot(loss_history, aes(epoch, loss, color = split, group = split)) +
-  geom_line(linewidth = 0.75) +
-  facet_wrap(~training_fraction, scales = "free_y") +
-  scale_color_manual(values = c(Training = "#009E73", Validation = "#D55E00")) +
-  scale_x_continuous(breaks = c(1, 5, 10)) +
-  labs(title = "Training and validation loss by epoch",
-       x = "Epoch", y = "Binary cross-entropy", color = NULL)
-```
-
-# Runtime scaling
-
-Elapsed time includes model loading, training, repeated validation, restoration of the
-best checkpoint, and final test evaluation. It is therefore an end-to-end run time,
-not training-only GPU time.
-
-```{r runtime}
-runtime_data <- learning_metrics |>
-  filter(split == "Test") |>
-  mutate(elapsed_minutes = elapsed_seconds / 60)
-
-ggplot(runtime_data, aes(n_training_total, elapsed_minutes)) +
-  geom_line(color = "#0072B2", linewidth = 0.9) +
-  geom_point(color = "#0072B2", size = 2.8) +
-  geom_text(aes(label = sprintf("%d%%\n%.1f min", training_fraction, elapsed_minutes)),
-            vjust = -0.7, size = 3) +
-  scale_x_continuous(labels = comma, expand = expansion(mult = c(0.03, 0.06))) +
-  scale_y_continuous(expand = expansion(mult = c(0.05, 0.22))) +
-  labs(title = "End-to-end runtime by training-set size",
-       x = "Training observations", y = "Elapsed minutes")
-```
-
-# Final-model metrics
+# Full-training comparison
 
 AUROC and average precision are threshold-independent ranking metrics. Accuracy,
 precision, recall, and F1 below use `sigmoid(logit) ≥ 0.5`, the fixed threshold encoded
@@ -400,37 +318,6 @@ learning_metrics |>
   fmt_number(columns = c(Loss, Accuracy, AUROC, `Average Precision`,
                          Precision, Recall, F1), decimals = 4)
 ```
-
-# Interpretation
-
-```{r interpretation-values, include=FALSE}
-smallest <- slice_head(test_learning, n = 1)
-largest <- slice_tail(test_learning, n = 1)
-best_test <- test_learning |> slice_max(auroc, n = 1, with_ties = FALSE)
-```
-
-From `r comma(smallest$n_training_total)` to `r comma(largest$n_training_total)`
-training observations, held-out test AUROC changes from
-`r sprintf("%.4f", smallest$auroc)` to `r sprintf("%.4f", largest$auroc)`, and
-average precision changes from `r sprintf("%.4f", smallest$auprc)` to
-`r sprintf("%.4f", largest$auprc)`. The highest observed test AUROC is
-`r sprintf("%.4f", best_test$auroc)` at `r paste0(best_test$training_fraction, "%")`.
-The small difference between the 80% and 100% points should not be treated as evidence
-that additional data is intrinsically harmful: each model is a stochastic independent
-fit, and there is one run per training size rather than repeated seeds.
-
-The narrow fold 5 performance range across outer models supports chromosome-composition
-stability for this design. It does not estimate uncertainty from model initialization,
-which would require repeated seeds.
-
-# Scope limitation
-
-The saved AlphaGenome artifacts contain aggregate metrics and epoch histories, not
-per-sequence logits. Consequently, this report cannot reconstruct full ROC or
-precision-recall traces, confusion matrices, alternative thresholds, or top-1/5/10%
-enrichment. Those analyses would require either retaining sequence-level scores or
-computing the desired summaries inside the evaluator. This does not affect the main
-AUROC/AUPRC learning-curve analysis presented here.
 
 # Reproducibility
 
@@ -461,3 +348,4 @@ Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.
 ```{r session-info}
 sessionInfo()
 ```
+
