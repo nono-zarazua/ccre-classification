@@ -4822,8 +4822,8 @@ stages:
       size: 41010938
     - path: reports/lsgkm_GRCh38_results.Rmd
       hash: md5
-      md5: cb8ee5a8e6c4ec8c76cb537fa42525a7
-      size: 29593
+      md5: f8f80d8254b97bde071441f9dc557425
+      size: 19629
     - path: results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
       hash: md5
       md5: efcfdb46f5dce2a7fca76f8d22b51442
@@ -4880,14 +4880,14 @@ stages:
       isexec: true
     - path: src/render_GRCh38_lsgkm_report.sh
       hash: md5
-      md5: 89927724d53011ffde1e1fb5bbf9736d
-      size: 357
+      md5: 7a876ba1185d22533d7acfcb49faccf3
+      size: 1454
       isexec: true
     outs:
     - path: reports/rendered/evn/lsgkm_GRCh38_results.html
       hash: md5
-      md5: 6c13cd14fee98a63936bf4967cfbd7c2
-      size: 2548564
+      md5: c42f0b611b93f34528bb3b681d311a81
+      size: 1715917
   build_negatives_GRCh38_svn:
     cmd: for i in $(seq 1 22) X; do Rscript --vanilla src/build_negs.R 
       data/processed/svn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_Silencer_ELS.bed;
@@ -6893,7 +6893,7 @@ stages:
       md5: 87b0ed5ecca09fd02074f05a532be7f6
       size: 7998595
   render_lsgkm_report_GRCh38_svn:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh
+    cmd: bash src/render_GRCh38_lsgkm_report.sh svn
     deps:
     - path: data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
       hash: md5
@@ -6945,8 +6945,8 @@ stages:
       size: 38421176
     - path: reports/lsgkm_GRCh38_results.Rmd
       hash: md5
-      md5: cb8ee5a8e6c4ec8c76cb537fa42525a7
-      size: 29593
+      md5: f8f80d8254b97bde071441f9dc557425
+      size: 19629
     - path: results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
       hash: md5
       md5: a65c0b6390ea0fb6dc99fef9c4f63143
@@ -7003,14 +7003,14 @@ stages:
       isexec: true
     - path: src/render_GRCh38_lsgkm_report.sh
       hash: md5
-      md5: 89927724d53011ffde1e1fb5bbf9736d
-      size: 357
+      md5: 7a876ba1185d22533d7acfcb49faccf3
+      size: 1454
       isexec: true
     outs:
     - path: reports/rendered/svn/lsgkm_GRCh38_results_svn.html
       hash: md5
-      md5: b625064d338653b2bee8987505b409c8
-      size: 2567307
+      md5: 9ffe190a7cb76870d861b4eafc19cdbd
+      size: 1715051
   render_lsgkm_comparison_GRCh38:
     cmd: bash src/render_GRCh38_lsgkm_comparison_report.sh
     deps:
@@ -7112,8 +7112,8 @@ stages:
       size: 38421176
     - path: reports/lsgkm_GRCh38_evn_vs_svn.Rmd
       hash: md5
-      md5: 8c8d82ee6b4502f7ccd0c36aa49de5c3
-      size: 12266
+      md5: 31fe8cb6e24c0b4f6b2f2104adf53c44
+      size: 13022
     - path: results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
       hash: md5
       md5: efcfdb46f5dce2a7fca76f8d22b51442
@@ -7138,6 +7138,22 @@ stages:
       hash: md5
       md5: 37f7cf600497b667872fef971c43fc22
       size: 6233274
+    - path: results/evn/GRCh38/ls-gkm/outer1.tsv
+      hash: md5
+      md5: 116741b1455be8badc28c87e248dda4b
+      size: 7903123
+    - path: results/evn/GRCh38/ls-gkm/outer2.tsv
+      hash: md5
+      md5: 213d7cc54d062dd2597040953fa050e5
+      size: 7902541
+    - path: results/evn/GRCh38/ls-gkm/outer3.tsv
+      hash: md5
+      md5: 7a16e7f1de2ee35b56613b7197241acc
+      size: 7903948
+    - path: results/evn/GRCh38/ls-gkm/outer4.tsv
+      hash: md5
+      md5: ec2a740bdec832656e96344ec79bb626
+      size: 8143048
     - path: results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
       hash: md5
       md5: a65c0b6390ea0fb6dc99fef9c4f63143
@@ -7162,6 +7178,22 @@ stages:
       hash: md5
       md5: fa1739530fcfbfbb897a2bfdc58cb53e
       size: 7888593
+    - path: results/svn/GRCh38/ls-gkm/outer1.tsv
+      hash: md5
+      md5: 24701262f0be77aae48fceb56b1edd49
+      size: 7749094
+    - path: results/svn/GRCh38/ls-gkm/outer2.tsv
+      hash: md5
+      md5: a357ff42d7cf5113300044d5db4a886f
+      size: 7998347
+    - path: results/svn/GRCh38/ls-gkm/outer3.tsv
+      hash: md5
+      md5: e13089e7677f0d449155fed3e9c92f6a
+      size: 7998684
+    - path: results/svn/GRCh38/ls-gkm/outer4.tsv
+      hash: md5
+      md5: 87b0ed5ecca09fd02074f05a532be7f6
+      size: 7998595
     - path: src/render_GRCh38_lsgkm_comparison_report.sh
       hash: md5
       md5: 8eacdeef17386841f6b18b5a8f2c8f28
@@ -7170,8 +7202,8 @@ stages:
     outs:
     - path: reports/rendered/comparison/lsgkm_GRCh38_evn_vs_svn.html
       hash: md5
-      md5: 86636218de6458d9982b2a11234f836c
-      size: 1815973
+      md5: 4b7ff26842cb372895fe263b0233fab5
+      size: 1661210
   prepare_alphagenome_results_GRCh38_evn:
     cmd: src/prepare_alphagenome_results.py
     deps:
@@ -7560,8 +7592,8 @@ stages:
     deps:
     - path: reports/alphagenome_GRCh38_results.Rmd
       hash: md5
-      md5: 24ef092542b8aedad0a7b268323405a0
-      size: 20753
+      md5: 457d6d4eedee0b27f9c2cfc98551c654
+      size: 15756
     - path: results/evn/GRCh38/alphagenome/history.tsv
       hash: md5
       md5: fb8d3dcbb4a562c9c595e1c5b0d28060
@@ -7588,8 +7620,8 @@ stages:
     outs:
     - path: reports/rendered/evn/alphagenome_GRCh38_results.html
       hash: md5
-      md5: f682b929d2624cb769ae1f33b7cdf644
-      size: 2407374
+      md5: d9ca10f1a424d443280801669bca6310
+      size: 1705341
   prepare_alphagenome_results_GRCh38_svn:
     cmd: src/prepare_alphagenome_results.py --model-dir 
       models/svn/GRCh38/alphagenome --output-dir results/svn/GRCh38/alphagenome
@@ -7979,8 +8011,8 @@ stages:
     deps:
     - path: reports/alphagenome_GRCh38_results.Rmd
       hash: md5
-      md5: 24ef092542b8aedad0a7b268323405a0
-      size: 20753
+      md5: 457d6d4eedee0b27f9c2cfc98551c654
+      size: 15756
     - path: results/svn/GRCh38/alphagenome/history.tsv
       hash: md5
       md5: 660165f7508aa8ecfa40b2e41e4ecebd
@@ -8007,15 +8039,15 @@ stages:
     outs:
     - path: reports/rendered/svn/alphagenome_GRCh38_results.html
       hash: md5
-      md5: 17a0aa97406b6d3e680ed101d61d523d
-      size: 2423342
+      md5: 0c017e3c51c56cca768fdf1657774d4f
+      size: 1723096
   render_alphagenome_comparison_GRCh38:
     cmd: bash src/render_GRCh38_alphagenome_comparison_report.sh
     deps:
     - path: reports/alphagenome_GRCh38_evn_vs_svn.Rmd
       hash: md5
-      md5: 1b4045b1187d92a21d19bc305f964c42
-      size: 9513
+      md5: 973df1112d02c928c3ce27d9ae445b06
+      size: 9065
     - path: results/evn/GRCh38/alphagenome/metrics.tsv
       hash: md5
       md5: 56e5d7afb2b74511bb3aa6f5bd22c790
@@ -8032,5 +8064,1299 @@ stages:
     outs:
     - path: reports/rendered/comparison/alphagenome_GRCh38_evn_vs_svn.html
       hash: md5
-      md5: b2825dfa24229cb365757c5462765ee0
-      size: 1878368
+      md5: 6dec047e15bbf5217f43a99c5376ede5
+      size: 1668375
+  cross_predict_ls_gkm_GRCh38:
+    cmd: sbatch --wait slurm/cross_predict_ls_gkm.sh
+    deps:
+    - path: data/processed/evn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: 508867cee4e2dcb6c1d224dc7d1b66f3
+      size: 5231424
+    - path: data/processed/evn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 6ac872b3f28d0aa4a06f6723c12ace39
+      size: 5227515
+    - path: data/processed/evn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 66b655c68b098df1ceaccce66439483c
+      size: 5535714
+    - path: data/processed/evn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 6b31fdf9069a5d12696527b16a149c5e
+      size: 5538313
+    - path: data/processed/svn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: ecad11e8f2ea56da884f67f50b5e7a12
+      size: 4461108
+    - path: data/processed/svn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 04ecb343c2e1ba85fc55d21e3ecd3999
+      size: 4451060
+    - path: data/processed/svn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 37a33998d805c9e32f14c47907f27ed5
+      size: 9101232
+    - path: data/processed/svn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 90486f3df3468d7d36a24c0104c62589
+      size: 9071774
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+      hash: md5
+      md5: 7b3d99c0a7641169e14c55fe451b6f2c
+      size: 8265155
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+      hash: md5
+      md5: 805236cb232505041602caf2e6d733fb
+      size: 70276977
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+      hash: md5
+      md5: dbd73d3c13353b1d2c64c1170337a5ae
+      size: 15712271
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+      hash: md5
+      md5: 43ce2f35aa090f14daaab66497f1bcd3
+      size: 29808298
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+      hash: md5
+      md5: c63c3b23286a12ae1cb1dd8fb9663d3f
+      size: 43586111
+    - path: 
+        models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+      hash: md5
+      md5: a5ba3ab3312f3469f91b1fd3c868f518
+      size: 57092029
+    - path: 
+        models/svn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
+      hash: md5
+      md5: 58cfd7a08906eb7189ba80f75e248997
+      size: 7748571
+    - path: 
+        models/svn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
+      hash: md5
+      md5: 192b691b3fb1f8de12d3825ad28041a0
+      size: 65750152
+    - path: 
+        models/svn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
+      hash: md5
+      md5: 8814c8ae834e7855d8b6665a3cb1d858
+      size: 14785791
+    - path: 
+        models/svn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
+      hash: md5
+      md5: bfe31e1b7a5d7ab416d43e2b6495e856
+      size: 28043322
+    - path: 
+        models/svn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
+      hash: md5
+      md5: dbd6212b742b8445e5772af811258c33
+      size: 40849835
+    - path: 
+        models/svn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
+      hash: md5
+      md5: a9ac633774ca0984f3652f4dc0bef018
+      size: 53361553
+    - path: slurm/cross_predict_ls_gkm.sh
+      hash: md5
+      md5: c54c210f0a5ed388df48a05e7f4708e6
+      size: 1862
+      isexec: true
+    outs:
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_neg_scores.txt
+      hash: md5
+      md5: a45c94d6be99e24e11aeaa8ddf3e7806
+      size: 633521
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_pos_scores.txt
+      hash: md5
+      md5: 17529d31346b962234a6caa8d2b701db
+      size: 620664
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_neg_scores.txt
+      hash: md5
+      md5: d0db115caa503c6fbdf37b21a5124b40
+      size: 1304990
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_pos_scores.txt
+      hash: md5
+      md5: 3cee131f2dcba559824ced548f5ab7c2
+      size: 1266162
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_neg_scores.txt
+      hash: md5
+      md5: 90a23487a39cfb39067243dc2ff5e259
+      size: 631017
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_pos_scores.txt
+      hash: md5
+      md5: c5ed4fd3eb70636865bd276278b34cb5
+      size: 617541
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_neg_scores.txt
+      hash: md5
+      md5: 183b18030d60116faaaa7e55163642cf
+      size: 1299880
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_pos_scores.txt
+      hash: md5
+      md5: a626734b20b1166216d5a4683caf53bb
+      size: 1260211
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_neg_scores.txt
+      hash: md5
+      md5: f6b9a6b53e4605f0d17aa32e9e26dbe1
+      size: 632881
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_pos_scores.txt
+      hash: md5
+      md5: 1c5ebc6658552c79bfa11ba0c37f7566
+      size: 619606
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_neg_scores.txt
+      hash: md5
+      md5: 7ed2b486fddc3ad1abab5f0b19728d73
+      size: 1303340
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_pos_scores.txt
+      hash: md5
+      md5: 53ffa00958d9cf249f5d7dbf14e1f7d6
+      size: 1264417
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_neg_scores.txt
+      hash: md5
+      md5: d5586b0866f94104503d60bdacbe6b28
+      size: 631793
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_pos_scores.txt
+      hash: md5
+      md5: 10fcebc5017931883515dc6383e43a3f
+      size: 618588
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_neg_scores.txt
+      hash: md5
+      md5: 4dc745f3770727116520a869e978d4de
+      size: 1301419
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_pos_scores.txt
+      hash: md5
+      md5: 4f5aedf708fe87a3f9164a9c5a8008c8
+      size: 1262430
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_neg_scores.txt
+      hash: md5
+      md5: 7a67ac5a18c3d8a029eb49756e7bd4c4
+      size: 631452
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_pos_scores.txt
+      hash: md5
+      md5: e6fc68450925242e00c8e8d012fa21c4
+      size: 618046
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_neg_scores.txt
+      hash: md5
+      md5: 8719b5db504980893035d5be55f02f3b
+      size: 1300897
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_pos_scores.txt
+      hash: md5
+      md5: 8e830cab197d11344d704e82e4e8c8da
+      size: 1261432
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_neg_scores.txt
+      hash: md5
+      md5: c30748ac61b2d434b9b561909c191b43
+      size: 631226
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_pos_scores.txt
+      hash: md5
+      md5: 2c03c945748bfc2b180eb27b20d417e2
+      size: 617769
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_neg_scores.txt
+      hash: md5
+      md5: f8ceef95ef75d4c36cb103df114b3af4
+      size: 1300303
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_pos_scores.txt
+      hash: md5
+      md5: 150644fa914a8c37288ba1c95e24a713
+      size: 1260595
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_neg_scores.txt
+      hash: md5
+      md5: 65c7e4630f279a4550cb148a3b58cd12
+      size: 753674
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_pos_scores.txt
+      hash: md5
+      md5: b34d0541efcfdf30dcefc2d3c29d6390
+      size: 741297
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_neg_scores.txt
+      hash: md5
+      md5: a2830a146fb5adf4aa21b0672485f65d
+      size: 801616
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_pos_scores.txt
+      hash: md5
+      md5: 4a1193618fe8ec54672ff75160265dd4
+      size: 785815
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_neg_scores.txt
+      hash: md5
+      md5: 3f789bc084c7ec83639ac3b2f9707b50
+      size: 750493
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_pos_scores.txt
+      hash: md5
+      md5: 7c1ae54805dca3ae561459aad39dabbd
+      size: 737857
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_neg_scores.txt
+      hash: md5
+      md5: f7831a2d1992e4302f735402c56099cb
+      size: 798625
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_pos_scores.txt
+      hash: md5
+      md5: 3c8f48b550fc61ee287aa536e8966d2f
+      size: 782110
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_neg_scores.txt
+      hash: md5
+      md5: aad33ac06b2fc1b88ea07d1384afe9cb
+      size: 752665
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_pos_scores.txt
+      hash: md5
+      md5: acdb03983d1f9bc3036d8391b64d03d3
+      size: 740213
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_neg_scores.txt
+      hash: md5
+      md5: eb4b78b2c160f8b838234e1c5e842751
+      size: 800960
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_pos_scores.txt
+      hash: md5
+      md5: a17ff1798bb3f1b5516c71ed1f889f30
+      size: 784666
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_neg_scores.txt
+      hash: md5
+      md5: 45d567db62aed8d7637d4a1d8c73084e
+      size: 751746
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_pos_scores.txt
+      hash: md5
+      md5: 6fc2cb361abe854c26ad23e7bb7cc889
+      size: 739052
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_neg_scores.txt
+      hash: md5
+      md5: 88f4442977918de3a3e544a21c5ab712
+      size: 799610
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_pos_scores.txt
+      hash: md5
+      md5: 0006eb514a084dcb32b5d7036113fe68
+      size: 783351
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_neg_scores.txt
+      hash: md5
+      md5: 3beab75b2815cc72f7beccbeb0969f5e
+      size: 751027
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_pos_scores.txt
+      hash: md5
+      md5: 4387afc5141d034e0d42dbf21290dcf8
+      size: 738495
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_neg_scores.txt
+      hash: md5
+      md5: b6bc1198f21bc43b6c140d87ec7e9cf1
+      size: 799117
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_pos_scores.txt
+      hash: md5
+      md5: bf4980c953b4124fbc2a0103d928d4d4
+      size: 782798
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_neg_scores.txt
+      hash: md5
+      md5: c6746e9354f880f0b864fe8a7aa45d25
+      size: 750724
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_pos_scores.txt
+      hash: md5
+      md5: 79554f2232a64f2e084b7acd544adeb6
+      size: 738031
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_neg_scores.txt
+      hash: md5
+      md5: b178f7244bd99ef57576103b7c05760d
+      size: 798841
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_pos_scores.txt
+      hash: md5
+      md5: e129c7674edd55c6a210fb1195f2a21a
+      size: 782486
+  cross_predict_alphagenome_GRCh38:
+    cmd: sbatch --wait slurm/cross_predict_alphagenome.sh
+    deps:
+    - path: data/processed/evn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: 508867cee4e2dcb6c1d224dc7d1b66f3
+      size: 5231424
+    - path: data/processed/evn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 6ac872b3f28d0aa4a06f6723c12ace39
+      size: 5227515
+    - path: data/processed/evn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 66b655c68b098df1ceaccce66439483c
+      size: 5535714
+    - path: data/processed/evn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 6b31fdf9069a5d12696527b16a149c5e
+      size: 5538313
+    - path: data/processed/svn/GRCh38/training/test_neg.fa
+      hash: md5
+      md5: ecad11e8f2ea56da884f67f50b5e7a12
+      size: 4461108
+    - path: data/processed/svn/GRCh38/training/test_pos.fa
+      hash: md5
+      md5: 04ecb343c2e1ba85fc55d21e3ecd3999
+      size: 4451060
+    - path: data/processed/svn/GRCh38/training/validation_neg.fa
+      hash: md5
+      md5: 37a33998d805c9e32f14c47907f27ed5
+      size: 9101232
+    - path: data/processed/svn/GRCh38/training/validation_pos.fa
+      hash: md5
+      md5: 90486f3df3468d7d36a24c0104c62589
+      size: 9071774
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+      hash: md5
+      md5: 7c7dd060f67979af36e77bcdb317f6d7
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+      hash: md5
+      md5: d07ab188d2a313054682656754e249fc
+      size: 12608504
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+      hash: md5
+      md5: c634a406dc3b667a1aaad2678b4a65cc
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+      hash: md5
+      md5: f5bf15671b631d8812e61c97ef8d03d7
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+      hash: md5
+      md5: 526a07d9c00f6e9a4cb6e67fdfa889de
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+      hash: md5
+      md5: 0884381ff226d60f7daa12fcaed271c5
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+      hash: md5
+      md5: 69a422b25f88aa8f9dd141506c77adbd
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+      hash: md5
+      md5: 3f46c8781a7289a776fa2da79f8677a0
+      size: 12608504
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+      hash: md5
+      md5: 4e0bf16fd071cfa84e943b74f1b8b6fc
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+      hash: md5
+      md5: f1d7e52c5f5406db7bb6ad9e5af0adfc
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+      hash: md5
+      md5: c565f63d060486490b710c8f1403519b
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+      hash: md5
+      md5: 7923cded4df51697d0b16541c4865a7a
+      size: 12608430
+    - path: slurm/cross_predict_alphagenome.sh
+      hash: md5
+      md5: 9fbb0c954588222aed86bf41fc44c791
+      size: 1822
+      isexec: true
+    - path: src/predict_alphagenome.py
+      hash: md5
+      md5: 2e13732d1dd5e2059f86273b1d778d18
+      size: 5022
+      isexec: true
+    - path: src/train_alphagenome.py
+      hash: md5
+      md5: a2831a63401639288ef916d7707c0116
+      size: 25672
+      isexec: true
+    - path: weights/fold_0_weights.safetensors
+      hash: md5
+      md5: cb18d831d374e6dab5758a39021a719b
+      size: 920635044
+    outs:
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/test.tsv
+      hash: md5
+      md5: 922696c77988389614f0507dcb84886c
+      size: 1927017
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/validation.tsv
+      hash: md5
+      md5: 654852982ceb5ec34294f72ce3c584f5
+      size: 3946978
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/test.tsv
+      hash: md5
+      md5: 66a2256b1a02d1cd5a2849a6d72eec9a
+      size: 1937364
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/validation.tsv
+      hash: md5
+      md5: 6dd319f2bfa8b8ce2b037e2c334205cf
+      size: 3967183
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/test.tsv
+      hash: md5
+      md5: c533b2b319b4ea2d32f999e306cab2ae
+      size: 1931400
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/validation.tsv
+      hash: md5
+      md5: e2f882211098e5d7060eb082745a65ca
+      size: 3954492
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/test.tsv
+      hash: md5
+      md5: 3aebdf8d97090461236919f9fece86ae
+      size: 1933995
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/validation.tsv
+      hash: md5
+      md5: e4db7d8a38257f1b2c9eb02daa44b404
+      size: 3960256
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/test.tsv
+      hash: md5
+      md5: d691f51bc253040de6297b741af5d376
+      size: 1937113
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/validation.tsv
+      hash: md5
+      md5: 1d1ccf18bf75b6569c880e8f0eed170a
+      size: 3966929
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/test.tsv
+      hash: md5
+      md5: 24c543e0480961bd9aa021f28967e091
+      size: 1929580
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/validation.tsv
+      hash: md5
+      md5: a5b146338b494c3c38b86925d2452c29
+      size: 3952821
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/test.tsv
+      hash: md5
+      md5: 5910551c8e3abb7c86cbae4b7b2ec964
+      size: 2279763
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/validation.tsv
+      hash: md5
+      md5: b2bec2e105d9641b13b36e311ab7b431
+      size: 2422571
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/test.tsv
+      hash: md5
+      md5: 875615fc3530fec50f37312fbc3e4b1c
+      size: 2276967
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/validation.tsv
+      hash: md5
+      md5: 2ba2cf91e115eaeb757cc26be867b5f7
+      size: 2419118
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/test.tsv
+      hash: md5
+      md5: 6667ce143a5ab8e9afac1ba6bc67431e
+      size: 2276264
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/validation.tsv
+      hash: md5
+      md5: 4d5f3b5895dfb06098da63185234515d
+      size: 2418911
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/test.tsv
+      hash: md5
+      md5: b3c1a953edc848fda2a8247ce8b59a6b
+      size: 2288259
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/validation.tsv
+      hash: md5
+      md5: fa9f5bb7b322dbc07daa2454783abbe0
+      size: 2431977
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/test.tsv
+      hash: md5
+      md5: 245580155031dbdd890df6ba14cd6970
+      size: 2280349
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/validation.tsv
+      hash: md5
+      md5: 2a08954432e85dbd7edf548dd401f95b
+      size: 2423522
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/test.tsv
+      hash: md5
+      md5: c75c4329beedb9c020c7de16f80b45bf
+      size: 2280829
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/validation.tsv
+      hash: md5
+      md5: f161ef006a2243bca6c6f194d7f63eba
+      size: 2423046
+  prepare_cross_task_metrics_GRCh38:
+    cmd: src/prepare_cross_task_metrics.py
+    deps:
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: faee3b83e2524b99455499459169d389
+      size: 51423751
+    - path: data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: bc937ac2c0b44cd910712934aa9e0e5d
+      size: 51258789
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: 58ebe014b12ab2dbc6a5a82d4c39cf19
+      size: 5147940
+    - path: data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 64a1aa5551b4dca490b1f428f623efd9
+      size: 5123704
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: b3945cd09d1b7630117e166597ce96cd
+      size: 10288387
+    - path: data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 15840434ad43e6dc3890c2ea40121f48
+      size: 10245183
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f11eb6645bd295e52583e3f21d353cf1
+      size: 20574781
+    - path: data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: dc0f1189c16070d1ee05c621a0672305
+      size: 20509653
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: 6f785b1812b3ef64ed4b5800327430d6
+      size: 30857944
+    - path: data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 853a41b3876f092813d2bf39093a8aef
+      size: 30772839
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: 77730ccc667f031d03f6779dc7748a06
+      size: 41130063
+    - path: data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 749ce4478f161c94f95d5711ed2606f6
+      size: 41010938
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
+      hash: md5
+      md5: 860ccdfd6929e5d4962c35643bfdb9ab
+      size: 48154092
+    - path: data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
+      hash: md5
+      md5: fe12fc6af46e388654dc6469ed2a25a5
+      size: 48028659
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
+      hash: md5
+      md5: c1401a61b607914a4f9169cdc501342e
+      size: 4820049
+    - path: data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
+      hash: md5
+      md5: 431b558abca07299a10f61d0d83b31ff
+      size: 4805820
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
+      hash: md5
+      md5: bff1d395ce926bc7f1280255d234c5c6
+      size: 9635436
+    - path: data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
+      hash: md5
+      md5: 41642ae7f8927a364e42e7bb03b27ca4
+      size: 9610686
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
+      hash: md5
+      md5: f39e9245106b35b40c02858f4d1ef745
+      size: 19279007
+    - path: data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
+      hash: md5
+      md5: f23898db9bce87e256721607decfa49f
+      size: 19214708
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
+      hash: md5
+      md5: a33a06e7325e35c97e8f7a38a7f2da48
+      size: 28910850
+    - path: data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
+      hash: md5
+      md5: 92811cdfd708aa094a8adec467181ea0
+      size: 28823614
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
+      hash: md5
+      md5: ab58ba16bbbb097b6780cfc7eaf455d5
+      size: 38520744
+    - path: data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
+      hash: md5
+      md5: 7e2e190fb7a392ab514a354cc372ce6e
+      size: 38421176
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/test.tsv
+      hash: md5
+      md5: 922696c77988389614f0507dcb84886c
+      size: 1927017
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/validation.tsv
+      hash: md5
+      md5: 654852982ceb5ec34294f72ce3c584f5
+      size: 3946978
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/test.tsv
+      hash: md5
+      md5: 66a2256b1a02d1cd5a2849a6d72eec9a
+      size: 1937364
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/validation.tsv
+      hash: md5
+      md5: 6dd319f2bfa8b8ce2b037e2c334205cf
+      size: 3967183
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/test.tsv
+      hash: md5
+      md5: c533b2b319b4ea2d32f999e306cab2ae
+      size: 1931400
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/validation.tsv
+      hash: md5
+      md5: e2f882211098e5d7060eb082745a65ca
+      size: 3954492
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/test.tsv
+      hash: md5
+      md5: 3aebdf8d97090461236919f9fece86ae
+      size: 1933995
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/validation.tsv
+      hash: md5
+      md5: e4db7d8a38257f1b2c9eb02daa44b404
+      size: 3960256
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/test.tsv
+      hash: md5
+      md5: d691f51bc253040de6297b741af5d376
+      size: 1937113
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/validation.tsv
+      hash: md5
+      md5: 1d1ccf18bf75b6569c880e8f0eed170a
+      size: 3966929
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/test.tsv
+      hash: md5
+      md5: 24c543e0480961bd9aa021f28967e091
+      size: 1929580
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/validation.tsv
+      hash: md5
+      md5: a5b146338b494c3c38b86925d2452c29
+      size: 3952821
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/test.tsv
+      hash: md5
+      md5: 5910551c8e3abb7c86cbae4b7b2ec964
+      size: 2279763
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/validation.tsv
+      hash: md5
+      md5: b2bec2e105d9641b13b36e311ab7b431
+      size: 2422571
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/test.tsv
+      hash: md5
+      md5: 875615fc3530fec50f37312fbc3e4b1c
+      size: 2276967
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/validation.tsv
+      hash: md5
+      md5: 2ba2cf91e115eaeb757cc26be867b5f7
+      size: 2419118
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/test.tsv
+      hash: md5
+      md5: 6667ce143a5ab8e9afac1ba6bc67431e
+      size: 2276264
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/validation.tsv
+      hash: md5
+      md5: 4d5f3b5895dfb06098da63185234515d
+      size: 2418911
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/test.tsv
+      hash: md5
+      md5: b3c1a953edc848fda2a8247ce8b59a6b
+      size: 2288259
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/validation.tsv
+      hash: md5
+      md5: fa9f5bb7b322dbc07daa2454783abbe0
+      size: 2431977
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/test.tsv
+      hash: md5
+      md5: 245580155031dbdd890df6ba14cd6970
+      size: 2280349
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/validation.tsv
+      hash: md5
+      md5: 2a08954432e85dbd7edf548dd401f95b
+      size: 2423522
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/test.tsv
+      hash: md5
+      md5: c75c4329beedb9c020c7de16f80b45bf
+      size: 2280829
+    - path: 
+        predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/validation.tsv
+      hash: md5
+      md5: f161ef006a2243bca6c6f194d7f63eba
+      size: 2423046
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_neg_scores.txt
+      hash: md5
+      md5: a45c94d6be99e24e11aeaa8ddf3e7806
+      size: 633521
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_pos_scores.txt
+      hash: md5
+      md5: 17529d31346b962234a6caa8d2b701db
+      size: 620664
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_neg_scores.txt
+      hash: md5
+      md5: d0db115caa503c6fbdf37b21a5124b40
+      size: 1304990
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_pos_scores.txt
+      hash: md5
+      md5: 3cee131f2dcba559824ced548f5ab7c2
+      size: 1266162
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_neg_scores.txt
+      hash: md5
+      md5: 90a23487a39cfb39067243dc2ff5e259
+      size: 631017
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_pos_scores.txt
+      hash: md5
+      md5: c5ed4fd3eb70636865bd276278b34cb5
+      size: 617541
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_neg_scores.txt
+      hash: md5
+      md5: 183b18030d60116faaaa7e55163642cf
+      size: 1299880
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_pos_scores.txt
+      hash: md5
+      md5: a626734b20b1166216d5a4683caf53bb
+      size: 1260211
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_neg_scores.txt
+      hash: md5
+      md5: f6b9a6b53e4605f0d17aa32e9e26dbe1
+      size: 632881
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_pos_scores.txt
+      hash: md5
+      md5: 1c5ebc6658552c79bfa11ba0c37f7566
+      size: 619606
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_neg_scores.txt
+      hash: md5
+      md5: 7ed2b486fddc3ad1abab5f0b19728d73
+      size: 1303340
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_pos_scores.txt
+      hash: md5
+      md5: 53ffa00958d9cf249f5d7dbf14e1f7d6
+      size: 1264417
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_neg_scores.txt
+      hash: md5
+      md5: d5586b0866f94104503d60bdacbe6b28
+      size: 631793
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_pos_scores.txt
+      hash: md5
+      md5: 10fcebc5017931883515dc6383e43a3f
+      size: 618588
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_neg_scores.txt
+      hash: md5
+      md5: 4dc745f3770727116520a869e978d4de
+      size: 1301419
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_pos_scores.txt
+      hash: md5
+      md5: 4f5aedf708fe87a3f9164a9c5a8008c8
+      size: 1262430
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_neg_scores.txt
+      hash: md5
+      md5: 7a67ac5a18c3d8a029eb49756e7bd4c4
+      size: 631452
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_pos_scores.txt
+      hash: md5
+      md5: e6fc68450925242e00c8e8d012fa21c4
+      size: 618046
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_neg_scores.txt
+      hash: md5
+      md5: 8719b5db504980893035d5be55f02f3b
+      size: 1300897
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_pos_scores.txt
+      hash: md5
+      md5: 8e830cab197d11344d704e82e4e8c8da
+      size: 1261432
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_neg_scores.txt
+      hash: md5
+      md5: c30748ac61b2d434b9b561909c191b43
+      size: 631226
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_pos_scores.txt
+      hash: md5
+      md5: 2c03c945748bfc2b180eb27b20d417e2
+      size: 617769
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_neg_scores.txt
+      hash: md5
+      md5: f8ceef95ef75d4c36cb103df114b3af4
+      size: 1300303
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_pos_scores.txt
+      hash: md5
+      md5: 150644fa914a8c37288ba1c95e24a713
+      size: 1260595
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_neg_scores.txt
+      hash: md5
+      md5: 65c7e4630f279a4550cb148a3b58cd12
+      size: 753674
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_pos_scores.txt
+      hash: md5
+      md5: b34d0541efcfdf30dcefc2d3c29d6390
+      size: 741297
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_neg_scores.txt
+      hash: md5
+      md5: a2830a146fb5adf4aa21b0672485f65d
+      size: 801616
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_pos_scores.txt
+      hash: md5
+      md5: 4a1193618fe8ec54672ff75160265dd4
+      size: 785815
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_neg_scores.txt
+      hash: md5
+      md5: 3f789bc084c7ec83639ac3b2f9707b50
+      size: 750493
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_pos_scores.txt
+      hash: md5
+      md5: 7c1ae54805dca3ae561459aad39dabbd
+      size: 737857
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_neg_scores.txt
+      hash: md5
+      md5: f7831a2d1992e4302f735402c56099cb
+      size: 798625
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_pos_scores.txt
+      hash: md5
+      md5: 3c8f48b550fc61ee287aa536e8966d2f
+      size: 782110
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_neg_scores.txt
+      hash: md5
+      md5: aad33ac06b2fc1b88ea07d1384afe9cb
+      size: 752665
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_pos_scores.txt
+      hash: md5
+      md5: acdb03983d1f9bc3036d8391b64d03d3
+      size: 740213
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_neg_scores.txt
+      hash: md5
+      md5: eb4b78b2c160f8b838234e1c5e842751
+      size: 800960
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_pos_scores.txt
+      hash: md5
+      md5: a17ff1798bb3f1b5516c71ed1f889f30
+      size: 784666
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_neg_scores.txt
+      hash: md5
+      md5: 45d567db62aed8d7637d4a1d8c73084e
+      size: 751746
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_pos_scores.txt
+      hash: md5
+      md5: 6fc2cb361abe854c26ad23e7bb7cc889
+      size: 739052
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_neg_scores.txt
+      hash: md5
+      md5: 88f4442977918de3a3e544a21c5ab712
+      size: 799610
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_pos_scores.txt
+      hash: md5
+      md5: 0006eb514a084dcb32b5d7036113fe68
+      size: 783351
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_neg_scores.txt
+      hash: md5
+      md5: 3beab75b2815cc72f7beccbeb0969f5e
+      size: 751027
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_pos_scores.txt
+      hash: md5
+      md5: 4387afc5141d034e0d42dbf21290dcf8
+      size: 738495
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_neg_scores.txt
+      hash: md5
+      md5: b6bc1198f21bc43b6c140d87ec7e9cf1
+      size: 799117
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_pos_scores.txt
+      hash: md5
+      md5: bf4980c953b4124fbc2a0103d928d4d4
+      size: 782798
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_neg_scores.txt
+      hash: md5
+      md5: c6746e9354f880f0b864fe8a7aa45d25
+      size: 750724
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_pos_scores.txt
+      hash: md5
+      md5: 79554f2232a64f2e084b7acd544adeb6
+      size: 738031
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_neg_scores.txt
+      hash: md5
+      md5: b178f7244bd99ef57576103b7c05760d
+      size: 798841
+    - path: 
+        predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_pos_scores.txt
+      hash: md5
+      md5: e129c7674edd55c6a210fb1195f2a21a
+      size: 782486
+    - path: results/evn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: 56e5d7afb2b74511bb3aa6f5bd22c790
+      size: 8122
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
+      hash: md5
+      md5: efcfdb46f5dce2a7fca76f8d22b51442
+      size: 6245162
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
+      hash: md5
+      md5: f872e48370384d3f663a84bd1fc1fa44
+      size: 6302434
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
+      hash: md5
+      md5: 72dea13525bc642bb363605ac5517cce
+      size: 6241554
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
+      hash: md5
+      md5: 0075aa5faf1cf657ee8305cfd62cc057
+      size: 6237140
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
+      hash: md5
+      md5: 20beca7cdd04629c26b0476a83f1b9d5
+      size: 6234746
+    - path: results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
+      hash: md5
+      md5: 37f7cf600497b667872fef971c43fc22
+      size: 6233274
+    - path: results/svn/GRCh38/alphagenome/metrics.tsv
+      hash: md5
+      md5: e0e0998af474e321e16cb8c47c24f2ce
+      size: 8103
+    - path: results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
+      hash: md5
+      md5: a65c0b6390ea0fb6dc99fef9c4f63143
+      size: 7903581
+    - path: results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
+      hash: md5
+      md5: dc0880cca5767fbe2b9a8738b1014f60
+      size: 7976173
+    - path: results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
+      hash: md5
+      md5: 280df0f07bfc1027d8a444e53b1882cd
+      size: 7898506
+    - path: results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
+      hash: md5
+      md5: 9f20160bf1fdb10c42abba1a1ee53634
+      size: 7892714
+    - path: results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
+      hash: md5
+      md5: 9d86513a1bd5869d17813b49c847a12c
+      size: 7890178
+    - path: results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
+      hash: md5
+      md5: fa1739530fcfbfbb897a2bfdc58cb53e
+      size: 7888593
+    - path: src/prepare_cross_task_metrics.py
+      hash: md5
+      md5: 992a882268dd95a72b7b0271ad1bcc67
+      size: 5855
+      isexec: true
+    outs:
+    - path: results/cross_task/GRCh38/native_vs_cross_metrics.tsv
+      hash: md5
+      md5: 38a27b633c29a33f4288ceec65e1a18d
+      size: 9560
+  extract_alphagenome_head_features_GRCh38:
+    cmd: src/extract_alphagenome_head_features.py
+    deps:
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+      hash: md5
+      md5: 7c7dd060f67979af36e77bcdb317f6d7
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+      hash: md5
+      md5: d07ab188d2a313054682656754e249fc
+      size: 12608504
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+      hash: md5
+      md5: c634a406dc3b667a1aaad2678b4a65cc
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+      hash: md5
+      md5: f5bf15671b631d8812e61c97ef8d03d7
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+      hash: md5
+      md5: 526a07d9c00f6e9a4cb6e67fdfa889de
+      size: 12608430
+    - path: 
+        models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+      hash: md5
+      md5: 0884381ff226d60f7daa12fcaed271c5
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
+      hash: md5
+      md5: 69a422b25f88aa8f9dd141506c77adbd
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
+      hash: md5
+      md5: 3f46c8781a7289a776fa2da79f8677a0
+      size: 12608504
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
+      hash: md5
+      md5: 4e0bf16fd071cfa84e943b74f1b8b6fc
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
+      hash: md5
+      md5: f1d7e52c5f5406db7bb6ad9e5af0adfc
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
+      hash: md5
+      md5: c565f63d060486490b710c8f1403519b
+      size: 12608430
+    - path: 
+        models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
+      hash: md5
+      md5: 7923cded4df51697d0b16541c4865a7a
+      size: 12608430
+    - path: src/extract_alphagenome_head_features.py
+      hash: md5
+      md5: 1b03f4330b4257f002e8a7595943e053
+      size: 4161
+      isexec: true
+    outs:
+    - path: 
+        results/cross_task/GRCh38/alphagenome_features/feature_importance.tsv
+      hash: md5
+      md5: 0f9e7538b3447a725e49b4735ab922b6
+      size: 2234609
+    - path: 
+        results/cross_task/GRCh38/alphagenome_features/feature_similarity.tsv
+      hash: md5
+      md5: 90cb3877cc077915f3b3639baa8d203f
+      size: 811
+  render_cross_task_reports_GRCh38:
+    cmd: bash src/render_cross_task_reports.sh
+    deps:
+    - path: reports/cross_task_GRCh38_results.Rmd
+      hash: md5
+      md5: 4883a3a9e12c9511107fa9e5dd88cee9
+      size: 4035
+    - path: reports/cross_task_method_GRCh38_results.Rmd
+      hash: md5
+      md5: ba0bf751c6206591e32819b89e490438
+      size: 7828
+    - path: 
+        results/cross_task/GRCh38/alphagenome_features/feature_importance.tsv
+      hash: md5
+      md5: 0f9e7538b3447a725e49b4735ab922b6
+      size: 2234609
+    - path: 
+        results/cross_task/GRCh38/alphagenome_features/feature_similarity.tsv
+      hash: md5
+      md5: 90cb3877cc077915f3b3639baa8d203f
+      size: 811
+    - path: results/cross_task/GRCh38/native_vs_cross_metrics.tsv
+      hash: md5
+      md5: 38a27b633c29a33f4288ceec65e1a18d
+      size: 9560
+    - path: src/render_cross_task_reports.sh
+      hash: md5
+      md5: 3bb026e9e822871d1e1b4e7af856be74
+      size: 876
+      isexec: true
+    outs:
+    - path: reports/rendered/comparison/alphagenome_GRCh38_native_vs_cross.html
+      hash: md5
+      md5: 8a628027ac659ba549f1fc6c88d47a95
+      size: 1735718
+    - path: reports/rendered/comparison/cross_task_GRCh38_results.html
+      hash: md5
+      md5: 7468c7d890e9d8f11e6795955534a3cb
+      size: 1477898
+    - path: reports/rendered/comparison/lsgkm_GRCh38_native_vs_cross.html
+      hash: md5
+      md5: 42a5159d331263765e5829fefe3ac7e1
+      size: 1468176
+  prepare_masked_reference_GRCh38:
+    cmd: bash src/prepare_masked_reference.sh
+    deps:
+    - path: ../antinoise/bin/linux/area_self_overlap.exe
+      hash: md5
+      md5: c1cb5374a76d98513a055b270584198b
+      size: 23688
+      isexec: true
+    - path: ../antinoise/bin/linux/bed_chr_mask.exe
+      hash: md5
+      md5: f9ab38e0551b4a80c8169f55f9db7a21
+      size: 19136
+      isexec: true
+    - path: ../antinoise/bin/linux/bed_chr_separation.exe
+      hash: md5
+      md5: 564452ed3570fc1a48cef55afae8a6c9
+      size: 19168
+      isexec: true
+    - path: ../antinoise/bin/linux/bed_sort.exe
+      hash: md5
+      md5: 83b9bd48630683db28c204c5a77ab8da
+      size: 19288
+      isexec: true
+    - path: ../antinoise/bin/linux/fasta_muliplefiles.exe
+      hash: md5
+      md5: 938ffabe791056b7bb527c360fb6f3c3
+      size: 17552
+      isexec: true
+    - path: ../antinoise/bin/linux/fasta_to_plain0.exe
+      hash: md5
+      md5: 3fe359af4516a275f9aed8d213ad436b
+      size: 18896
+      isexec: true
+    - path: src/prepare_masked_reference.sh
+      hash: md5
+      md5: dc341ec62cdd2b61f14f55379aabc2e8
+      size: 1857
+      isexec: true
+    outs:
+    - path: data/processed/GRCh38-cCREs_sorted.bed
+      hash: md5
+      md5: 9af83fbc8e864496a8812ed0f53a5df0
+      size: 58487829
+    - path: data/raw/GRCh38-cCREs.bed
+      hash: md5
+      md5: 60c14d9f4903a7bd13b3db4f290ace48
+      size: 129083055
+    - path: data/reference/hg38-PLAIN-canonical
+      hash: md5
+      md5: c9f73a403f42d0f1037296ef09f98c22.dir
+      size: 6238305254
+      nfiles: 48
+    - path: data/reference/hg38-PLAIN-canonical-masked
+      hash: md5
+      md5: 2cc6418a45d0be8d77c330ba992860de.dir
+      size: 3088269856
+      nfiles: 24
+    - path: data/reference/hg38-PLAIN-canonical-merged
+      hash: md5
+      md5: c064c04463f08780aa7ec3d360faee8e.dir
+      size: 252746706
+      nfiles: 73
+    - path: data/reference/hg38-chroms
+      hash: md5
+      md5: 219f1a0e57ae70b53d1042ba038deee3.dir
+      size: 215173792
+      nfiles: 687
+    - path: data/reference/hg38.fa
+      hash: md5
+      md5: 398383d7d1242c685510f330067d308e
+      size: 3365209190

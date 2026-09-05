@@ -1,0 +1,53 @@
+# GRCh38 enhancer-versus-negative data
+
+This directory contains the cleaned enhancer-positive (`EVN`) GRCh38 source data.
+The previous dataset and its derived folds, training sets, and learning curves are
+preserved under `overlaps/`.
+
+## Cleaning strategy
+
+The datasets are prepared together by `src/get_whole_body_regulatory_sets.sh` so
+that enhancer and silencer positives are mutually exclusive.
+
+1. Download the complete SCREEN GRCh38 ELS collection.
+2. Assemble pELS and dELS records from the seven silencer source files, excluding
+   `REST-Enhancers.bed`.
+3. Validate repeated cCRE IDs and retain one record per cCRE ID.
+4. Deduplicate and sort both positive collections without merging distinct nearby
+   or partially overlapping cCREs.
+5. Remove every SCREEN ELS record with at least one base overlapping a unique
+   silencer locus using `bedtools intersect -v`.
+6. Split the resulting four-column BED files into canonical chromosome files.
+
+## Resulting positive sets
+
+| Dataset | Source rows | Duplicates removed | Silencer overlap removed | Final unique loci |
+|---|---:|---:|---:|---:|
+| EVN | 1,718,669 | 0 | 196,083 | **1,522,586** |
+| SVN | 202,493 | 6,410 | — | **196,083** |
+
+The 196,083 unique SVN loci were present in the complete SCREEN ELS collection
+and were therefore excluded from EVN. The final EVN and SVN positive BEDs have
+zero genomic overlap.
+
+## EVN outputs
+
+- `GRCh38_ELS.trimmed.bed`: 1,522,586 unique, non-silencer-overlapping enhancer loci.
+- `GRCh38_ELS.silencer_overlaps.bed`: the 196,083 ELS loci excluded from EVN.
+- `chroms/chrom<chrom>/chrom<chrom>_GRCh38_ELS.bed`: chromosome-specific clean EVN loci.
+
+EVN includes chromosomes 1-22, X, and Y. The chromosome files contain exactly
+1,522,586 records in total.
+
+## Validation
+
+- Duplicate EVN cCRE IDs: 0
+- Duplicate SVN cCRE IDs: 0
+- Residual EVN-positive/SVN-positive overlaps: 0
+- BED records with a column count other than four: 0
+- Records assigned to unexpected chromosomes: 0
+- Whole-dataset and chromosome-file record totals agree for both tasks
+
+These are positive-locus source files. FASTAs, negative/background sequences,
+folds, fixed train/validation/test splits, and learning-curve subsets must be
+regenerated from these cleaned chromosome BEDs before model training.

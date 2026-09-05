@@ -1,43 +1,48 @@
-# GRCh38 ELS source pools by chromosome
+# Clean GRCh38 ELS source pools by chromosome
 
-This directory contains the chromosome-specific positive ELS and generated
-negative source pools used by `src/make_GRCh38_master_training.py`.
+This directory contains chromosome-specific enhancer-positive BED files generated
+by `src/get_whole_body_regulatory_sets.sh`. The source SCREEN ELS collection is
+deduplicated by cCRE ID, and every locus overlapping a unique SVN locus by at
+least one base is excluded before chromosome splitting.
 
-BED and FASTA records correspond by position within each chromosome/class pair.
-The negative pools are reused; the master and learning-curve stages do not
-generate new negatives.
-A negative pool is assigned to the chromosome of its source positive input. The
-synthetic null BED coordinate selected by `genNullSeqs()` may lie on a different
-chromosome and does not redefine that source-pool assignment.
+| chromosome | complete_SCREEN_ELS | silencer_loci_removed | clean_positive_loci |
+|:-----------|--------------------:|-----------------------:|--------------------:|
+| chr1  | 153,196 | 28,920 | 124,276 |
+| chr2  | 144,254 | 14,291 | 129,963 |
+| chr3  | 113,596 | 9,583 | 104,013 |
+| chr4  | 86,232 | 10,835 | 75,397 |
+| chr5  | 97,469 | 10,498 | 86,971 |
+| chr6  | 101,231 | 16,221 | 85,010 |
+| chr7  | 90,955 | 8,265 | 82,690 |
+| chr8  | 83,028 | 7,324 | 75,704 |
+| chr9  | 74,200 | 10,466 | 63,734 |
+| chr10 | 85,396 | 7,817 | 77,579 |
+| chr11 | 85,530 | 12,053 | 73,477 |
+| chr12 | 83,790 | 7,555 | 76,235 |
+| chr13 | 47,845 | 1,427 | 46,418 |
+| chr14 | 54,609 | 3,992 | 50,617 |
+| chr15 | 54,997 | 8,639 | 46,358 |
+| chr16 | 56,326 | 8,233 | 48,093 |
+| chr17 | 69,926 | 7,648 | 62,278 |
+| chr18 | 40,267 | 3,541 | 36,726 |
+| chr19 | 47,596 | 2,979 | 44,617 |
+| chr20 | 48,562 | 6,927 | 41,635 |
+| chr21 | 21,811 | 2,632 | 19,179 |
+| chr22 | 34,498 | 4,828 | 29,670 |
+| chrX  | 41,518 | 1,409 | 40,109 |
+| chrY  | 1,837 | 0 | 1,837 |
+| **Total** | **1,718,669** | **196,083** | **1,522,586** |
 
-| chromosome | source_positive_records | missing_negative_records | selected_benchmark_records_per_class |
-|:-----------|------------------------:|-------------------------:|-------------------------------------:|
-| chr1       |                 153,196 |                       75 |                               18,069 |
-| chr2       |                 144,254 |                       65 |                               17,014 |
-| chr3       |                 113,596 |                       22 |                               13,398 |
-| chr4       |                  86,232 |                       46 |                               10,171 |
-| chr5       |                  97,469 |                       20 |                               11,496 |
-| chr6       |                 101,231 |                       34 |                               11,940 |
-| chr7       |                  90,955 |                       63 |                               10,728 |
-| chr8       |                  83,028 |                       28 |                                9,793 |
-| chr9       |                  74,200 |                       35 |                                8,751 |
-| chr10      |                  85,396 |                       39 |                               10,072 |
-| chr11      |                  85,530 |                       32 |                               10,088 |
-| chr12      |                  83,790 |                       27 |                                9,883 |
-| chr13      |                  47,845 |                       22 |                                5,643 |
-| chr14      |                  54,609 |                       28 |                                6,441 |
-| chr15      |                  54,997 |                       22 |                                6,487 |
-| chr16      |                  56,326 |                       42 |                                6,643 |
-| chr17      |                  69,926 |                       71 |                                8,247 |
-| chr18      |                  40,267 |                        6 |                                4,749 |
-| chr19      |                  47,596 |                       52 |                                5,614 |
-| chr20      |                  48,562 |                       28 |                                5,728 |
-| chr21      |                  21,811 |                       18 |                                2,572 |
-| chr22      |                  34,498 |                       31 |                                4,069 |
-| chrX       |                  41,518 |                       20 |                                4,897 |
-| chrY       |                   1,837 |                        0 |                                    0 |
+The removed count for each chromosome equals the unique SVN-positive count for
+that chromosome. Across the complete datasets, residual EVN/SVN overlap is zero,
+and the clean EVN collection contains no duplicate cCRE IDs.
 
-The selected counts use Hamilton largest-remainder allocation with target
-202,493 records per class and seed 42. chrY is excluded. The selected chr1 quota
-is routed to fixed validation, chr2 to fixed testing, and all other selected
-chromosomes to fixed learning-curve training.
+Each positive BED is stored as:
+
+`chrom<chrom>/chrom<chrom>_GRCh38_ELS.bed`
+
+Only cleaned positive BEDs have been generated at this stage. Positive FASTAs and
+synthetic or real-genomic background sets must be regenerated from these BEDs.
+Their generated and missing-negative counts are therefore intentionally not
+reported yet. The old overlapping source pools and their historical negative
+counts remain under `../overlaps/chroms/`.
