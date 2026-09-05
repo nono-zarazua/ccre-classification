@@ -159,13 +159,21 @@ stages:
     - results/evn/hepg2/ls-gkm/outer5.tsv
     outs:
     - reports/rendered/evn/lsgkm_hepg2_results.html
-  prepare_GRCh38_els_evn:
-    cmd: bash src/get_whole_body_ccres.sh
+  prepare_GRCh38_els_evn_and_svn:
+    cmd: bash src/get_whole_body_regulatory_sets.sh
     deps:
-    - src/get_whole_body_ccres.sh
-    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
+    - src/get_whole_body_regulatory_sets.sh
     outs:
     - data/raw/GRCh38_ELS.bed
+    - data/raw/Human_Silencers.tar.gz
+    - data/raw/Cai-Fullwood-2021.Silencer-cCREs.bed
+    - data/raw/Huan-Ovcharenko-2019.Silencer-cCREs.bed
+    - data/raw/Jayavelu-Hawkins-2020.Silencer-cCREs.bed
+    - data/raw/Pang-Snyder-2020.Silencer-cCREs.bed
+    - data/raw/REST-Enhancers.bed
+    - data/raw/REST-Silencers.bed
+    - data/raw/STARR-Silencers.Robust.bed
+    - data/raw/STARR-Silencers.Stringent.bed
     - data/processed/evn/GRCh38/GRCh38_ELS.trimmed.bed
     - data/processed/evn/GRCh38/GRCh38_ELS.silencer_overlaps.bed
     - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
@@ -192,6 +200,32 @@ stages:
     - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
     - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
     - data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
+    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
   build_negatives_GRCh38_evn:
     cmd: for i in $(seq 1 22) X Y; do Rscript --vanilla src/build_negs.R
       data/processed/evn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_ELS.bed; done
@@ -697,44 +731,6 @@ stages:
     - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
     outs:
     - reports/rendered/evn/lsgkm_GRCh38_results.html
-  prepare_GRCh38_els_svn:
-    cmd: bash src/get_whole_body_silencers.sh
-    deps:
-    - src/get_whole_body_silencers.sh
-    - data/raw/Cai-Fullwood-2021.Silencer-cCREs.bed
-    - data/raw/Huan-Ovcharenko-2019.Silencer-cCREs.bed
-    - data/raw/Jayavelu-Hawkins-2020.Silencer-cCREs.bed
-    - data/raw/Pang-Snyder-2020.Silencer-cCREs.bed
-    - data/raw/REST-Silencers.bed
-    - data/raw/STARR-Silencers.Robust.bed
-    - data/raw/STARR-Silencers.Stringent.bed
-    outs:
-    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
   build_negatives_GRCh38_svn:
     cmd: for i in $(seq 1 22) X; do Rscript --vanilla src/build_negs.R
       data/processed/svn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_Silencer_ELS.bed;

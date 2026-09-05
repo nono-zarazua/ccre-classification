@@ -9360,3 +9360,284 @@ stages:
       hash: md5
       md5: 398383d7d1242c685510f330067d308e
       size: 3365209190
+  prepare_GRCh38_els_evn_and_svn:
+    cmd: bash src/get_whole_body_regulatory_sets.sh
+    deps:
+    - path: src/get_whole_body_regulatory_sets.sh
+      hash: md5
+      md5: c24f3e1c4a7e63b6f716dce3b35aa0f4
+      size: 7714
+      isexec: true
+    outs:
+    - path: data/processed/evn/GRCh38/GRCh38_ELS.silencer_overlaps.bed
+      hash: md5
+      md5: 8478c018e37eabb2bd93f16e420c5eb5
+      size: 7226163
+    - path: data/processed/evn/GRCh38/GRCh38_ELS.trimmed.bed
+      hash: md5
+      md5: 6b5d4d339b41c31578b698a93404b17a
+      size: 56194436
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: 694ee26c9d8ace5a549eb57af79acd76
+      size: 4593180
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: e47002df5f9f31839c14c554cd7c18b9
+      size: 2901394
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: 03ee6c828734c8193f826a6c2823a656
+      size: 2744693
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 98dc5457bc3850e36a227134c071eafe
+      size: 2849600
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: d23e449bfcb6ea72496d207eb0559ab2
+      size: 1735552
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: 160e68ea64c894d3713e2b062636a678
+      size: 1888191
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: da8ccd0195dc7c3029b9f87e5540c39e
+      size: 1718520
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: f41b7f5c36a054239a8af83caeab1c78
+      size: 1762941
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: 72d069dc1d49bdfb00ff13224f5463cd
+      size: 2284245
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: fb51f1e252dcceb44996e36e6c7dce04
+      size: 1347420
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: 65296051192e093326e6f9c794288876
+      size: 1627019
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 6512a66690bc3e98b02763717154e9ef
+      size: 4813853
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: ffe77ff2fa6cf41e0943a2141b67fc46
+      size: 1525710
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: dcdd75ee8a5d5902ba976ba59c45c6a6
+      size: 709207
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 79e35b216fa19c1692af161537662cd7
+      size: 1097790
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: ee39d92ca73617e8a5540a1730cebc4c
+      size: 3845548
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 7184f53fe623a2e816a575c674ddcbfa
+      size: 2763406
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: c0d49dc7a5be0b82746a6add2e75e2b6
+      size: 3209181
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: 75c86caff361b901946289b2cd242bf6
+      size: 3125588
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: d6b14df91eeef83c4ff8a2586541eca1
+      size: 3016807
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 0c08b62feeb851834890d0889651e600
+      size: 2773652
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 14643295d986f0f80e1f329dd22d41bd
+      size: 2331899
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: 7cb9205bb222d34f49e1925558f1c724
+      size: 1464362
+    - path: data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
+      hash: md5
+      md5: 2abf72b5e7359072bd16495bbe0b21fe
+      size: 64678
+    - path: data/processed/svn/GRCh38/GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 59342db8d60de1170c92016c9e8be3df
+      size: 10755657
+    - path: data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
+      hash: md5
+      md5: 8478c018e37eabb2bd93f16e420c5eb5
+      size: 7226163
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4123944e83f4168a30b7d66d739083d1
+      size: 1058842
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c04e67b10bd7044a1da3067359a282d9
+      size: 289515
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 510d5373fdb7131eb148fb665af0e42d
+      size: 449775
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4835b6dda5d3d05c8b830a2de53254bd
+      size: 282589
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7e1357b74bf55709c290bd1e3e56620d
+      size: 53583
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7202f5cc77e659c632d9356c7af4aad0
+      size: 148252
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b202398bfd7f303d9bc0317d15f9cc0e
+      size: 319743
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 268e65e17aef49ac8b47500facf65f86
+      size: 300069
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 66f1bd44a61410d3352a7502c6a7f11e
+      size: 281780
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c86a09c9e6ca6e9e7f258db743579b33
+      size: 129093
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 09b7f49028a356c8579033e2bcb41383
+      size: 108995
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2662f08d54be436904337cd4202967cb
+      size: 529702
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 93c8259f0cd18993157800e35bd595c2
+      size: 256005
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: abeeae3264d114e1c98f4792cb4db208
+      size: 97382
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 213e72a833966c2dd32500274caf2631
+      size: 178636
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 59282f99e229d2e92916a9ceed4f6c42
+      size: 350848
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 933b3f9884b3d9329599662ad7d74367
+      size: 398084
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 3a47f563b8556d211dbbbfb4a7c7c568
+      size: 384998
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 1d461b062dbe8ca5a1085ca96743cec7
+      size: 589958
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: ef3ad67a1c401130576de75bd5b44d2a
+      size: 307640
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 294db78116fb8ecca29adf4d90030e88
+      size: 266384
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: f132e55ae40c0446f8f5e2e7ee2b04f1
+      size: 392350
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2d2f8d5a571146e7d93a782a937b0b08
+      size: 51940
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: data/raw/Cai-Fullwood-2021.Silencer-cCREs.bed
+      hash: md5
+      md5: d1bf3676a0cbfbcc5d0ec8d385c124cd
+      size: 12190261
+    - path: data/raw/GRCh38_ELS.bed
+      hash: md5
+      md5: 4850a82745b9623eba73683218658fb8
+      size: 94356641
+    - path: data/raw/Huan-Ovcharenko-2019.Silencer-cCREs.bed
+      hash: md5
+      md5: 39336eda9d3f3f65f6d40c160e90b448
+      size: 1235068
+    - path: data/raw/Human_Silencers.tar.gz
+      hash: md5
+      md5: 72ab08012767711ebac693e424197d1a
+      size: 3658564
+    - path: data/raw/Jayavelu-Hawkins-2020.Silencer-cCREs.bed
+      hash: md5
+      md5: 29382de1e4d530269c86d4b96dec7bce
+      size: 142982
+    - path: data/raw/Pang-Snyder-2020.Silencer-cCREs.bed
+      hash: md5
+      md5: fb500d09aec226e8b9c51edfad3d2b91
+      size: 98031
+    - path: data/raw/REST-Enhancers.bed
+      hash: md5
+      md5: 966e9c129a44ad03dbc202ccf711d24a
+      size: 139114
+    - path: data/raw/REST-Silencers.bed
+      hash: md5
+      md5: 272a26f6931d435fb0c865f0ef134734
+      size: 126509
+    - path: data/raw/STARR-Silencers.Robust.bed
+      hash: md5
+      md5: 6151227a1986e798792b48cec0004cfd
+      size: 301340
+    - path: data/raw/STARR-Silencers.Stringent.bed
+      hash: md5
+      md5: 116ec928f3cc8edf9ddb05b74475ae49
+      size: 30330
