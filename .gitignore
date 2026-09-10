@@ -1,6 +1,7 @@
 slurmlogs/
 wandb/
-data/
+data/raw
+data/reference
 models/
 predictions/
 results/
