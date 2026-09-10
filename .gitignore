@@ -1,2 +1,6 @@
 slurmlogs/
 wandb/
+data/
+models/
+predictions/
+results/
