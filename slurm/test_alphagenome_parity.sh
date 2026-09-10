@@ -99,6 +99,9 @@ output_prefix="models/evn/GRCh38/alphagenome/parity/parity_smoke"
     --patience 2 \
     --batch-size 32 \
     --num-workers "${SLURM_CPUS_PER_TASK}" \
+    --dataset-name evn \
+    --checkpoint-name parity_smoke \
+    --training-chromosomes parity_subset \
     --seed 42 \
     --overwrite
 

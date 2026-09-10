@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train one frozen-AlphaGenome enhancer-vs-negative classifier.
+"""Train one frozen-AlphaGenome regulatory-sequence binary classifier.
 
 The command deliberately resembles ``gkmtrain``: it receives explicit positive
 and negative training FASTAs plus an output prefix. Two validation FASTAs are
@@ -68,7 +68,7 @@ TRACKED_METRICS = ("loss", "accuracy", "auroc", "auprc", "precision", "recall", 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
-            "Train one binary enhancer classifier on a frozen pretrained "
+            "Train one binary regulatory-sequence classifier on a frozen pretrained "
             "AlphaGenome encoder."
         )
     )
@@ -99,6 +99,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--patience", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--dataset-name", choices=("evn", "svn"), required=True)
+    parser.add_argument("--checkpoint-name", required=True)
+    parser.add_argument(
+        "--training-chromosomes",
+        required=True,
+        help="Comma-separated chromosomes included in this independent checkpoint.",
+    )
     parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--max-shift", type=int, default=15)
     parser.add_argument("--rc-prob", type=float, default=0.5)
@@ -199,7 +206,7 @@ def read_fasta(path: Path) -> list[tuple[str, str]]:
             if line.startswith(">"):
                 if identifier is not None:
                     records.append((identifier, "".join(sequence_parts).upper()))
-                identifier = line[1:].split()[0]
+                identifier = line[1:].strip()
                 if not identifier:
                     raise ValueError(f"{path}:{line_number}: empty FASTA identifier")
                 sequence_parts = []
@@ -220,8 +227,8 @@ def read_fasta(path: Path) -> list[tuple[str, str]]:
     return records
 
 
-class EnhancerDataset(Dataset):
-    """Return center-adjusted one-hot sequences with enhancer=1 and negative=0."""
+class RegulatoryDataset(Dataset):
+    """Return center-adjusted one-hot sequences with regulatory=1 and negative=0."""
 
     def __init__(
         self,
@@ -291,7 +298,7 @@ class EnhancerDataset(Dataset):
         return shifted
 
 
-class EnhancerHead(nn.Module):
+class BinaryClassificationHead(nn.Module):
     """MPRA-style MLP returning one unbounded binary-classification logit."""
 
     def __init__(self, n_positions: int, hidden_size: int, dropout: float) -> None:
@@ -308,6 +315,10 @@ class EnhancerHead(nn.Module):
         x = self.dropout(x)
         return self.fc2(x).squeeze(-1)
 
+
+# Backward-compatible imports used by predict_alphagenome.py and older checkpoints.
+EnhancerDataset = RegulatoryDataset
+EnhancerHead = BinaryClassificationHead
 
 def amp_context(device: torch.device, enabled: bool):
     if enabled and device.type == "cuda":
@@ -357,7 +368,7 @@ def calculate_metrics(
 
 def train_epoch(
     model: nn.Module,
-    head: EnhancerHead,
+    head: BinaryClassificationHead,
     loader: DataLoader,
     optimizer: torch.optim.Optimizer,
     scheduler,
@@ -398,7 +409,7 @@ def train_epoch(
 @torch.no_grad()
 def evaluate(
     model: nn.Module,
-    head: EnhancerHead,
+    head: BinaryClassificationHead,
     loader: DataLoader,
     device: torch.device,
     use_amp: bool,
@@ -432,7 +443,7 @@ def evaluate(
 
 
 def build_loader(
-    dataset: EnhancerDataset,
+    dataset: RegulatoryDataset,
     batch_size: int,
     workers: int,
     shuffle: bool,
@@ -512,7 +523,7 @@ def main() -> None:
     print(json.dumps(config, indent=2, sort_keys=True), flush=True)
 
     print("Loading FASTA datasets...", flush=True)
-    train_dataset = EnhancerDataset(
+    train_dataset = RegulatoryDataset(
         args.train_pos,
         args.train_neg,
         args.sequence_length,
@@ -521,7 +532,7 @@ def main() -> None:
         shift_prob=args.shift_prob,
         max_shift=args.max_shift,
     )
-    validation_dataset = EnhancerDataset(
+    validation_dataset = RegulatoryDataset(
         args.validation_pos,
         args.validation_neg,
         args.sequence_length,
@@ -555,14 +566,14 @@ def main() -> None:
     smoke_encoder = encode(model, smoke_sequences, device, use_amp)
     if smoke_encoder.shape[0] != 2 or smoke_encoder.shape[-1] != ENCODER_DIM:
         raise RuntimeError(f"Unexpected encoder shape: {tuple(smoke_encoder.shape)}")
-    head = EnhancerHead(smoke_encoder.shape[1], args.hidden_size, args.dropout).to(device)
+    head = BinaryClassificationHead(smoke_encoder.shape[1], args.hidden_size, args.dropout).to(device)
     smoke_logits = head(smoke_encoder.detach())
     smoke_loss = F.binary_cross_entropy_with_logits(smoke_logits.float(), smoke_targets.float())
     smoke_loss.backward()
     if smoke_logits.shape != (2,):
         raise RuntimeError(f"Unexpected logit shape: {tuple(smoke_logits.shape)}")
     if not any(parameter.grad is not None for parameter in head.parameters()):
-        raise RuntimeError("EnhancerHead did not receive gradients")
+        raise RuntimeError("BinaryClassificationHead did not receive gradients")
     if any(parameter.grad is not None for parameter in model.parameters()):
         raise RuntimeError("Frozen AlphaGenome backbone received gradients")
     head.zero_grad(set_to_none=True)
@@ -659,7 +670,7 @@ def main() -> None:
         "Loading held-out test FASTAs after validation-based model selection...",
         flush=True,
     )
-    test_dataset = EnhancerDataset(
+    test_dataset = RegulatoryDataset(
         args.test_pos,
         args.test_neg,
         args.sequence_length,

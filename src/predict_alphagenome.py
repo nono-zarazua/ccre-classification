@@ -16,7 +16,7 @@ from alphagenome_pytorch import AlphaGenome
 from alphagenome_pytorch.extensions.finetuning.transfer import load_trunk, remove_all_heads
 from alphagenome_pytorch.extensions.finetuning.utils import sequence_to_onehot
 
-from train_alphagenome import EnhancerHead, amp_context, normalize_encoder_output, read_fasta
+from train_alphagenome import EnhancerHead, amp_context, calculate_metrics, normalize_encoder_output, read_fasta
 
 
 class PredictionDataset(Dataset):
@@ -49,7 +49,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("checkpoint", type=Path)
     parser.add_argument("positive_fasta", type=Path)
     parser.add_argument("negative_fasta", type=Path)
-    parser.add_argument("output_tsv", type=Path)
+    parser.add_argument("output_tsv", type=Path, nargs="?", help="Optional per-sequence TSV output.")
+    parser.add_argument("--metrics-json", type=Path, help="Optional aggregate metrics JSON output.")
     parser.add_argument("--weights", type=Path, default=Path("weights/fold_0_weights.safetensors"))
     parser.add_argument("--batch-size", type=int, default=32)
     parser.add_argument("--num-workers", type=int, default=4)
@@ -61,8 +62,11 @@ def main() -> None:
     for path in (args.checkpoint, args.positive_fasta, args.negative_fasta, args.weights):
         if not path.is_file() or path.stat().st_size == 0:
             raise FileNotFoundError(f"Missing or empty input: {path}")
-    if args.output_tsv.exists():
-        raise FileExistsError(f"Output already exists: {args.output_tsv}")
+    if args.output_tsv is None and args.metrics_json is None:
+        raise ValueError("Provide output_tsv, --metrics-json, or both")
+    for output in (args.output_tsv, args.metrics_json):
+        if output is not None and output.exists():
+            raise FileExistsError(f"Output already exists: {output}")
     if not torch.cuda.is_available():
         raise RuntimeError("CUDA is required for AlphaGenome inference")
 
@@ -97,14 +101,29 @@ def main() -> None:
             rows.extend(zip(identifiers, labels.int().tolist(), logits.cpu().tolist(),
                             probabilities.cpu().tolist()))
 
-    args.output_tsv.parent.mkdir(parents=True, exist_ok=True)
-    temporary = Path(str(args.output_tsv) + ".tmp")
-    with temporary.open("w", newline="") as handle:
-        writer = csv.writer(handle, delimiter="\t")
-        writer.writerow(("sequence_id", "label", "logit", "probability"))
-        writer.writerows(rows)
-    temporary.replace(args.output_tsv)
-    print(json.dumps({"output": str(args.output_tsv), "records": len(rows),
+    if args.output_tsv is not None:
+        args.output_tsv.parent.mkdir(parents=True, exist_ok=True)
+        temporary = Path(str(args.output_tsv) + ".tmp")
+        with temporary.open("w", newline="") as handle:
+            writer = csv.writer(handle, delimiter="\t")
+            writer.writerow(("sequence_id", "label", "logit", "probability"))
+            writer.writerows(rows)
+        temporary.replace(args.output_tsv)
+
+    if args.metrics_json is not None:
+        labels = torch.tensor([row[1] for row in rows], dtype=torch.float32)
+        logits = torch.tensor([row[2] for row in rows], dtype=torch.float32)
+        probabilities = torch.sigmoid(logits)
+        loss = torch.nn.functional.binary_cross_entropy_with_logits(logits, labels).item()
+        metrics = calculate_metrics(probabilities, labels, loss, float(config.get("threshold", 0.5)))
+        payload = {"split": "train_100", "checkpoint": str(args.checkpoint), "positive_fasta": str(args.positive_fasta), "negative_fasta": str(args.negative_fasta), "n_positive": int(dataset.labels.sum()), "n_negative": int((dataset.labels == 0).sum()), "metrics": metrics}
+        args.metrics_json.parent.mkdir(parents=True, exist_ok=True)
+        temporary_metrics = Path(str(args.metrics_json) + ".tmp")
+        with temporary_metrics.open("w") as handle:
+            json.dump(payload, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+        temporary_metrics.replace(args.metrics_json)
+    print(json.dumps({"output": None if args.output_tsv is None else str(args.output_tsv), "metrics_json": None if args.metrics_json is None else str(args.metrics_json), "records": len(rows),
                       "positive": dataset.labels.sum().item(),
                       "negative": (dataset.labels == 0).sum().item(),
                       "checkpoint": str(args.checkpoint)}, indent=2))

@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
-## Train frozen-encoder AlphaGenome binary classifiers for svn learning curves
-## and chromosome-composition stability experiments.
-################################################################################
-### SLURM CONFIG
-################################################################################
+## Independent EVN/SVN frozen-encoder AlphaGenome cumulative chromosome learning curves.
+## Select DATASET=evn|svn and NEGATIVE_KIND=synthetic|real at submission.
 #SBATCH --job-name=train_alphagenome
 #SBATCH --chdir=/work/zarazuanav/workspace/repos/ccre-classification
 #SBATCH --output=/work/zarazuanav/workspace/repos/ccre-classification/slurmlogs/train_alphagenome.%A_%a.out
@@ -17,177 +14,72 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
 #SBATCH --time=05-00:00:00
-#SBATCH --array=1-10%4
-
+#SBATCH --array=1-21%4
 set -euo pipefail
-
-echo "Job ID: ${SLURM_JOB_ID}"
-echo "Array task: ${SLURM_ARRAY_TASK_ID}"
-echo "Node: $(hostname)"
-echo "Working directory: $(pwd)"
-echo "Start time: $(date)"
+echo "Job ${SLURM_JOB_ID}, task ${SLURM_ARRAY_TASK_ID}, node $(hostname), start $(date)"
 start_time="$(date -u +%s)"
-
 module load lang/Miniforge3/24.1.2-0
-# Conda activation hooks inspect optional variables that may be unset.
-set +u
-source activate alphagenome
-set -u
-
+set +u; source activate alphagenome; set -u
 python_bin="${CONDA_PREFIX}/bin/python"
-if [[ ! -x "${python_bin}" ]]; then
-    echo "ERROR: AlphaGenome Python is not executable: ${python_bin}" >&2
-    exit 1
-fi
-echo "Conda environment: ${CONDA_PREFIX}"
-echo "Python: ${python_bin}"
-"${python_bin}" -c 'import numpy, torch, sklearn, alphagenome_pytorch; print("AlphaGenome environment import preflight: PASS")'
+[[ -x "${python_bin}" ]] || { echo "ERROR: missing AlphaGenome Python" >&2; exit 1; }
+"${python_bin}" -c 'import numpy, torch, sklearn, alphagenome_pytorch; assert torch.cuda.is_available(), "CUDA unavailable"; print(torch.cuda.get_device_name(0))'
 
-################################################################################
-### Map one array task to one independent experiment
-################################################################################
+dataset="${DATASET:-evn}"
+if [[ "${dataset}" != "evn" && "${dataset}" != "svn" ]]; then
+  echo "ERROR: DATASET must be evn or svn; received: ${dataset}" >&2
+  exit 1
+fi
+
+negative_kind="${NEGATIVE_KIND:-synthetic}"
+if [[ "${negative_kind}" != "synthetic" && "${negative_kind}" != "real" ]]; then
+  echo "ERROR: NEGATIVE_KIND must be synthetic or real; received: ${negative_kind}" >&2
+  exit 1
+fi
+
 task_id="${SLURM_ARRAY_TASK_ID}"
-if (( task_id < 1 || task_id > 10 )); then
-    echo "ERROR: SLURM_ARRAY_TASK_ID must be between 1 and 10" >&2
-    exit 1
-fi
-
-percentages=(10 20 40 60 80 100)
-if (( task_id <= 6 )); then
-    percentage="${percentages[task_id - 1]}"
-    dataset_name="learning_curve_${percentage}"
-
-    train_pos="data/processed/svn/GRCh38/learning_curves/train_${percentage}_pos.fa"
-    train_neg="data/processed/svn/GRCh38/learning_curves/train_${percentage}_neg.fa"
-    validation_pos="data/processed/svn/GRCh38/training/validation_pos.fa"
-    validation_neg="data/processed/svn/GRCh38/training/validation_neg.fa"
-    test_pos="data/processed/svn/GRCh38/training/test_pos.fa"
-    test_neg="data/processed/svn/GRCh38/training/test_neg.fa"
-
-    output_dir="models/svn/GRCh38/alphagenome/learning_curves/${percentage}"
-    output_prefix="${output_dir}/${dataset_name}"
-
-    echo "Experiment: fixed learning curve"
-    echo "Training fraction: ${percentage}%"
-else
-    outer="$((task_id - 6))"
-    dataset_name="outer${outer}"
-
-    train_pos="data/processed/svn/GRCh38/training/outer${outer}/train_pos.fa"
-    train_neg="data/processed/svn/GRCh38/training/outer${outer}/train_neg.fa"
-    validation_pos="data/processed/svn/GRCh38/training/outer${outer}/validation_pos.fa"
-    validation_neg="data/processed/svn/GRCh38/training/outer${outer}/validation_neg.fa"
-    test_pos="data/processed/svn/GRCh38/folds/fold5/fold5.fa"
-    test_neg="data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa"
-
-    output_dir="models/svn/GRCh38/alphagenome/outer${outer}"
-    output_prefix="${output_dir}/${dataset_name}"
-
-    echo "Experiment: chromosome-composition stability"
-    echo "Outer set: ${outer}"
-fi
-
-################################################################################
-### Validate inputs and protect completed/partial runs
-################################################################################
+chromosomes=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
+(( task_id >= 1 && task_id <= ${#chromosomes[@]} )) || { echo "ERROR: task must be 1-${#chromosomes[@]}" >&2; exit 1; }
+endpoint="${chromosomes[task_id-1]}"; name="through_chr${endpoint}"
+root="data/processed/${dataset}/GRCh38/training/${negative_kind}"
+train_100_pos="${root}/train_100_pos.fa"; train_100_neg="${root}/train_100_neg.fa"
+validation_pos="${root}/validation_pos.fa"; validation_neg="${root}/validation_neg.fa"
+test_pos="${root}/test_pos.fa"; test_neg="${root}/test_neg.fa"
 weights="weights/fold_0_weights.safetensors"
-required_inputs=(
-    "${train_pos}"
-    "${train_neg}"
-    "${validation_pos}"
-    "${validation_neg}"
-    "${test_pos}"
-    "${test_neg}"
-    "${weights}"
-)
-for input_file in "${required_inputs[@]}"; do
-    if [[ ! -s "${input_file}" ]]; then
-        echo "ERROR: required input is missing or empty: ${input_file}" >&2
-        exit 1
-    fi
+out_dir="models/${dataset}/GRCh38/${negative_kind}/alphagenome/chromosome_learning_curves/${name}"
+prefix="${out_dir}/${name}"
+for f in "${train_100_pos}" "${train_100_neg}" "${validation_pos}" "${validation_neg}" "${test_pos}" "${test_neg}" "${weights}"; do
+  [[ -s "${f}" ]] || { echo "ERROR: missing/empty ${f}" >&2; exit 1; }
 done
+suffixes=(.best_head.pt .config.json .history.tsv .validation_metrics.json .test_metrics.json .train_100_metrics.json)
+existing=0; complete=0
+for s in "${suffixes[@]}"; do [[ -e "${prefix}${s}" ]] && ((existing+=1)); [[ -s "${prefix}${s}" ]] && ((complete+=1)); done
+(( complete != ${#suffixes[@]} )) || { echo "SKIP: complete outputs exist for ${name}"; exit 0; }
+(( existing == 0 )) || { echo "ERROR: partial outputs exist for ${name}" >&2; exit 1; }
 
-artifact_suffixes=(
-    .best_head.pt
-    .config.json
-    .history.tsv
-    .validation_metrics.json
-    .test_metrics.json
-)
-existing_artifacts=0
-complete_artifacts=0
-for suffix in "${artifact_suffixes[@]}"; do
-    artifact="${output_prefix}${suffix}"
-    [[ -e "${artifact}" ]] && existing_artifacts="$((existing_artifacts + 1))"
-    [[ -s "${artifact}" ]] && complete_artifacts="$((complete_artifacts + 1))"
+work_dir="$(mktemp -d "${SLURM_TMPDIR:-/tmp}/train_ag.${SLURM_JOB_ID}.${task_id}.XXXXXX")"
+trap 'rm -rf -- "${work_dir}"' EXIT
+pos="${work_dir}/train_pos.fa"; neg="${work_dir}/train_neg.fa"; : >"${pos}"; : >"${neg}"
+included=()
+for ((i=0;i<task_id;i++)); do
+  chrom="${chromosomes[i]}"; shard="${root}/chromosomes/chrom${chrom}"
+  [[ -s "${shard}/train_pos.fa" && -s "${shard}/train_neg.fa" ]] || { echo "ERROR: missing chr${chrom} shard" >&2; exit 1; }
+  cat "${shard}/train_pos.fa" >>"${pos}"; cat "${shard}/train_neg.fa" >>"${neg}"; included+=("chr${chrom}")
 done
-
-if (( complete_artifacts == ${#artifact_suffixes[@]} )); then
-    echo "SKIP: all output artifacts already exist and are non-empty for ${dataset_name}"
-    exit 0
-fi
-if (( existing_artifacts > 0 )); then
-    echo "ERROR: partial AlphaGenome output set exists for ${dataset_name}." >&2
-    echo "Remove or archive the partial files before resubmitting this task." >&2
-    exit 1
-fi
-
-mkdir -p "${output_dir}"
-
-echo "Dataset: ${dataset_name}"
-echo "Training positive FASTA: ${train_pos}"
-echo "Training negative FASTA: ${train_neg}"
-echo "Validation positive FASTA: ${validation_pos}"
-echo "Validation negative FASTA: ${validation_neg}"
-echo "Held-out test positive FASTA: ${test_pos}"
-echo "Held-out test negative FASTA: ${test_neg}"
-echo "Training positive sequences: $(grep -c '^>' "${train_pos}")"
-echo "Training negative sequences: $(grep -c '^>' "${train_neg}")"
-echo "Validation positive sequences: $(grep -c '^>' "${validation_pos}")"
-echo "Validation negative sequences: $(grep -c '^>' "${validation_neg}")"
-echo "Test positive sequences: $(grep -c '^>' "${test_pos}")"
-echo "Test negative sequences: $(grep -c '^>' "${test_neg}")"
-echo "Output prefix: ${output_prefix}"
-
-################################################################################
-### Frozen production configuration
-################################################################################
-# Every task starts a new Python process and therefore a newly initialized head.
-# Validation AUPRC selects the best epoch; test FASTAs are loaded only afterward.
-"${python_bin}" src/train_alphagenome.py \
-    "${train_pos}" \
-    "${train_neg}" \
-    "${validation_pos}" \
-    "${validation_neg}" \
-    "${test_pos}" \
-    "${test_neg}" \
-    "${output_prefix}" \
-    --weights "${weights}" \
-    --sequence-length 256 \
-    --hidden-size 1024 \
-    --dropout 0.1 \
-    --batch-size 32 \
-    --num-workers "${SLURM_CPUS_PER_TASK}" \
-    --epochs 10 \
-    --learning-rate 0.001 \
-    --weight-decay 0.0 \
-    --patience 5 \
-    --seed 42 \
-    --threshold 0.5 \
-    --max-shift 15 \
-    --rc-prob 0.5 \
-    --shift-prob 0.5
-
-for suffix in "${artifact_suffixes[@]}"; do
-    artifact="${output_prefix}${suffix}"
-    if [[ ! -s "${artifact}" ]]; then
-        echo "ERROR: trainer did not produce a non-empty artifact: ${artifact}" >&2
-        exit 1
-    fi
-done
-
-end_time="$(date -u +%s)"
-elapsed="$((end_time - start_time))"
-echo "Training PASS: ${dataset_name}"
-echo "End time: $(date)"
-echo "Elapsed time: $((elapsed / 3600))h $(((elapsed % 3600) / 60))m $((elapsed % 60))s"
+n_pos="$(grep -c '^>' "${pos}")"; n_neg="$(grep -c '^>' "${neg}")"
+(( n_pos > 0 && n_pos == n_neg )) || { echo "ERROR: unbalanced cumulative input" >&2; exit 1; }
+mkdir -p "${out_dir}"
+echo "Task dataset: ${dataset}; checkpoint: ${name}; chromosomes: ${included[*]}; observations: $((n_pos+n_neg))"
+echo "Validation chr1; test chr2; output ${prefix}"
+"${python_bin}" src/train_alphagenome.py "${pos}" "${neg}" "${validation_pos}" "${validation_neg}" "${test_pos}" "${test_neg}" "${prefix}" \
+  --weights "${weights}" --sequence-length 256 --hidden-size 1024 --dropout 0.1 \
+  --batch-size 32 --num-workers "${SLURM_CPUS_PER_TASK}" --epochs 10 \
+  --dataset-name "${dataset}" --checkpoint-name "${name}" \
+  --training-chromosomes "$(IFS=,; echo "${included[*]}")" \
+  --learning-rate 0.001 --weight-decay 0.0 --patience 5 --seed 42 \
+  --threshold 0.5 --max-shift 15 --rc-prob 0.5 --shift-prob 0.5
+"${python_bin}" src/predict_alphagenome.py "${prefix}.best_head.pt" "${train_100_pos}" "${train_100_neg}" \
+  --metrics-json "${prefix}.train_100_metrics.json" --weights "${weights}" \
+  --batch-size 32 --num-workers "${SLURM_CPUS_PER_TASK}"
+for s in "${suffixes[@]}"; do [[ -s "${prefix}${s}" ]] || { echo "ERROR: missing ${prefix}${s}" >&2; exit 1; }; done
+elapsed="$(($(date -u +%s)-start_time))"
+echo "Training PASS: ${name}; elapsed $((elapsed/3600))h $(((elapsed%3600)/60))m $((elapsed%60))s"

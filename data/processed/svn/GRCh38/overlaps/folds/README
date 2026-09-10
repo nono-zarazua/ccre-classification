@@ -1,0 +1,28 @@
+# GRCh38 silencer chromosome folds
+
+These five folds are derived from the native silencer chromosome distribution
+after balancing each chromosome to the smaller available positive/negative
+count. They are separate from the fixed learning-curve routing: chr1 and chr2
+remain fixed validation and test chromosomes for the learning curves, but they
+participate in the chromosome-fold partition used by the outer experiments.
+
+Counts are paired records per class. The ideal five-way count is 40,484.6.
+
+| fold | chromosomes | paired records per class | outer role |
+|:----:|:------------|-------------------------:|:-----------|
+| 1 | chr5, chr11, chr12, chr17, chrX | 40,739 | Development fold; omitted by outer1 |
+| 2 | chr4, chr7, chr9, chr13, chr19, chr22 | 40,195 | Development fold; omitted by outer2 |
+| 3 | chr6, chr10, chr14, chr15, chr21 | 40,429 | Development fold; omitted by outer3 |
+| 4 | chr2, chr3, chr8, chr16 | 40,462 | Development fold; omitted by outer4 |
+| 5 | chr1, chr18, chr20 | 40,598 | Common held-out test fold |
+| **Total** | chr1-chr22 and chrX | **202,423** | — |
+
+Each `foldN/` directory contains:
+
+- `foldN.bed` and `foldN.fa`: selected positive silencer records;
+- `neg1x_foldN.bed` and `neg1x_foldN.fa`: paired synthetic negative records.
+
+Outer1-outer4 use folds 1-4 only. Outer N omits development fold N,
+trains on the other three development folds after removing its validation
+chromosome, and is finally evaluated on fold5. Fold5 must not be used for early
+stopping, checkpoint selection, hyperparameter selection, or threshold selection.

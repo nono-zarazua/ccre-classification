@@ -25,7 +25,7 @@ input_dir <- dirname(input_bed)
 input_stem <- tools::file_path_sans_ext(basename(input_bed))
 
 pos_fa <- file.path(input_dir, paste0(input_stem, ".fa"))
-neg_prefix <- file.path(input_dir, paste0("neg1x_", input_stem))
+neg_prefix <- file.path(input_dir, paste0("synthetic_neg1x_", input_stem))
 neg_bed <- paste0(neg_prefix, ".bed")
 neg_fa <- paste0(neg_prefix, ".fa")
 

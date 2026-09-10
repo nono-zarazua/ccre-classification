@@ -12,9 +12,12 @@
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=2
-#SBATCH --mem=100G
-#SBATCH --time=05-00:00:00
+# gkmSVM::genNullSeqs() is effectively single-threaded. The complete recent
+# EVN array peaked at ~5.9 GiB MaxRSS and <4 h, so these limits retain ~2x
+# memory and ~3x runtime safety margins.
+#SBATCH --cpus-per-task=1
+#SBATCH --mem=12G
+#SBATCH --time=12:00:00
 #SBATCH --array=1-23
 ################################################################################
 ### Safer Bash behavior
@@ -54,8 +57,8 @@ else
     exit 1
 fi
 
-input_bed="data/processed/svn/GRCh38/chroms/chrom${i}/chrom${i}_GRCh38_Silencer_ELS.bed"
-negative_bed="data/processed/svn/GRCh38/chroms/chrom${i}/neg1x_chrom${i}_GRCh38_Silencer_ELS.bed"
+input_bed="data/processed/evn/GRCh38/chroms/chrom${i}/chrom${i}_GRCh38_ELS.bed"
+negative_bed="data/processed/evn/GRCh38/chroms/chrom${i}/synthetic_neg1x_chrom${i}_GRCh38_ELS.bed"
 
 echo "Array task ID: ${task_id}"
 echo "Chromosome: ${i}"

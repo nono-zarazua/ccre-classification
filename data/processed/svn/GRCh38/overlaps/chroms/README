@@ -1,0 +1,45 @@
+# GRCh38 silencer ELS source pools by chromosome
+
+This directory contains the chromosome-specific positive silencer ELS records
+and their generated synthetic negative source pools. The positive chromosome
+BEDs are produced by `src/get_whole_body_silencers.sh`; positive FASTA and
+negative BED/FASTA files are produced with `src/build_negs.R` through the
+23-task `slurm/build_negs.sh` array.
+
+BED and FASTA records correspond by position within each chromosome/class pair.
+A negative pool is assigned to the chromosome of its source positive input. The
+synthetic null BED coordinate selected by `genNullSeqs()` may lie on a different
+chromosome and does not redefine that source-pool assignment.
+
+| chromosome | source_positive_records | generated_negative_records | missing_negative_records |
+|:-----------|------------------------:|---------------------------:|-------------------------:|
+| chr1       |                  29,777 |                     29,759 |                       18 |
+| chr2       |                  14,579 |                     14,576 |                        3 |
+| chr3       |                   9,728 |                      9,728 |                        0 |
+| chr4       |                  11,068 |                     11,065 |                        3 |
+| chr5       |                  10,817 |                     10,815 |                        2 |
+| chr6       |                  16,650 |                     16,642 |                        8 |
+| chr7       |                   8,708 |                      8,708 |                        0 |
+| chr8       |                   7,647 |                      7,647 |                        0 |
+| chr9       |                  10,912 |                     10,907 |                        5 |
+| chr10      |                   8,030 |                      8,027 |                        3 |
+| chr11      |                  12,565 |                     12,558 |                        7 |
+| chr12      |                   7,783 |                      7,783 |                        0 |
+| chr13      |                   1,439 |                      1,439 |                        0 |
+| chr14      |                   4,124 |                      4,124 |                        0 |
+| chr15      |                   8,894 |                      8,894 |                        0 |
+| chr16      |                   8,516 |                      8,511 |                        5 |
+| chr17      |                   8,145 |                      8,136 |                        9 |
+| chr18      |                   3,686 |                      3,686 |                        0 |
+| chr19      |                   3,051 |                      3,050 |                        1 |
+| chr20      |                   7,158 |                      7,153 |                        5 |
+| chr21      |                   2,742 |                      2,742 |                        0 |
+| chr22      |                   5,027 |                      5,026 |                        1 |
+| chrX       |                   1,447 |                      1,447 |                        0 |
+| **Total**  |                 **202,493** |                **202,423** |                   **70** |
+
+The silencer ELS input contains no chrY records, so the negative-generation
+array covers chr1-chr22 and chrX only. Missing counts are the final unmatched
+records after `genNullSeqs()` exhausted up to 500 trials. They agree with both
+the final `remaining` values in `slurmlogs/negs.1849304_*.out` and the
+difference between each positive and negative BED/FASTA record count.

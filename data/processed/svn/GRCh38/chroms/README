@@ -5,33 +5,33 @@ by `src/get_whole_body_regulatory_sets.sh`. pELS and dELS records from seven
 silencer studies are consolidated, repeated cCRE IDs are verified to be identical,
 and one record per cCRE ID is retained before chromosome splitting.
 
-| chromosome | silencer_source_rows | duplicate_rows_removed | unique_positive_loci |
-|:-----------|----------------------:|-----------------------:|---------------------:|
-| chr1  | 29,777 | 857 | 28,920 |
-| chr2  | 14,579 | 288 | 14,291 |
-| chr3  | 9,728 | 145 | 9,583 |
-| chr4  | 11,068 | 233 | 10,835 |
-| chr5  | 10,817 | 319 | 10,498 |
-| chr6  | 16,650 | 429 | 16,221 |
-| chr7  | 8,708 | 443 | 8,265 |
-| chr8  | 7,647 | 323 | 7,324 |
-| chr9  | 10,912 | 446 | 10,466 |
-| chr10 | 8,030 | 213 | 7,817 |
-| chr11 | 12,565 | 512 | 12,053 |
-| chr12 | 7,783 | 228 | 7,555 |
-| chr13 | 1,439 | 12 | 1,427 |
-| chr14 | 4,124 | 132 | 3,992 |
-| chr15 | 8,894 | 255 | 8,639 |
-| chr16 | 8,516 | 283 | 8,233 |
-| chr17 | 8,145 | 497 | 7,648 |
-| chr18 | 3,686 | 145 | 3,541 |
-| chr19 | 3,051 | 72 | 2,979 |
-| chr20 | 7,158 | 231 | 6,927 |
-| chr21 | 2,742 | 110 | 2,632 |
-| chr22 | 5,027 | 199 | 4,828 |
-| chrX  | 1,447 | 38 | 1,409 |
-| chrY  | 0 | 0 | 0 |
-| **Total** | **202,493** | **6,410** | **196,083** |
+| chromosome | silencer_source_rows | duplicate_rows_removed | unique_positive_loci | synthetic_negatives | missing_synthetic_negatives |
+|:-----------|----------------------:|-----------------------:|---------------------:|--------------------:|----------------------------:|
+| chr1  | 29,777 | 857 | 28,920 | 28,907 | 13 |
+| chr2  | 14,579 | 288 | 14,291 | 14,287 | 4 |
+| chr3  | 9,728 | 145 | 9,583 | 9,583 | 0 |
+| chr4  | 11,068 | 233 | 10,835 | 10,835 | 0 |
+| chr5  | 10,817 | 319 | 10,498 | 10,495 | 3 |
+| chr6  | 16,650 | 429 | 16,221 | 16,218 | 3 |
+| chr7  | 8,708 | 443 | 8,265 | 8,263 | 2 |
+| chr8  | 7,647 | 323 | 7,324 | 7,324 | 0 |
+| chr9  | 10,912 | 446 | 10,466 | 10,458 | 8 |
+| chr10 | 8,030 | 213 | 7,817 | 7,817 | 0 |
+| chr11 | 12,565 | 512 | 12,053 | 12,050 | 3 |
+| chr12 | 7,783 | 228 | 7,555 | 7,555 | 0 |
+| chr13 | 1,439 | 12 | 1,427 | 1,427 | 0 |
+| chr14 | 4,124 | 132 | 3,992 | 3,992 | 0 |
+| chr15 | 8,894 | 255 | 8,639 | 8,638 | 1 |
+| chr16 | 8,516 | 283 | 8,233 | 8,230 | 3 |
+| chr17 | 8,145 | 497 | 7,648 | 7,643 | 5 |
+| chr18 | 3,686 | 145 | 3,541 | 3,541 | 0 |
+| chr19 | 3,051 | 72 | 2,979 | 2,978 | 1 |
+| chr20 | 7,158 | 231 | 6,927 | 6,921 | 6 |
+| chr21 | 2,742 | 110 | 2,632 | 2,625 | 7 |
+| chr22 | 5,027 | 199 | 4,828 | 4,828 | 0 |
+| chrX  | 1,447 | 38 | 1,409 | 1,409 | 0 |
+| chrY  | 0 | 0 | 0 | 0 | 0 |
+| **Total** | **202,493** | **6,410** | **196,083** | **196,024** | **59** |
 
 The unique SVN count for each chromosome equals the number of loci excluded from
 EVN on that chromosome. Across the complete datasets, residual EVN/SVN overlap is
@@ -42,8 +42,4 @@ Each positive BED is stored as:
 
 `chrom<chrom>/chrom<chrom>_GRCh38_Silencer_ELS.bed`
 
-Only deduplicated positive BEDs have been generated at this stage. Positive FASTAs
-and synthetic or real-genomic background sets must be regenerated from these BEDs.
-Their generated and missing-negative counts are therefore intentionally not
-reported yet. The old overlapping source pools and their historical negative
-counts remain under `../overlaps/chroms/`.
+Positive FASTAs and 1x synthetic-negative BED/FASTA pools have been generated for chr1-chr22 and chrX. `genNullSeqs()` produced 196,024 synthetic negatives for 196,083 unique positives, a shortfall of 59 (0.030%). chrY has neither positive loci nor a negative pool. Real-genomic background counts will be added after the active antinoise jobs finish. The old overlapping source pools and their historical negative counts remain under `../overlaps/chroms/`.
