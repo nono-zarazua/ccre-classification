@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ## Independent EVN/SVN frozen-encoder AlphaGenome cumulative chromosome learning curves.
-## Select DATASET=evn|svn and NEGATIVE_KIND=synthetic|real at submission.
+## Select DATASET=evn|svn at submission.
 #SBATCH --job-name=train_alphagenome
 #SBATCH --chdir=/work/zarazuanav/workspace/repos/ccre-classification
 #SBATCH --output=/work/zarazuanav/workspace/repos/ccre-classification/slurmlogs/train_alphagenome.%A_%a.out
@@ -30,22 +30,17 @@ if [[ "${dataset}" != "evn" && "${dataset}" != "svn" ]]; then
   exit 1
 fi
 
-negative_kind="${NEGATIVE_KIND:-synthetic}"
-if [[ "${negative_kind}" != "synthetic" && "${negative_kind}" != "real" ]]; then
-  echo "ERROR: NEGATIVE_KIND must be synthetic or real; received: ${negative_kind}" >&2
-  exit 1
-fi
 
 task_id="${SLURM_ARRAY_TASK_ID}"
 chromosomes=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
 (( task_id >= 1 && task_id <= ${#chromosomes[@]} )) || { echo "ERROR: task must be 1-${#chromosomes[@]}" >&2; exit 1; }
 endpoint="${chromosomes[task_id-1]}"; name="through_chr${endpoint}"
-root="data/processed/${dataset}/GRCh38/training/${negative_kind}"
+root="data/processed/${dataset}/GRCh38/training"
 train_100_pos="${root}/train_100_pos.fa"; train_100_neg="${root}/train_100_neg.fa"
 validation_pos="${root}/validation_pos.fa"; validation_neg="${root}/validation_neg.fa"
 test_pos="${root}/test_pos.fa"; test_neg="${root}/test_neg.fa"
 weights="weights/fold_0_weights.safetensors"
-out_dir="models/${dataset}/GRCh38/${negative_kind}/alphagenome/chromosome_learning_curves/${name}"
+out_dir="models/${dataset}/GRCh38/alphagenome/chromosome_learning_curves/${name}"
 prefix="${out_dir}/${name}"
 for f in "${train_100_pos}" "${train_100_neg}" "${validation_pos}" "${validation_neg}" "${test_pos}" "${test_neg}" "${weights}"; do
   [[ -s "${f}" ]] || { echo "ERROR: missing/empty ${f}" >&2; exit 1; }

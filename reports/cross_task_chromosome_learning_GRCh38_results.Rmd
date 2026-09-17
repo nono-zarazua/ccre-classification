@@ -1,0 +1,105 @@
+---
+title: "GRCh38 Native-versus-Cross-Task Chromosome Learning Curves"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  metrics_path: null
+  negative_kind: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, fig.width=10, fig.height=7, dpi=120)
+suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+theme_set(theme_minimal(base_size=11) + theme(panel.grid.minor=element_blank(),legend.position="bottom"))
+task_colors <- c(EVN="#0072B2", SVN="#D55E00")
+mode_lines <- c(Native="solid", `Cross-task`="dashed")
+```
+
+```{r inputs, include=FALSE}
+if (is.null(params$metrics_path) || is.null(params$negative_kind)) stop("metrics_path and negative_kind are required")
+metrics_path <- normalizePath(params$metrics_path, mustWork=TRUE)
+x <- read.delim(metrics_path, sep="\t", stringsAsFactors=FALSE, check.names=FALSE)
+if (nrow(x) != 504) stop("Expected 504 rows; found ", nrow(x))
+if (!all(x$negative_kind == params$negative_kind)) stop("Negative-kind mismatch")
+if (!all(x$split %in% c("train_100","validation","test"))) stop("Invalid split")
+x <- x |> mutate(
+  Model=recode(model,lsgkm="LS-GKM",alphagenome="AlphaGenome"),
+  `Model task`=toupper(model_task), `Evaluation task`=toupper(evaluation_task),
+  Mode=factor(recode(evaluation_mode,native="Native",cross="Cross-task"),
+              levels=c("Native","Cross-task")),
+  Split=factor(recode(split,train_100="Full training pool",validation="Validation",test="Test"),
+               levels=c("Full training pool","Validation","Test")),
+  ranking_error=1-auroc)
+metric_limits <- function(v) {
+  span <- diff(range(v,na.rm=TRUE)); pad <- max(span*.08,.002)
+  range(v,na.rm=TRUE)+c(-pad,pad)
+}
+cross_plot <- function(metric,title,label) {
+  ggplot(x,aes(n_training_total,.data[[metric]],color=`Evaluation task`,
+               linetype=Mode,group=interaction(`Model task`,`Evaluation task`,Mode))) +
+    geom_line(linewidth=.85) + geom_point(size=1.8) +
+    facet_grid(Split ~ Model,scales="free_x") +
+    scale_color_manual(values=task_colors) + scale_linetype_manual(values=mode_lines) +
+    scale_x_continuous(labels=comma,expand=expansion(mult=c(.02,.03))) +
+    coord_cartesian(ylim=metric_limits(x[[metric]])) +
+    labs(title=title,x="Cumulative training observations",y=label,
+         color="Evaluation data",linetype="Mode")
+}
+```
+
+# Scope and interpretation
+
+This report compares native evaluation with transfer to the other regulatory task
+for the cumulative chromosome learning curves. EVN-trained models are evaluated on
+EVN data natively and SVN data cross-task; SVN-trained models are evaluated in the
+opposite direction. All models use `r params$negative_kind` negatives.
+
+Chr1 is validation, chr2 is held-out test, and training checkpoints cumulatively add
+chr3 through chrX. The full-training-pool panels evaluate every checkpoint on the
+opposite task's complete 100% training pool. They are common-reference curves, not
+ordinary in-sample estimates for early checkpoints.
+
+# AUROC learning curves
+
+```{r auroc}
+cross_plot("auroc","Native and cross-task AUROC","AUROC")
+```
+
+# Average-precision learning curves
+
+```{r auprc}
+cross_plot("auprc","Native and cross-task average precision","Average Precision")
+```
+
+# AUROC ranking-error curves
+
+```{r ranking}
+cross_plot("ranking_error","Native and cross-task AUROC ranking error","1 - AUROC")
+```
+
+# Full-training comparison
+
+```{r full}
+x |> filter(checkpoint_index==max(checkpoint_index)) |>
+  select(Model,`Model task`,`Evaluation task`,Mode,Split,n_training_total,
+         n_evaluation_total,auroc,auprc) |>
+  rename(`Training observations`=n_training_total,
+         `Evaluation observations`=n_evaluation_total,
+         AUROC=auroc,`Average Precision`=auprc) |>
+  arrange(Model,Split,`Model task`,Mode) |>
+  gt(groupname_col="Model") |> tab_header(title="Final chr3-through-chrX models") |>
+  fmt_integer(columns=c(`Training observations`,`Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC,`Average Precision`),decimals=3)
+```
+
+# Reproducibility notes
+
+- Solid lines are native evaluations; dashed lines are cross-task evaluations.
+- Color identifies the evaluation dataset, not the model's training task.
+- Full training pool, validation, and test are displayed with the same metric ranges.
+- The obsolete outer-fold stability analysis is intentionally omitted.
+- Test data are used only for final evaluation.

@@ -11,48 +11,20 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=32G
 #SBATCH --time=08:00:00
-#SBATCH --array=1-12%4
-
+#SBATCH --array=1-42%4
 set -euo pipefail
 module load lang/Miniforge3/24.1.2-0
-set +u
-source activate alphagenome
-set -u
-
-fractions=(10 20 40 60 80 100)
-task_id=${SLURM_ARRAY_TASK_ID}
-if (( task_id < 1 || task_id > 12 )); then
-    echo "ERROR: task must be 1-12" >&2
-    exit 1
-fi
-if (( task_id <= 6 )); then
-    model_task=evn
-    evaluation_task=svn
-    fraction=${fractions[task_id-1]}
-else
-    model_task=svn
-    evaluation_task=evn
-    fraction=${fractions[task_id-7]}
-fi
-
-prefix="models/${model_task}/GRCh38/alphagenome/learning_curves/${fraction}/learning_curve_${fraction}"
-checkpoint="${prefix}.best_head.pt"
-output_dir="predictions/cross_task/GRCh38/alphagenome/${model_task}_model_on_${evaluation_task}/${fraction}"
-mkdir -p "${output_dir}"
-
-for split in validation test; do
-    output="${output_dir}/${split}.tsv"
-    if [[ -s "${output}" ]]; then
-        echo "SKIP: ${output}"
-        continue
-    fi
-    [[ ! -e "${output}" ]] || { echo "ERROR: empty/partial output: ${output}" >&2; exit 1; }
-    "${CONDA_PREFIX}/bin/python" src/predict_alphagenome.py \
-        "${checkpoint}" \
-        "data/processed/${evaluation_task}/GRCh38/training/${split}_pos.fa" \
-        "data/processed/${evaluation_task}/GRCh38/training/${split}_neg.fa" \
-        "${output}" \
-        --weights weights/fold_0_weights.safetensors \
-        --batch-size 32 \
-        --num-workers "${SLURM_CPUS_PER_TASK}"
+set +u; source activate alphagenome; set -u
+py="$CONDA_PREFIX/bin/python"; "$py" -c 'import torch; assert torch.cuda.is_available()'
+chroms=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
+id="$SLURM_ARRAY_TASK_ID"; ((id>=1 && id<=42)) || exit 1
+if ((id<=21)); then mt=evn; et=svn; ci=$id; else mt=svn; et=evn; ci=$((id-21)); fi
+name="through_chr${chroms[ci-1]}"
+checkpoint="models/$mt/GRCh38/alphagenome/chromosome_learning_curves/$name/$name.best_head.pt"
+root="data/processed/$et/GRCh38/training"
+out="predictions/cross_task/GRCh38/alphagenome/${mt}_model_on_$et/chromosome_learning_curves/$name"
+[[ -s "$checkpoint" ]] || { echo "ERROR: missing $checkpoint" >&2; exit 1; }; mkdir -p "$out"
+for split in train_100 validation test; do
+  output="$out/${split}_metrics.json"; [[ ! -s "$output" ]] || continue; [[ ! -e "$output" ]] || exit 1
+  "$py" src/predict_alphagenome.py "$checkpoint" "$root/${split}_pos.fa" "$root/${split}_neg.fa" --metrics-json "$output" --weights weights/fold_0_weights.safetensors --batch-size 32 --num-workers "${AG_NUM_WORKERS:-0}"
 done

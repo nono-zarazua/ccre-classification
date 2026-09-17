@@ -1,0 +1,165 @@
+---
+title: "GRCh38 Chromosome Learning-Curve Report"
+subtitle: "`r params$model_name` | `r params$analysis_name` | `r params$negative_kind` negative backgrounds"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  metrics_path: null
+  analysis_name: null
+  positive_class: null
+  model_name: null
+  negative_kind: null
+  full_model_prefix: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, fig.width=8.8, fig.height=5.5, dpi=120)
+suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+theme_set(theme_minimal(base_size=12) + theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+split_colors <- c("Full training pool"="#009E73", Validation="#D55E00", Test="#0072B2")
+split_shapes <- c("Full training pool"=15, Validation=16, Test=17)
+```
+
+```{r inputs, include=FALSE}
+for (name in c("metrics_path","analysis_name","positive_class","model_name","negative_kind"))
+  if (is.null(params[[name]]) || !nzchar(params[[name]])) stop("Missing parameter: ", name)
+metrics_path <- normalizePath(params$metrics_path, mustWork=TRUE)
+metrics <- read.delim(metrics_path, sep="\t", stringsAsFactors=FALSE, check.names=FALSE)
+required <- c("model","dataset","negative_kind","checkpoint","checkpoint_index","endpoint_chromosome",
+              "n_training_positive","n_training_negative","n_training_total","split",
+              "n_evaluation_positive","n_evaluation_negative","n_evaluation_total","auroc","auprc")
+missing <- setdiff(required, names(metrics))
+if (length(missing)) stop("Missing metric columns: ", paste(missing, collapse=", "))
+if (nrow(metrics) != 63) stop("Expected 63 rows (21 checkpoints x 3 splits); found ", nrow(metrics))
+if (!all(metrics$negative_kind == params$negative_kind)) stop("Negative-kind mismatch")
+if (!all(metrics$split %in% c("train_100","validation","test"))) stop("Invalid split")
+if (anyNA(metrics$auroc) || anyNA(metrics$auprc)) stop("Missing ranking metrics")
+metrics <- metrics |> mutate(
+  Split=factor(split, levels=c("train_100","validation","test"),
+               labels=c("Full training pool","Validation","Test")),
+  ranking_error=1-auroc) |> arrange(Split, checkpoint_index)
+full_model <- metrics |> filter(checkpoint_index == max(checkpoint_index))
+has_full_model <- !is.null(params$full_model_prefix) && nzchar(params$full_model_prefix)
+full_metrics <- NULL
+if (has_full_model) {
+  prefix <- params$full_model_prefix
+  validation_json <- jsonlite::read_json(paste0(prefix, ".validation_metrics.json"), simplifyVector=TRUE)
+  test_json <- jsonlite::read_json(paste0(prefix, ".test_metrics.json"), simplifyVector=TRUE)
+  config <- jsonlite::read_json(paste0(prefix, ".config.json"), simplifyVector=TRUE)
+  count_fasta <- function(path) as.integer(system(sprintf("grep -c '^>' %s", shQuote(path)), intern=TRUE))
+  train_pos <- count_fasta(config$train_pos)
+  train_neg <- count_fasta(config$train_neg)
+  make_row <- function(split, positive_path, negative_path, values) {
+    tibble(Split=factor(split, levels=c("Full training pool","Validation","Test")),
+           n_training_total=train_pos + train_neg,
+           n_evaluation_total=count_fasta(positive_path) + count_fasta(negative_path),
+           auroc=values$auroc, auprc=values$auprc, accuracy=values$accuracy,
+           precision=values$precision, recall=values$recall, f1=values$f1,
+           ranking_error=1-values$auroc)
+  }
+  full_metrics <- bind_rows(
+    make_row("Validation", config$validation_pos, config$validation_neg, validation_json$validation),
+    make_row("Test", config$test_pos, config$test_neg, test_json$test)
+  )
+}
+metric_limits <- function(x) {
+  span <- diff(range(x, na.rm=TRUE)); pad <- max(span*.10, .002)
+  range(x, na.rm=TRUE) + c(-pad,pad)
+}
+curve_plot <- function(y, title, label) {
+  limits_data <- metrics[[y]]
+  if (has_full_model) limits_data <- c(limits_data, full_metrics[[y]])
+  p <- ggplot(metrics, aes(x=n_training_total, y=.data[[y]], color=Split, shape=Split, group=Split)) +
+    geom_line(linewidth=.9) + geom_point(size=2.5) +
+    scale_color_manual(values=split_colors) + scale_shape_manual(values=split_shapes) +
+    scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.04))) +
+    coord_cartesian(ylim=metric_limits(limits_data)) +
+    labs(title=title, x="Cumulative training observations", y=label,
+         color="Evaluation data", shape="Evaluation data",
+         caption=if (has_full_model) "Star: full cleaned-EVN AlphaGenome model" else NULL)
+  if (has_full_model) {
+    p <- p + geom_point(data=full_metrics,
+                        aes(x=n_training_total, y=.data[[y]], color=Split),
+                        inherit.aes=FALSE, shape=8, size=4, stroke=1.1)
+  }
+  p
+}
+```
+
+# Scope and interpretation
+
+This report evaluates `r params$model_name` on the GRCh38
+`r params$analysis_name` task using `r params$negative_kind` negative sequences.
+`r params$positive_class` sequences are label 1 and negatives are label 0.
+
+The learning curve adds one chromosome training shard at a time, beginning with
+chr3 and ending with chrX. Every checkpoint is initialized and trained
+independently. Chr1 is fixed validation data and chr2 is held-out test data.
+
+```{r full-point-note, results="asis"}
+if (has_full_model) cat("A star at the far right marks the separately trained model using the complete cleaned EVN training pool. It uses the same validation and test chromosomes and the matching negative-background type.\n\n")
+```
+
+“Full training pool” means every checkpoint is evaluated on the common 100%
+training pool. For early checkpoints it includes chromosomes not yet used to fit
+that model, so it is a common-reference curve rather than ordinary in-sample
+performance. Validation data control model selection and early stopping where
+applicable; test data remain reserved for final assessment.
+
+```{r dataset-summary}
+metrics |> distinct(Split,n_evaluation_positive,n_evaluation_negative,n_evaluation_total) |>
+  rename(Positives=n_evaluation_positive, Negatives=n_evaluation_negative,
+         `Total observations`=n_evaluation_total) |>
+  gt() |> tab_header(title="Common evaluation datasets") |>
+  fmt_integer(columns=c(Positives,Negatives,`Total observations`))
+```
+
+# Learning curves
+
+## AUROC
+
+```{r auroc}
+curve_plot("auroc", paste(params$model_name, "AUROC learning curves"), "AUROC")
+```
+
+## Average precision
+
+```{r auprc}
+curve_plot("auprc", paste(params$model_name, "average-precision learning curves"), "Average Precision")
+```
+
+## AUROC ranking error
+
+```{r ranking-error}
+curve_plot("ranking_error", paste(params$model_name, "AUROC ranking-error curves"), "1 - AUROC")
+```
+
+# Full-training comparison
+
+```{r full-model}
+full_model |> select(Split,n_training_total,n_evaluation_total,auroc,auprc,accuracy,precision,recall,f1) |>
+  rename(`Training observations`=n_training_total, `Evaluation observations`=n_evaluation_total,
+         AUROC=auroc, `Average Precision`=auprc, Accuracy=accuracy,
+         Precision=precision, Recall=recall, F1=f1) |>
+  gt() |> tab_header(title="Final chr3-through-chrX model") |>
+  fmt_integer(columns=c(`Training observations`,`Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC,`Average Precision`,Accuracy,Precision,Recall,F1), decimals=3)
+```
+
+# Reproducibility notes
+
+```{r reproducibility}
+tibble(Item=c("Metric input","Task","Positive class","Negative source","Learning-curve design",
+              "Validation chromosome","Test chromosome"),
+       Value=c(metrics_path,params$analysis_name,params$positive_class,params$negative_kind,
+               "Independent cumulative chromosome checkpoints","chr1","chr2")) |>
+  gt() |> tab_header(title="Analysis provenance")
+```
+
+The obsolete outer-fold stability analysis is intentionally omitted. The central
+comparison is performance as cumulative training chromosomes are added, using
+the same full-training-pool, validation, and test evaluations at every checkpoint.

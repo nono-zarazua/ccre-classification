@@ -72,7 +72,7 @@ fi
 
 chromosome_dir="data/processed/${dataset}/GRCh38/chroms/chrom${chromosome}"
 foreground_fasta="${chromosome_dir}/chrom${chromosome}_GRCh38_${dataset_name}.fa"
-output_prefix="${chromosome_dir}/real_neg1x_chrom${chromosome}_GRCh38_${dataset_name}"
+output_prefix="${chromosome_dir}/neg1x_chrom${chromosome}_GRCh38_${dataset_name}"
 executable="../antinoise/bin/linux/background_genome_mono.exe"
 
 [[ -x "${executable}" ]] || { echo "ERROR: executable not found: ${executable}" >&2; exit 1; }
@@ -114,7 +114,7 @@ echo "Backgrounds per foreground sequence: 1"
 foreground_count=$(grep -c '^>' "${foreground_fasta}")
 background_count=$(grep -c '^>' "${output_prefix}.fa")
 echo "Foreground records: ${foreground_count}"
-echo "Generated real-background records: ${background_count}"
+echo "Generated genomic-background records: ${background_count}"
 if (( background_count > foreground_count )); then
     echo "ERROR: generated more than one background per foreground sequence" >&2
     exit 1

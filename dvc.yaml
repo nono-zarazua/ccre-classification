@@ -44,7 +44,7 @@ stages:
     - data/processed/evn/hepg2/folds/fold5/neg1x_fold5.bed
     - data/processed/evn/hepg2/folds/fold5/neg1x_fold5.fa
   make_outer_files_hepg2:
-    cmd: for i in 1 2 3 4 5; do bash src/make_hepg2/outer_files.sh "$i"; done
+    cmd: for i in 1 2 3 4 5; do bash src/make_hepg2_outer_files.sh "$i"; done
     deps:
     - data/processed/evn/hepg2/folds/fold1/fold1.fa
     - data/processed/evn/hepg2/folds/fold1/neg1x_fold1.fa
@@ -69,8 +69,7 @@ stages:
     - data/processed/evn/hepg2/ls-gkm/training/outer5/train_neg.fa
     - data/processed/evn/hepg2/ls-gkm/training/outer5/train_pos.fa
   train_ls_gkm_hepg2:
-    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>'
-      'output_prefix'
+    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>' 'output_prefix'
     deps:
     - ../lsgkm/bin/gkmtrain
     - data/processed/evn/hepg2/ls-gkm/training/outer1/train_neg.fa
@@ -110,8 +109,7 @@ stages:
     - predictions/evn/hepg2/ls-gkm/outer5/pos_scores.txt
     - predictions/evn/hepg2/ls-gkm/outer5/neg_scores.txt
   merge_pos_negs_hepg2:
-    cmd: for i in 1 2 3 4 5; do Rscript src/prepare_lsgkm_scores.R
-      predictions/evn/hepg2/ls-gkm/outer"$i"; done
+    cmd: for i in 1 2 3 4 5; do Rscript src/prepare_lsgkm_scores.R predictions/evn/hepg2/ls-gkm/outer"$i"; done
     deps:
     - predictions/evn/hepg2/ls-gkm/outer1/neg_scores.txt
     - predictions/evn/hepg2/ls-gkm/outer1/pos_scores.txt
@@ -131,13 +129,8 @@ stages:
     - results/evn/hepg2/ls-gkm/outer4.tsv
     - results/evn/hepg2/ls-gkm/outer5.tsv
   merge_outers_hepg2:
-    cmd: |
-      {
-        head -n 1 results/evn/hepg2/ls-gkm/outer1.tsv
-        for FOLD in 1 2 3 4 5; do
-          tail -n +2 "results/evn/hepg2/ls-gkm/outer$FOLD.tsv"
-        done
-      } > results/evn/hepg2/ls-gkm/all_outers.tsv
+    cmd: "{\n  head -n 1 results/evn/hepg2/ls-gkm/outer1.tsv\n  for FOLD in 1 2 3 4 5; do\n    tail -n +2 \"results/evn/hepg2/ls-gkm/outer$FOLD.tsv\"\
+      \n  done\n} > results/evn/hepg2/ls-gkm/all_outers.tsv\n"
     deps:
     - results/evn/hepg2/ls-gkm/outer1.tsv
     - results/evn/hepg2/ls-gkm/outer2.tsv
@@ -226,1557 +219,6 @@ stages:
     - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
-  build_negatives_GRCh38_evn:
-    cmd: for i in $(seq 1 22) X Y; do Rscript --vanilla src/build_negs.R
-      data/processed/evn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_ELS.bed; done
-    deps:
-    - src/build_negs.R
-    - slurm/build_negs.sh
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
-    outs:
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.fa
-  make_folds_outers_GRCh38_evn:
-    cmd: bash src/make_GRCh38_folds_outer_files.sh evn
-    deps:
-    - src/make_GRCh38_folds_outer_files.sh
-    - src/make_GRCh38_master_training_evn.py
-    - data/processed/evn/GRCh38/folds/README
-    - data/processed/evn/GRCh38/training/README
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromY/chromY_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromY/neg1x_chromY_GRCh38_ELS.fa
-    outs:
-    - data/processed/evn/GRCh38/training/train_100_pos.bed
-    - data/processed/evn/GRCh38/training/train_100_pos.fa
-    - data/processed/evn/GRCh38/training/train_100_neg.bed
-    - data/processed/evn/GRCh38/training/train_100_neg.fa
-    - data/processed/evn/GRCh38/training/train_100_manifest.tsv
-    - data/processed/evn/GRCh38/training/train_100_summary.json
-    - data/processed/evn/GRCh38/training/validation_pos.bed
-    - data/processed/evn/GRCh38/training/validation_pos.fa
-    - data/processed/evn/GRCh38/training/validation_neg.bed
-    - data/processed/evn/GRCh38/training/validation_neg.fa
-    - data/processed/evn/GRCh38/training/test_pos.bed
-    - data/processed/evn/GRCh38/training/test_pos.fa
-    - data/processed/evn/GRCh38/training/test_neg.bed
-    - data/processed/evn/GRCh38/training/test_neg.fa
-    - data/processed/evn/GRCh38/folds/fold1/fold1.bed
-    - data/processed/evn/GRCh38/folds/fold1/fold1.fa
-    - data/processed/evn/GRCh38/folds/fold1/neg1x_fold1.bed
-    - data/processed/evn/GRCh38/folds/fold1/neg1x_fold1.fa
-    - data/processed/evn/GRCh38/folds/fold2/fold2.bed
-    - data/processed/evn/GRCh38/folds/fold2/fold2.fa
-    - data/processed/evn/GRCh38/folds/fold2/neg1x_fold2.bed
-    - data/processed/evn/GRCh38/folds/fold2/neg1x_fold2.fa
-    - data/processed/evn/GRCh38/folds/fold3/fold3.bed
-    - data/processed/evn/GRCh38/folds/fold3/fold3.fa
-    - data/processed/evn/GRCh38/folds/fold3/neg1x_fold3.bed
-    - data/processed/evn/GRCh38/folds/fold3/neg1x_fold3.fa
-    - data/processed/evn/GRCh38/folds/fold4/fold4.bed
-    - data/processed/evn/GRCh38/folds/fold4/fold4.fa
-    - data/processed/evn/GRCh38/folds/fold4/neg1x_fold4.bed
-    - data/processed/evn/GRCh38/folds/fold4/neg1x_fold4.fa
-    - data/processed/evn/GRCh38/folds/fold5/fold5.bed
-    - data/processed/evn/GRCh38/folds/fold5/fold5.fa
-    - data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.bed
-    - data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
-    - data/processed/evn/GRCh38/training/outer1/train_pos.bed
-    - data/processed/evn/GRCh38/training/outer1/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer1/train_neg.bed
-    - data/processed/evn/GRCh38/training/outer1/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer1/validation_pos.bed
-    - data/processed/evn/GRCh38/training/outer1/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer1/validation_neg.bed
-    - data/processed/evn/GRCh38/training/outer1/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer2/train_pos.bed
-    - data/processed/evn/GRCh38/training/outer2/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer2/train_neg.bed
-    - data/processed/evn/GRCh38/training/outer2/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer2/validation_pos.bed
-    - data/processed/evn/GRCh38/training/outer2/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer2/validation_neg.bed
-    - data/processed/evn/GRCh38/training/outer2/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer3/train_pos.bed
-    - data/processed/evn/GRCh38/training/outer3/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer3/train_neg.bed
-    - data/processed/evn/GRCh38/training/outer3/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer3/validation_pos.bed
-    - data/processed/evn/GRCh38/training/outer3/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer3/validation_neg.bed
-    - data/processed/evn/GRCh38/training/outer3/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer4/train_pos.bed
-    - data/processed/evn/GRCh38/training/outer4/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer4/train_neg.bed
-    - data/processed/evn/GRCh38/training/outer4/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer4/validation_pos.bed
-    - data/processed/evn/GRCh38/training/outer4/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer4/validation_neg.bed
-    - data/processed/evn/GRCh38/training/outer4/validation_neg.fa
-  learning_curve_subsets_GRCh38_evn:
-    cmd: python src/make_GRCh38_learning_curves.py --input-dir
-      data/processed/evn/GRCh38/training --output-dir
-      data/processed/evn/GRCh38/learning_curves --seed 42
-    deps:
-    - src/make_GRCh38_learning_curves.py
-    - data/processed/evn/GRCh38/training/train_100_pos.bed
-    - data/processed/evn/GRCh38/training/train_100_pos.fa
-    - data/processed/evn/GRCh38/training/train_100_neg.bed
-    - data/processed/evn/GRCh38/training/train_100_neg.fa
-    outs:
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.bed
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.bed
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.bed
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.bed
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.bed
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.bed
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.bed
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.bed
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.bed
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.bed
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.bed
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.bed
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/learning_curve_summary.json
-  train_ls_gkm_GRCh38_evn:
-    cmd: sbatch --wait slurm/train_ls_gkm.sh
-    deps:
-    - slurm/train_ls_gkm.sh
-    - ../lsgkm/bin/gkmtrain
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/evn/GRCh38/training/outer1/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer1/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer2/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer2/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer3/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer3/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer4/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer4/train_neg.fa
-    outs:
-    - models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
-    - models/evn/GRCh38/ls-gkm/outer1/outer1.model.txt
-    - models/evn/GRCh38/ls-gkm/outer2/outer2.model.txt
-    - models/evn/GRCh38/ls-gkm/outer3/outer3.model.txt
-    - models/evn/GRCh38/ls-gkm/outer4/outer4.model.txt
-  test_ls_gkm_GRCh38_evn:
-    cmd: sbatch --wait slurm/predict_ls_gkm.sh
-    deps:
-    - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
-    - models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
-    - models/evn/GRCh38/ls-gkm/outer1/outer1.model.txt
-    - models/evn/GRCh38/ls-gkm/outer2/outer2.model.txt
-    - models/evn/GRCh38/ls-gkm/outer3/outer3.model.txt
-    - models/evn/GRCh38/ls-gkm/outer4/outer4.model.txt
-    - data/processed/evn/GRCh38/training/validation_pos.fa
-    - data/processed/evn/GRCh38/training/validation_neg.fa
-    - data/processed/evn/GRCh38/training/test_pos.fa
-    - data/processed/evn/GRCh38/training/test_neg.fa
-    - data/processed/evn/GRCh38/training/outer1/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer1/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer2/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer2/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer3/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer3/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer4/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer4/validation_neg.fa
-    - data/processed/evn/GRCh38/folds/fold5/fold5.fa
-    - data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
-    outs:
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
-  merge_pos_negs_GRCh38_evn:
-    cmd: for percentage in 10 20 40 60 80 100; do src/prepare_lsgkm_scores.R
-      predictions/evn/GRCh38/ls-gkm/learning_curves/$percentage; done; for outer
-      in 1 2 3 4; do src/prepare_lsgkm_scores.R
-      predictions/evn/GRCh38/ls-gkm/outer$outer; done
-    deps:
-    - src/prepare_lsgkm_scores.R
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
-    - predictions/evn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
-    outs:
-    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/evn/GRCh38/ls-gkm/outer1.tsv
-    - results/evn/GRCh38/ls-gkm/outer2.tsv
-    - results/evn/GRCh38/ls-gkm/outer3.tsv
-    - results/evn/GRCh38/ls-gkm/outer4.tsv
-  render_lsgkm_report_GRCh38_evn:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh
-    deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/lsgkm_GRCh38_results.Rmd
-    - slurm/train_ls_gkm.sh
-    - src/build_negs.R
-    - src/make_GRCh38_learning_curves.py
-    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/evn/GRCh38/ls-gkm/outer1.tsv
-    - results/evn/GRCh38/ls-gkm/outer2.tsv
-    - results/evn/GRCh38/ls-gkm/outer3.tsv
-    - results/evn/GRCh38/ls-gkm/outer4.tsv
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
-    outs:
-    - reports/rendered/evn/lsgkm_GRCh38_results.html
-  build_negatives_GRCh38_svn:
-    cmd: for i in $(seq 1 22) X; do Rscript --vanilla src/build_negs.R
-      data/processed/svn/GRCh38/chroms/chrom"$i"/chrom"$i"_GRCh38_Silencer_ELS.bed;
-      done
-    deps:
-    - src/build_negs.R
-    - slurm/build_negs.sh
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
-    outs:
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
-  make_folds_outers_GRCh38_svn:
-    cmd: bash src/make_GRCh38_folds_outer_files.sh svn
-    deps:
-    - src/make_GRCh38_folds_outer_files.sh
-    - src/make_GRCh38_master_training_svn.py
-    - data/processed/svn/GRCh38/folds/README
-    - data/processed/svn/GRCh38/training/README
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
-    outs:
-    - data/processed/svn/GRCh38/training/train_100_pos.bed
-    - data/processed/svn/GRCh38/training/train_100_pos.fa
-    - data/processed/svn/GRCh38/training/train_100_neg.bed
-    - data/processed/svn/GRCh38/training/train_100_neg.fa
-    - data/processed/svn/GRCh38/training/validation_pos.bed
-    - data/processed/svn/GRCh38/training/validation_pos.fa
-    - data/processed/svn/GRCh38/training/validation_neg.bed
-    - data/processed/svn/GRCh38/training/validation_neg.fa
-    - data/processed/svn/GRCh38/training/test_pos.bed
-    - data/processed/svn/GRCh38/training/test_pos.fa
-    - data/processed/svn/GRCh38/training/test_neg.bed
-    - data/processed/svn/GRCh38/training/test_neg.fa
-    - data/processed/svn/GRCh38/training/train_100_manifest.tsv
-    - data/processed/svn/GRCh38/training/train_100_summary.json
-    - data/processed/svn/GRCh38/folds/fold1/fold1.bed
-    - data/processed/svn/GRCh38/folds/fold1/fold1.fa
-    - data/processed/svn/GRCh38/folds/fold1/neg1x_fold1.bed
-    - data/processed/svn/GRCh38/folds/fold1/neg1x_fold1.fa
-    - data/processed/svn/GRCh38/folds/fold2/fold2.bed
-    - data/processed/svn/GRCh38/folds/fold2/fold2.fa
-    - data/processed/svn/GRCh38/folds/fold2/neg1x_fold2.bed
-    - data/processed/svn/GRCh38/folds/fold2/neg1x_fold2.fa
-    - data/processed/svn/GRCh38/folds/fold3/fold3.bed
-    - data/processed/svn/GRCh38/folds/fold3/fold3.fa
-    - data/processed/svn/GRCh38/folds/fold3/neg1x_fold3.bed
-    - data/processed/svn/GRCh38/folds/fold3/neg1x_fold3.fa
-    - data/processed/svn/GRCh38/folds/fold4/fold4.bed
-    - data/processed/svn/GRCh38/folds/fold4/fold4.fa
-    - data/processed/svn/GRCh38/folds/fold4/neg1x_fold4.bed
-    - data/processed/svn/GRCh38/folds/fold4/neg1x_fold4.fa
-    - data/processed/svn/GRCh38/folds/fold5/fold5.bed
-    - data/processed/svn/GRCh38/folds/fold5/fold5.fa
-    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.bed
-    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
-    - data/processed/svn/GRCh38/training/outer1/train_pos.bed
-    - data/processed/svn/GRCh38/training/outer1/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer1/train_neg.bed
-    - data/processed/svn/GRCh38/training/outer1/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer1/validation_pos.bed
-    - data/processed/svn/GRCh38/training/outer1/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer1/validation_neg.bed
-    - data/processed/svn/GRCh38/training/outer1/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer2/train_pos.bed
-    - data/processed/svn/GRCh38/training/outer2/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer2/train_neg.bed
-    - data/processed/svn/GRCh38/training/outer2/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer2/validation_pos.bed
-    - data/processed/svn/GRCh38/training/outer2/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer2/validation_neg.bed
-    - data/processed/svn/GRCh38/training/outer2/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer3/train_pos.bed
-    - data/processed/svn/GRCh38/training/outer3/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer3/train_neg.bed
-    - data/processed/svn/GRCh38/training/outer3/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer3/validation_pos.bed
-    - data/processed/svn/GRCh38/training/outer3/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer3/validation_neg.bed
-    - data/processed/svn/GRCh38/training/outer3/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer4/train_pos.bed
-    - data/processed/svn/GRCh38/training/outer4/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer4/train_neg.bed
-    - data/processed/svn/GRCh38/training/outer4/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer4/validation_pos.bed
-    - data/processed/svn/GRCh38/training/outer4/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer4/validation_neg.bed
-    - data/processed/svn/GRCh38/training/outer4/validation_neg.fa
-  learning_curve_subsets_GRCh38_svn:
-    cmd: python src/make_GRCh38_learning_curves.py --input-dir
-      data/processed/svn/GRCh38/training --output-dir
-      data/processed/svn/GRCh38/learning_curves --seed 42
-    deps:
-    - src/make_GRCh38_learning_curves.py
-    - data/processed/svn/GRCh38/training/train_100_pos.bed
-    - data/processed/svn/GRCh38/training/train_100_pos.fa
-    - data/processed/svn/GRCh38/training/train_100_neg.bed
-    - data/processed/svn/GRCh38/training/train_100_neg.fa
-    outs:
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.bed
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.bed
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.bed
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.bed
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.bed
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.bed
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.bed
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.bed
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.bed
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.bed
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.bed
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.bed
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/learning_curve_summary.json
-  train_ls_gkm_GRCh38_svn:
-    cmd: sbatch --wait slurm/train_ls_gkm.sh
-    deps:
-    - slurm/train_ls_gkm.sh
-    - ../lsgkm/bin/gkmtrain
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/svn/GRCh38/training/outer1/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer1/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer2/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer2/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer3/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer3/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer4/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer4/train_neg.fa
-    outs:
-    - models/svn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
-    - models/svn/GRCh38/ls-gkm/outer1/outer1.model.txt
-    - models/svn/GRCh38/ls-gkm/outer2/outer2.model.txt
-    - models/svn/GRCh38/ls-gkm/outer3/outer3.model.txt
-    - models/svn/GRCh38/ls-gkm/outer4/outer4.model.txt
-  test_ls_gkm_GRCh38_svn:
-    cmd: sbatch --wait slurm/predict_ls_gkm.sh
-    deps:
-    - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
-    - models/svn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
-    - models/svn/GRCh38/ls-gkm/outer1/outer1.model.txt
-    - models/svn/GRCh38/ls-gkm/outer2/outer2.model.txt
-    - models/svn/GRCh38/ls-gkm/outer3/outer3.model.txt
-    - models/svn/GRCh38/ls-gkm/outer4/outer4.model.txt
-    - data/processed/svn/GRCh38/training/validation_pos.fa
-    - data/processed/svn/GRCh38/training/validation_neg.fa
-    - data/processed/svn/GRCh38/training/test_pos.fa
-    - data/processed/svn/GRCh38/training/test_neg.fa
-    - data/processed/svn/GRCh38/training/outer1/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer1/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer2/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer2/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer3/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer3/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer4/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer4/validation_neg.fa
-    - data/processed/svn/GRCh38/folds/fold5/fold5.fa
-    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
-    outs:
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
-  merge_pos_negs_GRCh38_svn:
-    cmd: for percentage in 10 20 40 60 80 100; do src/prepare_lsgkm_scores.R
-      predictions/svn/GRCh38/ls-gkm/learning_curves/$percentage; done; for outer
-      in 1 2 3 4; do src/prepare_lsgkm_scores.R
-      predictions/svn/GRCh38/ls-gkm/outer$outer; done
-    deps:
-    - src/prepare_lsgkm_scores.R
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/10/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/20/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/40/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/60/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/80/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/learning_curves/100/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer1/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer2/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer3/test_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/validation_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/validation_neg_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/test_pos_scores.txt
-    - predictions/svn/GRCh38/ls-gkm/outer4/test_neg_scores.txt
-    outs:
-    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/svn/GRCh38/ls-gkm/outer1.tsv
-    - results/svn/GRCh38/ls-gkm/outer2.tsv
-    - results/svn/GRCh38/ls-gkm/outer3.tsv
-    - results/svn/GRCh38/ls-gkm/outer4.tsv
-  render_lsgkm_report_GRCh38_svn:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh svn
-    deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/lsgkm_GRCh38_results.Rmd
-    - slurm/train_ls_gkm.sh
-    - src/build_negs.R
-    - src/make_GRCh38_learning_curves.py
-    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/svn/GRCh38/ls-gkm/outer1.tsv
-    - results/svn/GRCh38/ls-gkm/outer2.tsv
-    - results/svn/GRCh38/ls-gkm/outer3.tsv
-    - results/svn/GRCh38/ls-gkm/outer4.tsv
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
-    outs:
-    - reports/rendered/svn/lsgkm_GRCh38_results_svn.html
-
-  render_lsgkm_comparison_GRCh38:
-    cmd: bash src/render_GRCh38_lsgkm_comparison_report.sh
-    deps:
-    - src/render_GRCh38_lsgkm_comparison_report.sh
-    - reports/lsgkm_GRCh38_evn_vs_svn.Rmd
-    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
-    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/evn/GRCh38/ls-gkm/outer1.tsv
-    - results/evn/GRCh38/ls-gkm/outer2.tsv
-    - results/evn/GRCh38/ls-gkm/outer3.tsv
-    - results/evn/GRCh38/ls-gkm/outer4.tsv
-    - results/svn/GRCh38/ls-gkm/outer1.tsv
-    - results/svn/GRCh38/ls-gkm/outer2.tsv
-    - results/svn/GRCh38/ls-gkm/outer3.tsv
-    - results/svn/GRCh38/ls-gkm/outer4.tsv
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
-    outs:
-    - reports/rendered/comparison/lsgkm_GRCh38_evn_vs_svn.html
-
-  prepare_alphagenome_results_GRCh38_evn:
-    cmd: src/prepare_alphagenome_results.py
-    deps:
-    - src/prepare_alphagenome_results.py
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.config.json
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.history.tsv
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.test_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.config.json
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.history.tsv
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.test_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.config.json
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.history.tsv
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.test_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.config.json
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.history.tsv
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.test_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.config.json
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.history.tsv
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.test_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.config.json
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.history.tsv
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.test_metrics.json
-    - models/evn/GRCh38/alphagenome/outer1/outer1.best_head.pt
-    - models/evn/GRCh38/alphagenome/outer1/outer1.config.json
-    - models/evn/GRCh38/alphagenome/outer1/outer1.history.tsv
-    - models/evn/GRCh38/alphagenome/outer1/outer1.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/outer1/outer1.test_metrics.json
-    - models/evn/GRCh38/alphagenome/outer2/outer2.best_head.pt
-    - models/evn/GRCh38/alphagenome/outer2/outer2.config.json
-    - models/evn/GRCh38/alphagenome/outer2/outer2.history.tsv
-    - models/evn/GRCh38/alphagenome/outer2/outer2.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/outer2/outer2.test_metrics.json
-    - models/evn/GRCh38/alphagenome/outer3/outer3.best_head.pt
-    - models/evn/GRCh38/alphagenome/outer3/outer3.config.json
-    - models/evn/GRCh38/alphagenome/outer3/outer3.history.tsv
-    - models/evn/GRCh38/alphagenome/outer3/outer3.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/outer3/outer3.test_metrics.json
-    - models/evn/GRCh38/alphagenome/outer4/outer4.best_head.pt
-    - models/evn/GRCh38/alphagenome/outer4/outer4.config.json
-    - models/evn/GRCh38/alphagenome/outer4/outer4.history.tsv
-    - models/evn/GRCh38/alphagenome/outer4/outer4.validation_metrics.json
-    - models/evn/GRCh38/alphagenome/outer4/outer4.test_metrics.json
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/evn/GRCh38/training/validation_pos.fa
-    - data/processed/evn/GRCh38/training/validation_neg.fa
-    - data/processed/evn/GRCh38/training/test_pos.fa
-    - data/processed/evn/GRCh38/training/test_neg.fa
-    - data/processed/evn/GRCh38/training/outer1/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer1/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer1/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer1/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer2/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer2/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer2/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer2/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer3/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer3/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer3/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer3/validation_neg.fa
-    - data/processed/evn/GRCh38/training/outer4/train_pos.fa
-    - data/processed/evn/GRCh38/training/outer4/train_neg.fa
-    - data/processed/evn/GRCh38/training/outer4/validation_pos.fa
-    - data/processed/evn/GRCh38/training/outer4/validation_neg.fa
-    - data/processed/evn/GRCh38/folds/fold5/fold5.fa
-    - data/processed/evn/GRCh38/folds/fold5/neg1x_fold5.fa
-    outs:
-    - results/evn/GRCh38/alphagenome/metrics.tsv
-    - results/evn/GRCh38/alphagenome/history.tsv
-  render_alphagenome_report_GRCh38_evn:
-    cmd: bash src/render_GRCh38_alphagenome_report.sh
-    deps:
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/alphagenome_GRCh38_results.Rmd
-    - src/train_alphagenome.py
-    - slurm/train_alphagenome.sh
-    - results/evn/GRCh38/alphagenome/metrics.tsv
-    - results/evn/GRCh38/alphagenome/history.tsv
-    outs:
-    - reports/rendered/evn/alphagenome_GRCh38_results.html
-
-  prepare_alphagenome_results_GRCh38_svn:
-    cmd: src/prepare_alphagenome_results.py --model-dir
-      models/svn/GRCh38/alphagenome --output-dir results/svn/GRCh38/alphagenome
-    deps:
-    - src/prepare_alphagenome_results.py
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.config.json
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.history.tsv
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.test_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.config.json
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.history.tsv
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.test_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.config.json
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.history.tsv
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.test_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.config.json
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.history.tsv
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.test_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.config.json
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.history.tsv
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.test_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.config.json
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.history.tsv
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.test_metrics.json
-    - models/svn/GRCh38/alphagenome/outer1/outer1.best_head.pt
-    - models/svn/GRCh38/alphagenome/outer1/outer1.config.json
-    - models/svn/GRCh38/alphagenome/outer1/outer1.history.tsv
-    - models/svn/GRCh38/alphagenome/outer1/outer1.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/outer1/outer1.test_metrics.json
-    - models/svn/GRCh38/alphagenome/outer2/outer2.best_head.pt
-    - models/svn/GRCh38/alphagenome/outer2/outer2.config.json
-    - models/svn/GRCh38/alphagenome/outer2/outer2.history.tsv
-    - models/svn/GRCh38/alphagenome/outer2/outer2.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/outer2/outer2.test_metrics.json
-    - models/svn/GRCh38/alphagenome/outer3/outer3.best_head.pt
-    - models/svn/GRCh38/alphagenome/outer3/outer3.config.json
-    - models/svn/GRCh38/alphagenome/outer3/outer3.history.tsv
-    - models/svn/GRCh38/alphagenome/outer3/outer3.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/outer3/outer3.test_metrics.json
-    - models/svn/GRCh38/alphagenome/outer4/outer4.best_head.pt
-    - models/svn/GRCh38/alphagenome/outer4/outer4.config.json
-    - models/svn/GRCh38/alphagenome/outer4/outer4.history.tsv
-    - models/svn/GRCh38/alphagenome/outer4/outer4.validation_metrics.json
-    - models/svn/GRCh38/alphagenome/outer4/outer4.test_metrics.json
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/svn/GRCh38/training/validation_pos.fa
-    - data/processed/svn/GRCh38/training/validation_neg.fa
-    - data/processed/svn/GRCh38/training/test_pos.fa
-    - data/processed/svn/GRCh38/training/test_neg.fa
-    - data/processed/svn/GRCh38/training/outer1/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer1/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer1/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer1/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer2/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer2/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer2/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer2/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer3/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer3/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer3/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer3/validation_neg.fa
-    - data/processed/svn/GRCh38/training/outer4/train_pos.fa
-    - data/processed/svn/GRCh38/training/outer4/train_neg.fa
-    - data/processed/svn/GRCh38/training/outer4/validation_pos.fa
-    - data/processed/svn/GRCh38/training/outer4/validation_neg.fa
-    - data/processed/svn/GRCh38/folds/fold5/fold5.fa
-    - data/processed/svn/GRCh38/folds/fold5/neg1x_fold5.fa
-    outs:
-    - results/svn/GRCh38/alphagenome/metrics.tsv
-    - results/svn/GRCh38/alphagenome/history.tsv
-
-  render_alphagenome_report_GRCh38_svn:
-    cmd: bash src/render_GRCh38_alphagenome_report.sh svn
-    deps:
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/alphagenome_GRCh38_results.Rmd
-    - src/train_alphagenome.py
-    - slurm/train_alphagenome.sh
-    - results/svn/GRCh38/alphagenome/metrics.tsv
-    - results/svn/GRCh38/alphagenome/history.tsv
-    outs:
-    - reports/rendered/svn/alphagenome_GRCh38_results.html
-
-  render_alphagenome_comparison_GRCh38:
-    cmd: bash src/render_GRCh38_alphagenome_comparison_report.sh
-    deps:
-    - src/render_GRCh38_alphagenome_comparison_report.sh
-    - reports/alphagenome_GRCh38_evn_vs_svn.Rmd
-    - results/evn/GRCh38/alphagenome/metrics.tsv
-    - results/svn/GRCh38/alphagenome/metrics.tsv
-    outs:
-    - reports/rendered/comparison/alphagenome_GRCh38_evn_vs_svn.html
-
-  cross_predict_ls_gkm_GRCh38:
-    cmd: sbatch --wait slurm/cross_predict_ls_gkm.sh
-    deps:
-    - slurm/cross_predict_ls_gkm.sh
-    - models/evn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
-    - models/evn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/10/learning_curve_10.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/20/learning_curve_20.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/40/learning_curve_40.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/60/learning_curve_60.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/80/learning_curve_80.model.txt
-    - models/svn/GRCh38/ls-gkm/learning_curves/100/learning_curve_100.model.txt
-    - data/processed/evn/GRCh38/training/validation_pos.fa
-    - data/processed/evn/GRCh38/training/validation_neg.fa
-    - data/processed/evn/GRCh38/training/test_pos.fa
-    - data/processed/evn/GRCh38/training/test_neg.fa
-    - data/processed/svn/GRCh38/training/validation_pos.fa
-    - data/processed/svn/GRCh38/training/validation_neg.fa
-    - data/processed/svn/GRCh38/training/test_pos.fa
-    - data/processed/svn/GRCh38/training/test_neg.fa
-    outs:
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_neg_scores.txt
-
-  cross_predict_alphagenome_GRCh38:
-    cmd: sbatch --wait slurm/cross_predict_alphagenome.sh
-    deps:
-    - slurm/cross_predict_alphagenome.sh
-    - src/predict_alphagenome.py
-    - src/train_alphagenome.py
-    - weights/fold_0_weights.safetensors
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
-    - data/processed/evn/GRCh38/training/validation_pos.fa
-    - data/processed/evn/GRCh38/training/validation_neg.fa
-    - data/processed/evn/GRCh38/training/test_pos.fa
-    - data/processed/evn/GRCh38/training/test_neg.fa
-    - data/processed/svn/GRCh38/training/validation_pos.fa
-    - data/processed/svn/GRCh38/training/validation_neg.fa
-    - data/processed/svn/GRCh38/training/test_pos.fa
-    - data/processed/svn/GRCh38/training/test_neg.fa
-    outs:
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/test.tsv
-
-  prepare_cross_task_metrics_GRCh38:
-    cmd: src/prepare_cross_task_metrics.py
-    deps:
-    - src/prepare_cross_task_metrics.py
-    - results/evn/GRCh38/alphagenome/metrics.tsv
-    - results/svn/GRCh38/alphagenome/metrics.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/evn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/10.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/20.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/40.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/60.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/80.tsv
-    - results/svn/GRCh38/ls-gkm/learning_curves/100.tsv
-    - data/processed/evn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/evn/GRCh38/learning_curves/train_100_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_10_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_20_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_40_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_60_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_80_neg.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_pos.fa
-    - data/processed/svn/GRCh38/learning_curves/train_100_neg.fa
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/10/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/20/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/40/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/60/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/80/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/evn_model_on_svn/100/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/10/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/20/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/40/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/60/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/80/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/validation_neg_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_pos_scores.txt
-    - predictions/cross_task/GRCh38/ls-gkm/svn_model_on_evn/100/test_neg_scores.txt
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/10/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/20/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/40/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/60/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/80/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/evn_model_on_svn/100/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/10/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/20/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/40/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/60/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/80/test.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/validation.tsv
-    - predictions/cross_task/GRCh38/alphagenome/svn_model_on_evn/100/test.tsv
-    outs:
-    - results/cross_task/GRCh38/native_vs_cross_metrics.tsv
-
-  extract_alphagenome_head_features_GRCh38:
-    cmd: src/extract_alphagenome_head_features.py
-    deps:
-    - src/extract_alphagenome_head_features.py
-    - models/evn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
-    - models/evn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/10/learning_curve_10.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/20/learning_curve_20.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/40/learning_curve_40.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/60/learning_curve_60.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/80/learning_curve_80.best_head.pt
-    - models/svn/GRCh38/alphagenome/learning_curves/100/learning_curve_100.best_head.pt
-    outs:
-    - results/cross_task/GRCh38/alphagenome_features/feature_importance.tsv
-    - results/cross_task/GRCh38/alphagenome_features/feature_similarity.tsv
-
-  render_cross_task_reports_GRCh38:
-    cmd: bash src/render_cross_task_reports.sh
-    deps:
-    - src/render_cross_task_reports.sh
-    - reports/cross_task_method_GRCh38_results.Rmd
-    - reports/cross_task_GRCh38_results.Rmd
-    - results/cross_task/GRCh38/native_vs_cross_metrics.tsv
-    - results/cross_task/GRCh38/alphagenome_features/feature_importance.tsv
-    - results/cross_task/GRCh38/alphagenome_features/feature_similarity.tsv
-    outs:
-    - reports/rendered/comparison/alphagenome_GRCh38_native_vs_cross.html
-    - reports/rendered/comparison/lsgkm_GRCh38_native_vs_cross.html
-    - reports/rendered/comparison/cross_task_GRCh38_results.html
   prepare_masked_reference_GRCh38:
     cmd: bash src/prepare_masked_reference.sh
     deps:
@@ -1795,3 +237,585 @@ stages:
     - data/reference/hg38-PLAIN-canonical-merged
     - data/reference/hg38-chroms
     - data/reference/hg38.fa
+  build_negatives_GRCh38_evn_and_svn:
+    cmd: sbatch --wait slurm/genomic_backgrounds.sh
+    deps:
+    - slurm/genomic_backgrounds.sh
+    - data/reference/hg38-PLAIN-canonical-masked
+    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
+    outs:
+    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed:
+        persist: true
+    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed:
+        persist: true
+    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa:
+        persist: true
+  build_chromosome_training_GRCh38:
+    cmd: python3 src/make_GRCh38_clean_training.py --seed 42 --overwrite
+    deps:
+    - src/make_GRCh38_clean_training.py
+    - src/grch38_training_utils.py
+    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
+    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
+    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
+    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
+    outs:
+    - data/processed/evn/GRCh38/training
+    - data/processed/svn/GRCh38/training
+  train_ls_gkm_GRCh38_evn:
+    cmd: sbatch --wait --export=ALL,DATASET=evn --array=1-13%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait --export=ALL,DATASET=evn
+      --array=14-21%5 --mem=200G slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - data/processed/evn/GRCh38/training
+    - ../lsgkm/bin/gkmtrain
+    outs:
+    - models/evn/GRCh38/ls-gkm/chromosome_learning_curves:
+        persist: true
+  train_alphagenome_GRCh38_evn:
+    cmd: sbatch --wait --export=ALL,DATASET=evn slurm/train_alphagenome.sh
+    deps:
+    - slurm/train_alphagenome.sh
+    - src/train_alphagenome.py
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    - data/processed/evn/GRCh38/training
+    outs:
+    - models/evn/GRCh38/alphagenome/chromosome_learning_curves:
+        persist: true
+  test_ls_gkm_GRCh38_evn:
+    cmd: sbatch --wait --export=ALL,DATASET=evn slurm/predict_ls_gkm.sh
+    deps:
+    - slurm/predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/evn/GRCh38/training
+    - models/evn/GRCh38/ls-gkm/chromosome_learning_curves
+    outs:
+    - predictions/evn/GRCh38/ls-gkm/chromosome_learning_curves:
+        persist: true
+  render_lsgkm_report_GRCh38_evn:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn --model lsgkm --output results/evn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
+      && bash src/render_GRCh38_lsgkm_report.sh evn
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/evn/GRCh38/training
+    - predictions/evn/GRCh38/ls-gkm/chromosome_learning_curves
+    outs:
+    - results/evn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/evn/lsgkm_GRCh38_chromosome_learning.html
+  render_alphagenome_report_GRCh38_evn:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn --model alphagenome --output results/evn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+      && bash src/render_GRCh38_alphagenome_report.sh evn
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/evn/GRCh38/training
+    - models/evn/GRCh38/alphagenome/chromosome_learning_curves
+    outs:
+    - results/evn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/evn/alphagenome_GRCh38_chromosome_learning.html
+  train_ls_gkm_GRCh38_svn:
+    cmd: sbatch --wait --export=ALL,DATASET=svn --array=1-12%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait --export=ALL,DATASET=svn
+      --array=13-21%5 --mem=200G slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - data/processed/svn/GRCh38/training
+    - ../lsgkm/bin/gkmtrain
+    outs:
+    - models/svn/GRCh38/ls-gkm/chromosome_learning_curves:
+        persist: true
+  train_alphagenome_GRCh38_svn:
+    cmd: sbatch --wait --export=ALL,DATASET=svn slurm/train_alphagenome.sh
+    deps:
+    - slurm/train_alphagenome.sh
+    - src/train_alphagenome.py
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    - data/processed/svn/GRCh38/training
+    outs:
+    - models/svn/GRCh38/alphagenome/chromosome_learning_curves:
+        persist: true
+  test_ls_gkm_GRCh38_svn:
+    cmd: sbatch --wait --export=ALL,DATASET=svn slurm/predict_ls_gkm.sh
+    deps:
+    - slurm/predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/svn/GRCh38/training
+    - models/svn/GRCh38/ls-gkm/chromosome_learning_curves
+    outs:
+    - predictions/svn/GRCh38/ls-gkm/chromosome_learning_curves:
+        persist: true
+  render_lsgkm_report_GRCh38_svn:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn --model lsgkm --output results/svn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
+      && bash src/render_GRCh38_lsgkm_report.sh svn
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/svn/GRCh38/training
+    - predictions/svn/GRCh38/ls-gkm/chromosome_learning_curves
+    outs:
+    - results/svn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/svn/lsgkm_GRCh38_chromosome_learning.html
+  render_alphagenome_report_GRCh38_svn:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn --model alphagenome --output results/svn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+      && bash src/render_GRCh38_alphagenome_report.sh svn
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/svn/GRCh38/training
+    - models/svn/GRCh38/alphagenome/chromosome_learning_curves
+    outs:
+    - results/svn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/svn/alphagenome_GRCh38_chromosome_learning.html
+  cross_predict_ls_gkm_GRCh38:
+    cmd: sbatch --wait --export=ALL slurm/cross_predict_ls_gkm.sh
+    deps:
+    - slurm/cross_predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/evn/GRCh38/training
+    - data/processed/svn/GRCh38/training
+    - models/evn/GRCh38/ls-gkm/chromosome_learning_curves
+    - models/svn/GRCh38/ls-gkm/chromosome_learning_curves
+    outs:
+    - predictions/cross_task/GRCh38/ls-gkm:
+        persist: true
+  cross_predict_alphagenome_GRCh38:
+    cmd: sbatch --wait --export=ALL slurm/cross_predict_alphagenome.sh
+    deps:
+    - slurm/cross_predict_alphagenome.sh
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    - data/processed/evn/GRCh38/training
+    - data/processed/svn/GRCh38/training
+    - models/evn/GRCh38/alphagenome/chromosome_learning_curves
+    - models/svn/GRCh38/alphagenome/chromosome_learning_curves
+    outs:
+    - predictions/cross_task/GRCh38/alphagenome:
+        persist: true
+  render_cross_task_reports_GRCh38:
+    cmd: bash src/render_cross_task_reports.sh && bash src/render_native_comparison_report.sh
+    deps:
+    - src/render_cross_task_reports.sh
+    - src/render_native_comparison_report.sh
+    - src/prepare_cross_task_metrics.py
+    - reports/cross_task_chromosome_learning_GRCh38_results.Rmd
+    - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+    - predictions/cross_task/GRCh38/ls-gkm
+    - predictions/cross_task/GRCh38/alphagenome
+    - results/evn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+    outs:
+    - results/cross_task/GRCh38/native_vs_cross_metrics.tsv
+    - reports/rendered/comparison/native_vs_cross_GRCh38_chromosome_learning.html
+    - reports/rendered/comparison/native_evn_vs_svn_GRCh38_chromosome_learning.html

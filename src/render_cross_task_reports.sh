@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-
-Rscript -e 'rmarkdown::render("reports/cross_task_method_GRCh38_results.Rmd", params=list(metrics="results/cross_task/GRCh38/native_vs_cross_metrics.tsv",model="alphagenome",feature_dir="results/cross_task/GRCh38/alphagenome_features"), output_file="alphagenome_GRCh38_native_vs_cross.html",output_dir="reports/rendered/comparison",knit_root_dir=getwd())'
-Rscript -e 'rmarkdown::render("reports/cross_task_method_GRCh38_results.Rmd", params=list(metrics="results/cross_task/GRCh38/native_vs_cross_metrics.tsv",model="lsgkm",feature_dir=NULL), output_file="lsgkm_GRCh38_native_vs_cross.html",output_dir="reports/rendered/comparison",knit_root_dir=getwd())'
-Rscript -e 'rmarkdown::render("reports/cross_task_GRCh38_results.Rmd", output_file="cross_task_GRCh38_results.html",output_dir="reports/rendered/comparison",knit_root_dir=getwd())'
+export PATH="/home/zarazuanav/.conda/envs/ls-gkm/bin:${PATH}"
+metrics="results/cross_task/GRCh38/native_vs_cross_metrics.tsv"
+outdir="reports/rendered/comparison"
+python3 src/prepare_cross_task_metrics.py --output "${metrics}"
+mkdir -p "${outdir}"
+Rscript -e 'a<-commandArgs(TRUE); rmarkdown::render("reports/cross_task_chromosome_learning_GRCh38_results.Rmd",params=list(metrics_path=a[1],negative_kind="genomic"),output_file="native_vs_cross_GRCh38_chromosome_learning.html",output_dir=a[2],knit_root_dir=getwd(),envir=new.env(parent=globalenv()))' "${metrics}" "${outdir}"

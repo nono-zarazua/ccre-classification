@@ -1,110 +1,36 @@
 #!/usr/bin/env python3
-"""Combine native and cross-task EVN/SVN metrics for both model families."""
-
-from __future__ import annotations
-
-import argparse
-import csv
+"""Aggregate native and cross-task chromosome-learning metrics."""
+import argparse, csv, json
 from pathlib import Path
+from prepare_GRCh38_chromosome_learning_results import CHROMS, binary_metrics, read_scores
 
-from sklearn.metrics import average_precision_score, roc_auc_score
+def table(path):
+    if not path.is_file() or not path.stat().st_size: raise FileNotFoundError(path)
+    with path.open(newline="") as h: return list(csv.DictReader(h,delimiter="\t"))
 
-FRACTIONS = (10, 20, 40, 60, 80, 100)
-TASKS = ("evn", "svn")
-
-
-def count_fasta(path: Path) -> int:
-    with path.open() as handle:
-        return sum(line.startswith(">") for line in handle)
-
-
-def metrics(labels: list[int], scores: list[float]) -> tuple[int, int, int, float, float]:
-    return (len(labels), sum(labels), len(labels) - sum(labels),
-            float(roc_auc_score(labels, scores)),
-            float(average_precision_score(labels, scores)))
-
-
-def read_native_lsgkm(path: Path, split: str) -> tuple[list[int], list[float]]:
-    with path.open() as handle:
-        rows = [row for row in csv.DictReader(handle, delimiter="\t") if row["split"] == split]
-    return [int(row["label"]) for row in rows], [float(row["score"]) for row in rows]
-
-
-def read_lsgkm_scores(pos: Path, neg: Path) -> tuple[list[int], list[float]]:
-    def scores(path: Path) -> list[float]:
-        with path.open() as handle:
-            return [float(line.split()[-1]) for line in handle if line.strip()]
-    positive = scores(pos)
-    negative = scores(neg)
-    return [1] * len(positive) + [0] * len(negative), positive + negative
-
-
-def read_alphagenome(path: Path) -> tuple[list[int], list[float]]:
-    with path.open() as handle:
-        rows = list(csv.DictReader(handle, delimiter="\t"))
-    return [int(row["label"]) for row in rows], [float(row["logit"]) for row in rows]
-
-
-def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--repository", type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument("--output", type=Path,
-                        default=Path("results/cross_task/GRCh38/native_vs_cross_metrics.tsv"))
-    return parser.parse_args()
-
-
-def main() -> None:
-    args = parse_args()
-    root = args.repository.resolve()
-    rows: list[dict[str, object]] = []
-    for model in ("lsgkm", "alphagenome"):
-        model_dir = "ls-gkm" if model == "lsgkm" else "alphagenome"
-        for model_task in TASKS:
-            cross_task = "svn" if model_task == "evn" else "evn"
-            for fraction in FRACTIONS:
-                train_dir = root / "data/processed" / model_task / "GRCh38/learning_curves"
-                n_train = count_fasta(train_dir / f"train_{fraction}_pos.fa") + count_fasta(train_dir / f"train_{fraction}_neg.fa")
-                for evaluation_task, mode in ((model_task, "native"), (cross_task, "cross")):
-                    for split in ("validation", "test"):
-                        if model == "lsgkm" and mode == "native":
-                            source = root / "results" / model_task / "GRCh38/ls-gkm/learning_curves" / f"{fraction}.tsv"
-                            labels, scores = read_native_lsgkm(source, split)
-                        elif model == "lsgkm":
-                            source = root / "predictions/cross_task/GRCh38/ls-gkm" / f"{model_task}_model_on_{evaluation_task}" / str(fraction)
-                            labels, scores = read_lsgkm_scores(source / f"{split}_pos_scores.txt", source / f"{split}_neg_scores.txt")
-                        elif mode == "native":
-                            source = root / "results" / model_task / "GRCh38/alphagenome/metrics.tsv"
-                            with source.open() as handle:
-                                candidates = [r for r in csv.DictReader(handle, delimiter="\t")
-                                              if r["dataset"] == f"learning_curve_{fraction}" and r["split"] == split]
-                            if len(candidates) != 1:
-                                raise ValueError(f"Expected one native AlphaGenome row: {source}")
-                            native = candidates[0]
-                            rows.append(dict(model=model, model_task=model_task,
-                                             evaluation_task=evaluation_task, evaluation_mode=mode,
-                                             training_fraction=fraction, n_training_total=n_train,
-                                             split=split, n_evaluation_total=int(native["n_evaluation_total"]),
-                                             n_positive=int(native["n_evaluation_positive"]),
-                                             n_negative=int(native["n_evaluation_negative"]),
-                                             auroc=float(native["auroc"]), auprc=float(native["auprc"])))
-                            continue
-                        else:
-                            source = root / "predictions/cross_task/GRCh38/alphagenome" / f"{model_task}_model_on_{evaluation_task}" / str(fraction) / f"{split}.tsv"
-                            labels, scores = read_alphagenome(source)
-                        n, pos, neg, auroc, auprc = metrics(labels, scores)
-                        rows.append(dict(model=model, model_task=model_task,
-                                         evaluation_task=evaluation_task, evaluation_mode=mode,
-                                         training_fraction=fraction, n_training_total=n_train,
-                                         split=split, n_evaluation_total=n,
-                                         n_positive=pos, n_negative=neg,
-                                         auroc=auroc, auprc=auprc))
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.output.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), delimiter="\t")
-        writer.writeheader()
-        writer.writerows(rows)
-    print(f"Wrote {len(rows)} rows to {args.output}")
-
-
-if __name__ == "__main__":
-    main()
+def main():
+    p=argparse.ArgumentParser(); p.add_argument("--repository",type=Path,default=Path(__file__).resolve().parents[1]); p.add_argument("--output",type=Path); a=p.parse_args()
+    root=a.repository.resolve(); output=a.output or root/f"results/cross_task/GRCh38/native_vs_cross_metrics.tsv"; rows=[]
+    for model,folder in (("lsgkm","ls-gkm"),("alphagenome","alphagenome")):
+      for mt,et in (("evn","svn"),("svn","evn")):
+        native=table(root/f"results/{mt}/GRCh38/{folder}/chromosome_learning_curves/metrics.tsv")
+        lookup={(r["checkpoint"],r["split"]):r for r in native}
+        for idx,chrom in enumerate(CHROMS,1):
+          name=f"through_chr{chrom}"
+          for split in ("train_100","validation","test"):
+            n=lookup[(name,split)]
+            common=dict(model=model,model_task=mt,negative_kind="genomic",checkpoint=name,checkpoint_index=idx,endpoint_chromosome=f"chr{chrom}",n_training_total=int(n["n_training_total"]),split=split)
+            rows.append(dict(**common,evaluation_task=mt,evaluation_mode="native",n_evaluation_total=int(n["n_evaluation_total"]),**{k:float(n[k]) for k in ("auroc","auprc","accuracy","precision","recall","f1")}))
+            base=root/f"predictions/cross_task/GRCh38/{folder}/{mt}_model_on_{et}/chromosome_learning_curves/{name}"
+            if model=="lsgkm":
+              pos=read_scores(base/f"{split}_pos_scores.txt"); neg=read_scores(base/f"{split}_neg_scores.txt"); m=binary_metrics(pos,neg); count=len(pos)+len(neg)
+            else:
+              path=base/f"{split}_metrics.json"
+              if not path.is_file() or not path.stat().st_size: raise FileNotFoundError(path)
+              with path.open() as h: payload=json.load(h)
+              m=payload["metrics"]; count=int(payload["n_positive"])+int(payload["n_negative"])
+            rows.append(dict(**common,evaluation_task=et,evaluation_mode="cross",n_evaluation_total=count,**{k:float(m[k]) for k in ("auroc","auprc","accuracy","precision","recall","f1")}))
+    output.parent.mkdir(parents=True,exist_ok=True); tmp=Path(str(output)+".tmp")
+    with tmp.open("w",newline="") as h: w=csv.DictWriter(h,fieldnames=list(rows[0]),delimiter="\t",lineterminator="\n"); w.writeheader(); w.writerows(rows)
+    tmp.replace(output); print(f"Wrote {len(rows)} rows to {output}")
+if __name__=="__main__": main()

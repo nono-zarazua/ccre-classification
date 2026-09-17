@@ -1,0 +1,133 @@
+---
+title: "GRCh38 Native EVN-versus-SVN Chromosome Learning Curves"
+subtitle: "Native comparison | `r params$negative_kind` negative backgrounds"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  metrics_path: null
+  negative_kind: null
+  full_model_prefix: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
+                      fig.width=10, fig.height=7, dpi=120)
+suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+theme_set(theme_minimal(base_size=11) +
+          theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+task_colors <- c(EVN="#0072B2", SVN="#D55E00")
+```
+
+```{r inputs, include=FALSE}
+if (is.null(params$metrics_path) || is.null(params$negative_kind))
+  stop("metrics_path and negative_kind are required")
+metrics_path <- normalizePath(params$metrics_path, mustWork=TRUE)
+all_metrics <- read.delim(metrics_path, sep="\t", stringsAsFactors=FALSE,
+                          check.names=FALSE)
+if (nrow(all_metrics) != 504) stop("Expected 504 source rows; found ", nrow(all_metrics))
+x <- all_metrics |>
+  filter(evaluation_mode == "native") |>
+  mutate(Model=recode(model, lsgkm="LS-GKM", alphagenome="AlphaGenome"),
+         Task=toupper(model_task),
+         Split=factor(recode(split, train_100="Full training pool",
+                             validation="Validation", test="Test"),
+                      levels=c("Full training pool", "Validation", "Test")),
+         ranking_error=1-auroc)
+if (nrow(x) != 252) stop("Expected 252 native rows; found ", nrow(x))
+has_full_model <- !is.null(params$full_model_prefix) && nzchar(params$full_model_prefix)
+full_metrics <- NULL
+if (has_full_model) {
+  prefix <- params$full_model_prefix
+  validation_json <- jsonlite::read_json(paste0(prefix, ".validation_metrics.json"), simplifyVector=TRUE)
+  test_json <- jsonlite::read_json(paste0(prefix, ".test_metrics.json"), simplifyVector=TRUE)
+  config <- jsonlite::read_json(paste0(prefix, ".config.json"), simplifyVector=TRUE)
+  count_fasta <- function(path) as.integer(system(sprintf("grep -c '^>' %s", shQuote(path)), intern=TRUE))
+  train_total <- count_fasta(config$train_pos) + count_fasta(config$train_neg)
+  make_row <- function(split, values) {
+    tibble(Model="AlphaGenome", Task="EVN",
+           Split=factor(split, levels=c("Full training pool","Validation","Test")),
+           n_training_total=train_total, auroc=values$auroc, auprc=values$auprc,
+           ranking_error=1-values$auroc)
+  }
+  full_metrics <- bind_rows(make_row("Validation", validation_json$validation),
+                            make_row("Test", test_json$test))
+}
+metric_limits <- function(v) {
+  span <- diff(range(v, na.rm=TRUE)); pad <- max(span*.08, .002)
+  range(v, na.rm=TRUE) + c(-pad, pad)
+}
+native_plot <- function(metric, title, label) {
+  limits_data <- x[[metric]]
+  if (has_full_model) limits_data <- c(limits_data, full_metrics[[metric]])
+  p <- ggplot(x, aes(n_training_total, .data[[metric]], color=Task, group=Task)) +
+    geom_line(linewidth=.85) + geom_point(size=1.8) +
+    facet_grid(Split ~ Model, scales="free_x") +
+    scale_color_manual(values=task_colors) +
+    scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.03))) +
+    coord_cartesian(ylim=metric_limits(limits_data)) +
+    labs(title=title, x="Cumulative training observations", y=label,
+         color="Native task",
+         caption=if (has_full_model) "Star: full cleaned-EVN AlphaGenome model" else NULL)
+  if (has_full_model) {
+    p <- p + geom_point(data=full_metrics,
+                        aes(x=n_training_total, y=.data[[metric]], color=Task),
+                        inherit.aes=FALSE, shape=8, size=4, stroke=1.1)
+  }
+  p
+}
+```
+
+# Scope and interpretation
+
+This report compares native enhancer-versus-negative (EVN) and
+silencer-versus-negative (SVN) performance for LS-GKM and AlphaGenome using
+`r params$negative_kind` genomic backgrounds. Chr1 is validation, chr2 is held-out
+test, and training checkpoints cumulatively add chr3 through chrX.
+
+EVN and SVN are different biological classification tasks, so vertical differences
+describe task-specific performance and should not be interpreted as paired-locus
+effects.
+
+# AUROC learning curves
+
+```{r auroc}
+native_plot("auroc", "Native EVN and SVN AUROC", "AUROC")
+```
+
+# Average-precision learning curves
+
+```{r auprc}
+native_plot("auprc", "Native EVN and SVN average precision", "Average Precision")
+```
+
+# AUROC ranking-error curves
+
+```{r ranking}
+native_plot("ranking_error", "Native EVN and SVN AUROC ranking error", "1 - AUROC")
+```
+
+# Full-training comparison
+
+```{r full}
+x |> filter(checkpoint_index == max(checkpoint_index)) |>
+  select(Model, Task, Split, n_training_total, n_evaluation_total, auroc, auprc) |>
+  rename(`Training observations`=n_training_total,
+         `Evaluation observations`=n_evaluation_total,
+         AUROC=auroc, `Average Precision`=auprc) |>
+  arrange(Model, Split, Task) |>
+  gt(groupname_col="Model") |>
+  tab_header(title="Final chr3-through-chrX native models") |>
+  fmt_integer(columns=c(`Training observations`, `Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC, `Average Precision`), decimals=3)
+```
+
+# Reproducibility notes
+
+- The report uses only native evaluations from the shared native-versus-cross metric table.
+- Both methods and all three evaluation splits use common metric-axis ranges.
+- Test data are used only for final evaluation.
+- The obsolete outer-fold stability analysis is intentionally omitted.

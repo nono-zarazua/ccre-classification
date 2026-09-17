@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ## Independent cumulative EVN/SVN chromosome learning curves.
-## Select DATASET=evn|svn and NEGATIVE_KIND=synthetic|real at submission.
+## Select DATASET=evn|svn at submission.
 #SBATCH --job-name=train_ls_gkm
 #SBATCH --chdir=/work/zarazuanav/workspace/repos/ccre-classification
 #SBATCH --output=/work/zarazuanav/workspace/repos/ccre-classification/slurmlogs/train_ls_gkm.%A_%a.out
@@ -25,19 +25,14 @@ if [[ "${dataset}" != "evn" && "${dataset}" != "svn" ]]; then
   exit 1
 fi
 
-negative_kind="${NEGATIVE_KIND:-synthetic}"
-if [[ "${negative_kind}" != "synthetic" && "${negative_kind}" != "real" ]]; then
-  echo "ERROR: NEGATIVE_KIND must be synthetic or real; received: ${negative_kind}" >&2
-  exit 1
-fi
 
 task_id="${SLURM_ARRAY_TASK_ID}"
 chromosomes=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
 (( task_id >= 1 && task_id <= ${#chromosomes[@]} )) || { echo "ERROR: task must be 1-${#chromosomes[@]}" >&2; exit 1; }
 endpoint="${chromosomes[task_id-1]}"
 name="through_chr${endpoint}"
-root="data/processed/${dataset}/GRCh38/training/${negative_kind}"
-model_dir="models/${dataset}/GRCh38/${negative_kind}/ls-gkm/chromosome_learning_curves/${name}"
+root="data/processed/${dataset}/GRCh38/training"
+model_dir="models/${dataset}/GRCh38/ls-gkm/chromosome_learning_curves/${name}"
 prefix="${model_dir}/${name}"
 model="${prefix}.model.txt"
 

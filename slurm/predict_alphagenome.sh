@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 ## Evaluate every trained AlphaGenome checkpoint on the shared train_100 pool.
-## Select DATASET=evn|svn and NEGATIVE_KIND=synthetic|real at submission.
+## Select DATASET=evn|svn at submission.
 #SBATCH --job-name=predict_alphagenome
 #SBATCH --chdir=/work/zarazuanav/workspace/repos/ccre-classification
 #SBATCH --output=/work/zarazuanav/workspace/repos/ccre-classification/slurmlogs/predict_alphagenome.%A_%a.out
@@ -23,17 +23,14 @@ set +u; source activate alphagenome; set -u
 python_bin="${CONDA_PREFIX}/bin/python"
 [[ -x "${python_bin}" ]] || { echo "ERROR: missing AlphaGenome Python" >&2; exit 1; }
 "${python_bin}" -c 'import numpy, torch, sklearn, alphagenome_pytorch; assert torch.cuda.is_available(), "CUDA unavailable"; print(torch.cuda.get_device_name(0))'
-
 dataset="${DATASET:-evn}"
 [[ "${dataset}" == evn || "${dataset}" == svn ]] || { echo "ERROR: DATASET must be evn or svn" >&2; exit 1; }
-negative_kind="${NEGATIVE_KIND:-synthetic}"
-[[ "${negative_kind}" == synthetic || "${negative_kind}" == real ]] || { echo "ERROR: NEGATIVE_KIND must be synthetic or real" >&2; exit 1; }
 chromosomes=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
 task_id="${SLURM_ARRAY_TASK_ID}"
 (( task_id >= 1 && task_id <= ${#chromosomes[@]} )) || { echo "ERROR: task must be 1-${#chromosomes[@]}" >&2; exit 1; }
 endpoint="${chromosomes[task_id-1]}"; name="through_chr${endpoint}"
-root="data/processed/${dataset}/GRCh38/training/${negative_kind}"
-model_root="models/${dataset}/GRCh38/${negative_kind}/alphagenome/chromosome_learning_curves/${name}"
+root="data/processed/${dataset}/GRCh38/training"
+model_root="models/${dataset}/GRCh38/alphagenome/chromosome_learning_curves/${name}"
 checkpoint="${model_root}/${name}.best_head.pt"
 metrics="${model_root}/${name}.train_100_metrics.json"
 weights="weights/fold_0_weights.safetensors"
@@ -42,7 +39,7 @@ for file in "${checkpoint}" "${weights}" "${root}/train_100_pos.fa" "${root}/tra
 done
 [[ ! -s "${metrics}" ]] || { echo "SKIP: ${metrics}"; exit 0; }
 [[ ! -e "${metrics}" ]] || { echo "ERROR: empty metrics exists: ${metrics}" >&2; exit 1; }
-"${python_bin}" src/predict_alphagenome.py "${checkpoint}" "${root}/train_100_pos.fa" "${root}/train_100_neg.fa" --metrics-json "${metrics}" --weights "${weights}" --batch-size 32 --num-workers "${SLURM_CPUS_PER_TASK}"
+"${python_bin}" src/predict_alphagenome.py "${checkpoint}" "${root}/train_100_pos.fa" "${root}/train_100_neg.fa" --metrics-json "${metrics}" --weights "${weights}" --batch-size 32 --num-workers 0
 [[ -s "${metrics}" ]] || { echo "ERROR: metrics missing: ${metrics}" >&2; exit 1; }
 elapsed="$(($(date -u +%s)-start_time))"
-echo "PASS ${dataset}/${negative_kind}/${name}; elapsed ${elapsed}s"
+echo "PASS ${dataset}/${name}; elapsed ${elapsed}s"
