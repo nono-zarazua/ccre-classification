@@ -93,20 +93,24 @@ def binary_metrics(positive: list[float], negative: list[float]) -> dict[str, fl
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--dataset", choices=("evn", "svn"), required=True)
+    parser.add_argument("--dataset", choices=("evn", "svn", "evs"), required=True)
     parser.add_argument("--model", choices=("lsgkm", "alphagenome"), required=True)
+    parser.add_argument("--background-type", choices=("real", "synthetic"), required=True)
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--output", type=Path)
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.dataset == "evs" and args.background_type != "real":
+        parser.error("EVS is available only with --background-type real")
+    return args
 
 
 def main() -> None:
     args = parse_args()
     repo = args.repo.resolve()
-    training = repo / f"data/processed/{args.dataset}/GRCh38/training"
+    training = repo / f"data/processed/{args.dataset}/GRCh38/{args.background_type}"
     model_name = "ls-gkm" if args.model == "lsgkm" else "alphagenome"
     output = args.output or (
-        repo / f"results/{args.dataset}/GRCh38/{model_name}/"
+        repo / f"results/{args.dataset}/GRCh38/{model_name}/{args.background_type}/"
         "chromosome_learning_curves/metrics.tsv"
     )
     evaluation_counts = {
@@ -122,7 +126,10 @@ def main() -> None:
             raise ValueError(f"Unbalanced cumulative training data at chr{chrom}")
         name = f"through_chr{chrom}"
         if args.model == "alphagenome":
-            prefix = repo / f"models/{args.dataset}/GRCh38/alphagenome/chromosome_learning_curves/{name}/{name}"
+            prefix = repo / (
+                f"models/{args.dataset}/GRCh38/alphagenome/{args.background_type}/"
+                f"chromosome_learning_curves/{name}/{name}"
+            )
             config = read_json(Path(str(prefix) + ".config.json"))
             validation_json = read_json(Path(str(prefix) + ".validation_metrics.json"))
             best_epoch = validation_json["best_epoch"]
@@ -132,7 +139,10 @@ def main() -> None:
                 "test": read_json(Path(str(prefix) + ".test_metrics.json"))["test"],
             }
         else:
-            prediction_dir = repo / f"predictions/{args.dataset}/GRCh38/ls-gkm/chromosome_learning_curves/{name}"
+            prediction_dir = repo / (
+                f"predictions/{args.dataset}/GRCh38/ls-gkm/{args.background_type}/"
+                f"chromosome_learning_curves/{name}"
+            )
             config = {}
             best_epoch = ""
             artifacts = {
@@ -147,7 +157,7 @@ def main() -> None:
             n_neg = evaluation_counts[split]["neg"]
             row: dict[str, object] = {
                 "model": args.model, "task": "GRCh38", "dataset": args.dataset,
-                "negative_kind": "genomic", "checkpoint": name,
+                "negative_kind": args.background_type, "checkpoint": name,
                 "checkpoint_index": checkpoint_index, "endpoint_chromosome": f"chr{chrom}",
                 "training_chromosomes": ",".join(f"chr{x}" for x in CHROMS[:checkpoint_index]),
                 "n_training_positive": cumulative_pos, "n_training_negative": cumulative_neg,

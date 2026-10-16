@@ -1,0 +1,116 @@
+---
+title: "GRCh38 Native Enhancer-versus-Silencer Chromosome Learning Curves"
+subtitle: "AlphaGenome and LS-GKM | real genomic loci"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  alphagenome_metrics_path: null
+  lsgkm_metrics_path: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
+                      fig.width=10, fig.height=7, dpi=120)
+suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+theme_set(theme_minimal(base_size=11) +
+          theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+model_colors <- c(AlphaGenome="#0072B2", `LS-GKM`="#D55E00")
+```
+
+```{r inputs, include=FALSE}
+if (is.null(params$alphagenome_metrics_path) || is.null(params$lsgkm_metrics_path))
+  stop("alphagenome_metrics_path and lsgkm_metrics_path are required")
+
+read_metrics <- function(path) {
+  read.delim(normalizePath(path, mustWork=TRUE), sep="\t",
+             stringsAsFactors=FALSE, check.names=FALSE)
+}
+
+x <- bind_rows(read_metrics(params$alphagenome_metrics_path),
+               read_metrics(params$lsgkm_metrics_path)) |>
+  mutate(Model=recode(model, alphagenome="AlphaGenome", lsgkm="LS-GKM"),
+         Model=factor(Model, levels=c("AlphaGenome", "LS-GKM")),
+         Split=factor(recode(split, train_100="Full training pool",
+                             validation="Validation", test="Test"),
+                      levels=c("Full training pool", "Validation", "Test")),
+         ranking_error=1-auroc)
+
+if (nrow(x) != 126) stop("Expected 126 EVS metric rows; found ", nrow(x))
+if (!all(x$dataset == "evs")) stop("Metrics include a non-EVS dataset")
+if (!all(x$negative_kind == "real")) stop("EVS report expects real data only")
+if (n_distinct(x$Model) != 2) stop("Expected both AlphaGenome and LS-GKM metrics")
+
+metric_limits <- function(v) {
+  span <- diff(range(v, na.rm=TRUE)); pad <- max(span*.08, .002)
+  range(v, na.rm=TRUE) + c(-pad, pad)
+}
+
+learning_plot <- function(metric, title, label) {
+  ggplot(x, aes(n_training_total, .data[[metric]], color=Model, group=Model)) +
+    geom_line(linewidth=.85) + geom_point(size=1.8) +
+    facet_grid(Split ~ Model, scales="free_x") +
+    scale_color_manual(values=model_colors) +
+    scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.03))) +
+    coord_cartesian(ylim=metric_limits(x[[metric]])) +
+    labs(title=title, x="Cumulative training observations", y=label, color="Model") +
+    guides(color="none")
+}
+```
+
+# Scope and interpretation
+
+This report compares native enhancer-versus-silencer (EVS) performance for
+AlphaGenome and LS-GKM. Enhancers have label 1 and silencers have label 0; no
+generated negative backgrounds are used. Chr1 is validation, chr2 is held-out
+test, and training checkpoints cumulatively add chr3 through chrX.
+
+Each panel contains one EVS trajectory. The columns place the two model families
+side by side, while the rows show the full training pool, validation, and test
+evaluations on common metric-axis ranges.
+
+# AUROC learning curves
+
+```{r auroc}
+learning_plot("auroc", "Native EVS AUROC", "AUROC")
+```
+
+# Average-precision learning curves
+
+```{r auprc}
+learning_plot("auprc", "Native EVS average precision", "Average Precision")
+```
+
+# AUROC ranking-error curves
+
+```{r ranking}
+learning_plot("ranking_error", "Native EVS AUROC ranking error", "1 - AUROC")
+```
+
+# Full-training comparison
+
+```{r full}
+x |> filter(checkpoint_index == max(checkpoint_index)) |>
+  select(Model, Split, n_training_total, n_evaluation_total, auroc, auprc) |>
+  rename(`Training observations`=n_training_total,
+         `Evaluation observations`=n_evaluation_total,
+         AUROC=auroc, `Average Precision`=auprc) |>
+  arrange(Model, Split) |>
+  gt(groupname_col="Model") |>
+  tab_header(title="Final chr3-through-chrX native EVS models") |>
+  fmt_integer(columns=c(`Training observations`, `Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC, `Average Precision`), decimals=3)
+```
+
+# Reproducibility notes
+
+- Both methods use the same chromosome-defined EVS training and evaluation sets.
+- The report uses real enhancer and silencer loci only; it has no synthetic-background branch.
+- All three evaluation splits use common y-axis ranges within each metric.
+- Test data are used only for final evaluation.
+- AlphaGenome uses logits from validation-selected frozen-encoder heads; LS-GKM uses continuous gkm-SVM decision scores.
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.

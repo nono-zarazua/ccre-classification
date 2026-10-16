@@ -1,6 +1,6 @@
 ---
 title: "GRCh38 Chromosome Learning-Curve Report"
-subtitle: "`r params$model_name` | `r params$analysis_name` | `r params$negative_kind` negative backgrounds"
+subtitle: "`r params$model_name` | `r params$analysis_name` | `r if (params$analysis_name == 'enhancer-versus-silencer') 'chromosome-matched real loci' else paste(params$negative_kind, 'negative backgrounds')`"
 output:
   html_document:
     toc: true
@@ -11,6 +11,7 @@ params:
   metrics_path: null
   analysis_name: null
   positive_class: null
+  negative_class: null
   model_name: null
   negative_kind: null
   full_model_prefix: null
@@ -25,7 +26,7 @@ split_shapes <- c("Full training pool"=15, Validation=16, Test=17)
 ```
 
 ```{r inputs, include=FALSE}
-for (name in c("metrics_path","analysis_name","positive_class","model_name","negative_kind"))
+for (name in c("metrics_path","analysis_name","positive_class","negative_class","model_name","negative_kind"))
   if (is.null(params[[name]]) || !nzchar(params[[name]])) stop("Missing parameter: ", name)
 metrics_path <- normalizePath(params$metrics_path, mustWork=TRUE)
 metrics <- read.delim(metrics_path, sep="\t", stringsAsFactors=FALSE, check.names=FALSE)
@@ -93,8 +94,8 @@ curve_plot <- function(y, title, label) {
 # Scope and interpretation
 
 This report evaluates `r params$model_name` on the GRCh38
-`r params$analysis_name` task using `r params$negative_kind` negative sequences.
-`r params$positive_class` sequences are label 1 and negatives are label 0.
+`r params$analysis_name` task. `r params$positive_class` sequences are label 1
+and `r params$negative_class` sequences are label 0.
 
 The learning curve adds one chromosome training shard at a time, beginning with
 chr3 and ending with chrX. Every checkpoint is initialized and trained
@@ -153,9 +154,9 @@ full_model |> select(Split,n_training_total,n_evaluation_total,auroc,auprc,accur
 # Reproducibility notes
 
 ```{r reproducibility}
-tibble(Item=c("Metric input","Task","Positive class","Negative source","Learning-curve design",
+tibble(Item=c("Metric input","Task","Positive class","Negative class","Data namespace","Learning-curve design",
               "Validation chromosome","Test chromosome"),
-       Value=c(metrics_path,params$analysis_name,params$positive_class,params$negative_kind,
+       Value=c(metrics_path,params$analysis_name,params$positive_class,params$negative_class,params$negative_kind,
                "Independent cumulative chromosome checkpoints","chr1","chr2")) |>
   gt() |> tab_header(title="Analysis provenance")
 ```

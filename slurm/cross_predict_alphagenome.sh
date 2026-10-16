@@ -16,13 +16,15 @@ set -euo pipefail
 module load lang/Miniforge3/24.1.2-0
 set +u; source activate alphagenome; set -u
 py="$CONDA_PREFIX/bin/python"; "$py" -c 'import torch; assert torch.cuda.is_available()'
+type="${TYPE:-real}"
+[[ "${type}" == real ]] || { echo "ERROR: cross-task prediction is currently restricted to TYPE=real; received: ${type}" >&2; exit 1; }
 chroms=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
 id="$SLURM_ARRAY_TASK_ID"; ((id>=1 && id<=42)) || exit 1
 if ((id<=21)); then mt=evn; et=svn; ci=$id; else mt=svn; et=evn; ci=$((id-21)); fi
 name="through_chr${chroms[ci-1]}"
-checkpoint="models/$mt/GRCh38/alphagenome/chromosome_learning_curves/$name/$name.best_head.pt"
-root="data/processed/$et/GRCh38/training"
-out="predictions/cross_task/GRCh38/alphagenome/${mt}_model_on_$et/chromosome_learning_curves/$name"
+checkpoint="models/$mt/GRCh38/alphagenome/$type/chromosome_learning_curves/$name/$name.best_head.pt"
+root="data/processed/$et/GRCh38/$type"
+out="predictions/cross_task/GRCh38/alphagenome/$type/${mt}_model_on_$et/chromosome_learning_curves/$name"
 [[ -s "$checkpoint" ]] || { echo "ERROR: missing $checkpoint" >&2; exit 1; }; mkdir -p "$out"
 for split in train_100 validation test; do
   output="$out/${split}_metrics.json"; [[ ! -s "$output" ]] || continue; [[ ! -e "$output" ]] || exit 1

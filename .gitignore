@@ -1,8 +1,14 @@
 slurmlogs/
 wandb/
-data/raw
-data/reference
+/data/**
+!/data/**/
+!/data/**/README.md
 models/
 predictions/
 results/
 alphagenome_trial/
+__pycache__/
+*.py[cod]
+.agents/
+log.txt
+weights/

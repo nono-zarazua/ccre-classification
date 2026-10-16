@@ -11665,72 +11665,72 @@ stages:
       size: 233799527
       nfiles: 118
   train_ls_gkm_GRCh38_evn_synthetic:
-    cmd: sbatch --wait --export=ALL,DATASET=evn,NEGATIVE_KIND=synthetic 
-      --array=1-13%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
-      --export=ALL,DATASET=evn,NEGATIVE_KIND=synthetic --array=14-21%5 
-      --mem=200G slurm/train_ls_gkm.sh
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=synthetic --array=1-13%5 
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
+      --export=ALL,DATASET=evn,TYPE=synthetic --array=14-21%5 --mem=200G 
+      slurm/train_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmtrain
       hash: md5
       md5: 038f6f2fc057ff25a66b32faa6895343
       size: 143632
       isexec: true
-    - path: data/processed/evn/GRCh38/training/synthetic
+    - path: data/processed/evn/GRCh38/synthetic
       hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
     - path: slurm/train_ls_gkm.sh
       hash: md5
-      md5: 0da73107997265591f06ee68c4efd431
-      size: 3755
+      md5: 8b9930b88a5031647dfab37fbbaa9333
+      size: 3986
       isexec: true
     outs:
-    - path: models/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+    - path: models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 4d05ccbf21a871955dc92dc30bc89c0d.dir
-      size: 905347315
-      nfiles: 42
+      md5: 5b1f9933618a0e05980c4fbb9cced9b5.dir
+      size: 153774744
+      nfiles: 21
   train_ls_gkm_GRCh38_svn_synthetic:
-    cmd: sbatch --wait --export=ALL,DATASET=svn,NEGATIVE_KIND=synthetic 
-      --array=1-12%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
-      --export=ALL,DATASET=svn,NEGATIVE_KIND=synthetic --array=13-21%5 
-      --mem=200G slurm/train_ls_gkm.sh
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=synthetic --array=1-12%5 
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
+      --export=ALL,DATASET=svn,TYPE=synthetic --array=13-21%5 --mem=200G 
+      slurm/train_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmtrain
       hash: md5
       md5: 038f6f2fc057ff25a66b32faa6895343
       size: 143632
       isexec: true
-    - path: data/processed/svn/GRCh38/training/synthetic
+    - path: data/processed/svn/GRCh38/synthetic
       hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
     - path: slurm/train_ls_gkm.sh
       hash: md5
-      md5: 0da73107997265591f06ee68c4efd431
-      size: 3755
+      md5: 8b9930b88a5031647dfab37fbbaa9333
+      size: 3986
       isexec: true
     outs:
-    - path: models/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+    - path: models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 468e551b9bd39487a437f98f41c4cfb4.dir
-      size: 858719279
-      nfiles: 42
+      md5: 6aa1e7f7cc240817b299eb590cd95590.dir
+      size: 140747766
+      nfiles: 21
   train_alphagenome_GRCh38_evn_synthetic:
-    cmd: sbatch --wait --export=ALL,DATASET=evn,NEGATIVE_KIND=synthetic 
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=synthetic 
       slurm/train_alphagenome.sh
     deps:
-    - path: data/processed/evn/GRCh38/training/synthetic
+    - path: data/processed/evn/GRCh38/synthetic
       hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
     - path: slurm/train_alphagenome.sh
       hash: md5
-      md5: 2056d55c16495348e5a86d482c0a1656
-      size: 5060
+      md5: be65c3ad1eb35adf94237a7055290349
+      size: 5159
       isexec: true
     - path: src/predict_alphagenome.py
       hash: md5
@@ -11739,32 +11739,32 @@ stages:
       isexec: true
     - path: src/train_alphagenome.py
       hash: md5
-      md5: 497e065e5fc87afe01ce6f41f23ed565
-      size: 26233
+      md5: 052a1077bcded5458cd7581643485548
+      size: 26432
       isexec: true
     - path: weights/fold_0_weights.safetensors
       hash: md5
       md5: cb18d831d374e6dab5758a39021a719b
       size: 920635044
     outs:
-    - path: models/evn/GRCh38/synthetic/alphagenome/chromosome_learning_curves
+    - path: models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 6803e87a2e3dd76a81fd186f8b1e9a23.dir
-      size: 264916140
-      nfiles: 147
+      md5: 557a881a47dbf7f5c0aedebf81a5c47c.dir
+      size: 264914556
+      nfiles: 126
   train_alphagenome_GRCh38_svn_synthetic:
-    cmd: sbatch --wait --export=ALL,DATASET=svn,NEGATIVE_KIND=synthetic 
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=synthetic 
       slurm/train_alphagenome.sh
     deps:
-    - path: data/processed/svn/GRCh38/training/synthetic
+    - path: data/processed/svn/GRCh38/synthetic
       hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
     - path: slurm/train_alphagenome.sh
       hash: md5
-      md5: 2056d55c16495348e5a86d482c0a1656
-      size: 5060
+      md5: be65c3ad1eb35adf94237a7055290349
+      size: 5159
       isexec: true
     - path: src/predict_alphagenome.py
       hash: md5
@@ -11773,21 +11773,21 @@ stages:
       isexec: true
     - path: src/train_alphagenome.py
       hash: md5
-      md5: 497e065e5fc87afe01ce6f41f23ed565
-      size: 26233
+      md5: 052a1077bcded5458cd7581643485548
+      size: 26432
       isexec: true
     - path: weights/fold_0_weights.safetensors
       hash: md5
       md5: cb18d831d374e6dab5758a39021a719b
       size: 920635044
     outs:
-    - path: models/svn/GRCh38/synthetic/alphagenome/chromosome_learning_curves
+    - path: models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 1bd00a4557c6a3b342fe60328dd35086.dir
-      size: 264914477
-      nfiles: 147
+      md5: 830ed24a01b9167f988e8666095a0ec5.dir
+      size: 264914895
+      nfiles: 126
   test_ls_gkm_GRCh38_evn_synthetic:
-    cmd: sbatch --wait --export=ALL,DATASET=evn,NEGATIVE_KIND=synthetic 
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=synthetic 
       slurm/predict_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmpredict
@@ -11795,28 +11795,29 @@ stages:
       md5: c55cfc447d7882ad8e41427f06e00e68
       size: 135016
       isexec: true
-    - path: data/processed/evn/GRCh38/training/synthetic
+    - path: data/processed/evn/GRCh38/synthetic
       hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
-    - path: models/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
+    - path: models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 4d05ccbf21a871955dc92dc30bc89c0d.dir
-      size: 905347315
-      nfiles: 42
+      md5: 5b1f9933618a0e05980c4fbb9cced9b5.dir
+      size: 153774744
+      nfiles: 21
     - path: slurm/predict_ls_gkm.sh
       hash: md5
-      md5: 3d845e3b6bfe33e7008e0019d90e9ef8
-      size: 2591
+      md5: ad3bd582c4763c60a54bac7d638e6ea8
+      size: 2651
+      isexec: true
     outs:
-    - path: predictions/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+    - path: predictions/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
       hash: md5
-      md5: ca6ba4db7d3f9efad727b6f874dd3d76.dir
-      size: 356873299
-      nfiles: 147
+      md5: 3b285ec54ce036a13932c88fb3ef87f5.dir
+      size: 114922684
+      nfiles: 126
   test_ls_gkm_GRCh38_svn_synthetic:
-    cmd: sbatch --wait --export=ALL,DATASET=svn,NEGATIVE_KIND=synthetic 
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=synthetic 
       slurm/predict_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmpredict
@@ -11824,216 +11825,217 @@ stages:
       md5: c55cfc447d7882ad8e41427f06e00e68
       size: 135016
       isexec: true
-    - path: data/processed/svn/GRCh38/training/synthetic
+    - path: data/processed/svn/GRCh38/synthetic
       hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
-    - path: models/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
+    - path: models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 468e551b9bd39487a437f98f41c4cfb4.dir
-      size: 858719279
-      nfiles: 42
+      md5: 6aa1e7f7cc240817b299eb590cd95590.dir
+      size: 140747766
+      nfiles: 21
     - path: slurm/predict_ls_gkm.sh
       hash: md5
-      md5: 3d845e3b6bfe33e7008e0019d90e9ef8
-      size: 2591
+      md5: ad3bd582c4763c60a54bac7d638e6ea8
+      size: 2651
+      isexec: true
     outs:
-    - path: predictions/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+    - path: predictions/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 4f34aecdda95678ac8d7147cf944c2c5.dir
-      size: 349886632
-      nfiles: 147
+      md5: ed2682e23b591fe1d2311a956e122782.dir
+      size: 114650647
+      nfiles: 126
   render_lsgkm_report_GRCh38_evn_synthetic:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
-      --negative-kind synthetic --model lsgkm --output 
-      results/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_lsgkm_report.sh evn synthetic
+    cmd: bash src/render_GRCh38_lsgkm_report.sh evn synthetic
     deps:
-    - path: data/processed/evn/GRCh38/training/synthetic
-      hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
-    - path: predictions/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
-      hash: md5
-      md5: ca6ba4db7d3f9efad727b6f874dd3d76.dir
-      size: 356873299
-      nfiles: 147
     - path: reports/chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 57209903a09bed317a4fa844b18eaae7
-      size: 5828
-    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
+    - path: 
+        results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
       hash: md5
-      md5: 7a24a82af8de8c0a60ded8ccb6cf3e53
-      size: 8033
-      isexec: true
+      md5: 0afb78583ca7781effb1f65cbb589693
+      size: 18240
     - path: src/render_GRCh38_lsgkm_report.sh
       hash: md5
-      md5: c520444bfaa4fa23220238454157a2c0
-      size: 1077
+      md5: 8b97d33ef4c82370f92ead5286c5f9b1
+      size: 1557
       isexec: true
     outs:
     - path: reports/rendered/evn/synthetic/lsgkm_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 30accd25e2b6a752234de6ddf005be15
-      size: 1489518
-    - path: 
-        results/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 54e50745c34f5d2abf4e099c4a7a0ccd
-      size: 18262
+      md5: 84d6b51ded798419b0fca747825789c2
+      size: 1464223
   render_lsgkm_report_GRCh38_svn_synthetic:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
-      --negative-kind synthetic --model lsgkm --output 
-      results/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_lsgkm_report.sh svn synthetic
+    cmd: bash src/render_GRCh38_lsgkm_report.sh svn synthetic
     deps:
-    - path: data/processed/svn/GRCh38/training/synthetic
-      hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
-    - path: predictions/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
-      hash: md5
-      md5: 4f34aecdda95678ac8d7147cf944c2c5.dir
-      size: 349886632
-      nfiles: 147
     - path: reports/chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 57209903a09bed317a4fa844b18eaae7
-      size: 5828
-    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
+    - path: 
+        results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
       hash: md5
-      md5: 7a24a82af8de8c0a60ded8ccb6cf3e53
-      size: 8033
-      isexec: true
+      md5: 8b0c5a9276269d42593871c7c8cb92b0
+      size: 18233
     - path: src/render_GRCh38_lsgkm_report.sh
       hash: md5
-      md5: c520444bfaa4fa23220238454157a2c0
-      size: 1077
+      md5: 8b97d33ef4c82370f92ead5286c5f9b1
+      size: 1557
       isexec: true
     outs:
     - path: reports/rendered/svn/synthetic/lsgkm_GRCh38_chromosome_learning.html
       hash: md5
-      md5: a9b33c40281aafb7d3c3c34e2be5f624
-      size: 1497502
-    - path: 
-        results/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 61f46c0f10add69cd2b27ddc0014025b
-      size: 18219
+      md5: f46d3490bc4cfe80d34dce281cdf84da
+      size: 1458911
   render_alphagenome_report_GRCh38_evn_synthetic:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
-      --negative-kind synthetic --model alphagenome --output 
-      results/evn/GRCh38/synthetic/alphagenome/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_alphagenome_report.sh evn synthetic
+      --model alphagenome --background-type synthetic && bash 
+      src/render_GRCh38_alphagenome_report.sh evn synthetic
     deps:
-    - path: data/processed/evn/GRCh38/training/synthetic
+    - path: data/processed/evn/GRCh38/synthetic
       hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
-    - path: models/evn/GRCh38/synthetic/alphagenome/chromosome_learning_curves
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
+    - path: models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 6803e87a2e3dd76a81fd186f8b1e9a23.dir
-      size: 264916140
-      nfiles: 147
+      md5: 557a881a47dbf7f5c0aedebf81a5c47c.dir
+      size: 264914556
+      nfiles: 126
     - path: reports/chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 57209903a09bed317a4fa844b18eaae7
-      size: 5828
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
     - path: src/prepare_GRCh38_chromosome_learning_results.py
       hash: md5
-      md5: 7a24a82af8de8c0a60ded8ccb6cf3e53
-      size: 8033
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
       isexec: true
     - path: src/render_GRCh38_alphagenome_report.sh
       hash: md5
-      md5: a43ffb174ac091bc7fb4bc3336cb76ee
-      size: 1093
+      md5: 6310cf5db84112b7efd78c19354a1ac6
+      size: 1573
       isexec: true
     outs:
     - path: 
         reports/rendered/evn/synthetic/alphagenome_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 82283ce9dc8ecdbbf5581ab585e90d7d
-      size: 1628812
+      md5: e3d6c78b26cf61db36d24167b58eb783
+      size: 1492430
     - path: 
-        results/evn/GRCh38/synthetic/alphagenome/chromosome_learning_curves/metrics.tsv
+        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
       hash: md5
-      md5: d53af2e2fe7c0b900db3ed579fe7b920
-      size: 23160
+      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
+      size: 23236
   render_alphagenome_report_GRCh38_svn_synthetic:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
-      --negative-kind synthetic --model alphagenome --output 
-      results/svn/GRCh38/synthetic/alphagenome/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_alphagenome_report.sh svn synthetic
+      --model alphagenome --background-type synthetic && bash 
+      src/render_GRCh38_alphagenome_report.sh svn synthetic
     deps:
-    - path: data/processed/svn/GRCh38/training/synthetic
+    - path: data/processed/svn/GRCh38/synthetic
       hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
-    - path: models/svn/GRCh38/synthetic/alphagenome/chromosome_learning_curves
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
+    - path: models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
       hash: md5
-      md5: 1bd00a4557c6a3b342fe60328dd35086.dir
-      size: 264914477
-      nfiles: 147
+      md5: 830ed24a01b9167f988e8666095a0ec5.dir
+      size: 264914895
+      nfiles: 126
     - path: reports/chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 57209903a09bed317a4fa844b18eaae7
-      size: 5828
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
     - path: src/prepare_GRCh38_chromosome_learning_results.py
       hash: md5
-      md5: 7a24a82af8de8c0a60ded8ccb6cf3e53
-      size: 8033
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
       isexec: true
     - path: src/render_GRCh38_alphagenome_report.sh
       hash: md5
-      md5: a43ffb174ac091bc7fb4bc3336cb76ee
-      size: 1093
+      md5: 6310cf5db84112b7efd78c19354a1ac6
+      size: 1573
       isexec: true
     outs:
     - path: 
         reports/rendered/svn/synthetic/alphagenome_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 2f0fda08b1c7f74740f4fdf56ff6543c
-      size: 1612556
+      md5: 44b35d4fb6ad3fd1f638e41721125e03
+      size: 1474638
     - path: 
-        results/svn/GRCh38/synthetic/alphagenome/chromosome_learning_curves/metrics.tsv
+        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
       hash: md5
-      md5: c170c9691d624d6d9568d85fa99e4e38
-      size: 23140
+      md5: 2768b5860388b295b402a0370f9666de
+      size: 23246
   cross_predict_alphagenome_GRCh38_synthetic:
-    cmd: sbatch --wait --export=ALL,NEGATIVE_KIND=synthetic 
+    cmd: sbatch --wait --export=ALL,TYPE=synthetic 
       slurm/cross_predict_alphagenome.sh
     deps:
-    - path: data/processed/evn/GRCh38/training/synthetic
+    - path: data/processed/evn/GRCh38/synthetic/test_neg.fa
       hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
-    - path: data/processed/svn/GRCh38/training/synthetic
+      md5: 23efc6aeca95de29e6a139da9d697156
+      size: 5129035
+    - path: data/processed/evn/GRCh38/synthetic/test_pos.fa
       hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
-    - path: models/evn/GRCh38/synthetic/alphagenome/chromosome_learning_curves
+      md5: 66dd22e3c656a3976a66f567dc902568
+      size: 4955818
+    - path: data/processed/evn/GRCh38/synthetic/train_100_neg.fa
       hash: md5
-      md5: 6803e87a2e3dd76a81fd186f8b1e9a23.dir
-      size: 264916140
-      nfiles: 147
-    - path: models/svn/GRCh38/synthetic/alphagenome/chromosome_learning_curves
+      md5: e9fd1dde51b26340909c09ff26c12b6a
+      size: 49741697
+    - path: data/processed/evn/GRCh38/synthetic/train_100_pos.fa
       hash: md5
-      md5: 1bd00a4557c6a3b342fe60328dd35086.dir
-      size: 264914477
-      nfiles: 147
+      md5: 31247206ccd953fed339fa0c80edd9fd
+      size: 48125746
+    - path: data/processed/evn/GRCh38/synthetic/validation_neg.fa
+      hash: md5
+      md5: ea45a53297b67fbe0cc466b1d17895bc
+      size: 4880094
+    - path: data/processed/evn/GRCh38/synthetic/validation_pos.fa
+      hash: md5
+      md5: 331bc1b5b42f742b00c2fa9360cd9609
+      size: 4714940
+    - path: data/processed/svn/GRCh38/synthetic/test_neg.fa
+      hash: md5
+      md5: 1d94228f7f04bd143ee1fe63d61fb9eb
+      size: 4361289
+    - path: data/processed/svn/GRCh38/synthetic/test_pos.fa
+      hash: md5
+      md5: 9e60226b20e24c4d33041cccebc4f4a2
+      size: 4204088
+    - path: data/processed/svn/GRCh38/synthetic/train_100_neg.fa
+      hash: md5
+      md5: ba634fcd695b82bd89c5698dc1e8f2cc
+      size: 46430306
+    - path: data/processed/svn/GRCh38/synthetic/train_100_pos.fa
+      hash: md5
+      md5: 24d7f0841e667f40b9b7e99bf188fa7b
+      size: 44786444
+    - path: data/processed/svn/GRCh38/synthetic/validation_neg.fa
+      hash: md5
+      md5: e0e4dc544f75839431643e22e092dac4
+      size: 8796114
+    - path: data/processed/svn/GRCh38/synthetic/validation_pos.fa
+      hash: md5
+      md5: c65dd30f4617b1bc2ad736e7786ba35d
+      size: 8477994
+    - path: models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 557a881a47dbf7f5c0aedebf81a5c47c.dir
+      size: 264914556
+      nfiles: 126
+    - path: models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 830ed24a01b9167f988e8666095a0ec5.dir
+      size: 264914895
+      nfiles: 126
     - path: slurm/cross_predict_alphagenome.sh
       hash: md5
-      md5: b62038abc9b4b9c85e6385bb80b2b918
-      size: 1720
+      md5: bdf7e9595bb4d383a29b4638eeafaf57
+      size: 1733
       isexec: true
     - path: src/predict_alphagenome.py
       hash: md5
@@ -12045,15 +12047,15 @@ stages:
       md5: cb18d831d374e6dab5758a39021a719b
       size: 920635044
     outs:
-    - path: predictions/cross_task/GRCh38/synthetic/alphagenome
+    - path: predictions/cross_task/GRCh38/alphagenome/synthetic
       hash: md5
-      md5: 7a797a9e69d7908ab4af2d32129fc3a5.dir
-      size: 78178
+      md5: 73bc12a92ebf939f21054b1f720600b1.dir
+      size: 76058
       nfiles: 126
   train_ls_gkm_GRCh38_evn_real:
-    cmd: sbatch --wait --export=ALL,DATASET=evn,NEGATIVE_KIND=real 
-      --array=1-13%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
-      --export=ALL,DATASET=evn,NEGATIVE_KIND=real --array=14-21%5 --mem=200G 
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real --array=1-13%5 
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
+      --export=ALL,DATASET=evn,TYPE=real --array=14-21%5 --mem=200G 
       slurm/train_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmtrain
@@ -12061,35 +12063,35 @@ stages:
       md5: 038f6f2fc057ff25a66b32faa6895343
       size: 143632
       isexec: true
-    - path: data/processed/evn/GRCh38/training/real
+    - path: data/processed/evn/GRCh38/real
       hash: md5
-      md5: 098a65d4be7d383c2cb90dcd204e42e1.dir
-      size: 216928869
-      nfiles: 98
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
     - path: slurm/train_ls_gkm.sh
       hash: md5
-      md5: 0da73107997265591f06ee68c4efd431
-      size: 3755
+      md5: 8b9930b88a5031647dfab37fbbaa9333
+      size: 3986
       isexec: true
     outs:
-    - path: models/evn/GRCh38/real/ls-gkm/chromosome_learning_curves
+    - path: models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
       hash: md5
-      md5: 375fd52834091bc855b2bbb0920f503b.dir
-      size: 648454916
+      md5: 6682e3f4e8db2ec809427202538c5db3.dir
+      size: 742701844
       nfiles: 21
   train_alphagenome_GRCh38_evn_real:
-    cmd: sbatch --wait --export=ALL,DATASET=evn,NEGATIVE_KIND=real 
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real 
       slurm/train_alphagenome.sh
     deps:
-    - path: data/processed/evn/GRCh38/training/real
+    - path: data/processed/evn/GRCh38/real
       hash: md5
-      md5: 098a65d4be7d383c2cb90dcd204e42e1.dir
-      size: 216928869
-      nfiles: 98
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
     - path: slurm/train_alphagenome.sh
       hash: md5
-      md5: 2056d55c16495348e5a86d482c0a1656
-      size: 5060
+      md5: be65c3ad1eb35adf94237a7055290349
+      size: 5159
       isexec: true
     - path: src/predict_alphagenome.py
       hash: md5
@@ -12098,23 +12100,23 @@ stages:
       isexec: true
     - path: src/train_alphagenome.py
       hash: md5
-      md5: 497e065e5fc87afe01ce6f41f23ed565
-      size: 26233
+      md5: 052a1077bcded5458cd7581643485548
+      size: 26432
       isexec: true
     - path: weights/fold_0_weights.safetensors
       hash: md5
       md5: cb18d831d374e6dab5758a39021a719b
       size: 920635044
     outs:
-    - path: models/evn/GRCh38/real/alphagenome/chromosome_learning_curves
+    - path: models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
       hash: md5
-      md5: cf62fab01bc33857f90f9ffc78a3f760.dir
-      size: 264913000
+      md5: e5bfba8d26747671ce02c9c50f38cb5b.dir
+      size: 264910188
       nfiles: 126
   train_ls_gkm_GRCh38_svn_real:
-    cmd: sbatch --wait --export=ALL,DATASET=svn,NEGATIVE_KIND=real 
-      --array=1-12%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
-      --export=ALL,DATASET=svn,NEGATIVE_KIND=real --array=13-21%5 --mem=200G 
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real --array=1-13%5 
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
+      --export=ALL,DATASET=svn,TYPE=real --array=14-21%5 --mem=200G 
       slurm/train_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmtrain
@@ -12122,35 +12124,35 @@ stages:
       md5: 038f6f2fc057ff25a66b32faa6895343
       size: 143632
       isexec: true
-    - path: data/processed/svn/GRCh38/training/real
+    - path: data/processed/svn/GRCh38/real
       hash: md5
-      md5: fc8191fc5ab42d315d2186bf1d4a3940.dir
-      size: 206975206
-      nfiles: 98
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
     - path: slurm/train_ls_gkm.sh
       hash: md5
-      md5: 0da73107997265591f06ee68c4efd431
-      size: 3755
+      md5: 8b9930b88a5031647dfab37fbbaa9333
+      size: 3986
       isexec: true
     outs:
-    - path: models/svn/GRCh38/real/ls-gkm/chromosome_learning_curves
+    - path: models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
       hash: md5
-      md5: 206c4da8c02183832ea9fbe6d6232b1c.dir
-      size: 434546103
+      md5: 6769b0e84bc2b9122b110c045a93b102.dir
+      size: 675626175
       nfiles: 21
   train_alphagenome_GRCh38_svn_real:
-    cmd: sbatch --wait --export=ALL,DATASET=svn,NEGATIVE_KIND=real 
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real 
       slurm/train_alphagenome.sh
     deps:
-    - path: data/processed/svn/GRCh38/training/real
+    - path: data/processed/svn/GRCh38/real
       hash: md5
-      md5: fc8191fc5ab42d315d2186bf1d4a3940.dir
-      size: 206975206
-      nfiles: 98
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
     - path: slurm/train_alphagenome.sh
       hash: md5
-      md5: 2056d55c16495348e5a86d482c0a1656
-      size: 5060
+      md5: be65c3ad1eb35adf94237a7055290349
+      size: 5159
       isexec: true
     - path: src/predict_alphagenome.py
       hash: md5
@@ -12159,21 +12161,21 @@ stages:
       isexec: true
     - path: src/train_alphagenome.py
       hash: md5
-      md5: 497e065e5fc87afe01ce6f41f23ed565
-      size: 26233
+      md5: 052a1077bcded5458cd7581643485548
+      size: 26432
       isexec: true
     - path: weights/fold_0_weights.safetensors
       hash: md5
       md5: cb18d831d374e6dab5758a39021a719b
       size: 920635044
     outs:
-    - path: models/svn/GRCh38/real/alphagenome/chromosome_learning_curves
+    - path: models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
       hash: md5
-      md5: 88352269c084436242519fd86f002ea7.dir
-      size: 264896037
+      md5: 61129865a98613fcb33852fe151de153.dir
+      size: 264908315
       nfiles: 126
   test_ls_gkm_GRCh38_evn_real:
-    cmd: sbatch --wait --export=ALL,DATASET=evn,NEGATIVE_KIND=real 
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real 
       slurm/predict_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmpredict
@@ -12181,28 +12183,29 @@ stages:
       md5: c55cfc447d7882ad8e41427f06e00e68
       size: 135016
       isexec: true
-    - path: data/processed/evn/GRCh38/training/real
+    - path: data/processed/evn/GRCh38/real
       hash: md5
-      md5: 098a65d4be7d383c2cb90dcd204e42e1.dir
-      size: 216928869
-      nfiles: 98
-    - path: models/evn/GRCh38/real/ls-gkm/chromosome_learning_curves
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
+    - path: models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
       hash: md5
-      md5: 375fd52834091bc855b2bbb0920f503b.dir
-      size: 648454916
+      md5: 6682e3f4e8db2ec809427202538c5db3.dir
+      size: 742701844
       nfiles: 21
     - path: slurm/predict_ls_gkm.sh
       hash: md5
-      md5: 3d845e3b6bfe33e7008e0019d90e9ef8
-      size: 2591
+      md5: ad3bd582c4763c60a54bac7d638e6ea8
+      size: 2651
+      isexec: true
     outs:
-    - path: predictions/evn/GRCh38/real/ls-gkm/chromosome_learning_curves
+    - path: predictions/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
       hash: md5
-      md5: fa8045696f8624fa78855c11a1c76a5c.dir
-      size: 208086710
+      md5: 647573221f4c3956d070917435138fdf.dir
+      size: 118046732
       nfiles: 126
   test_ls_gkm_GRCh38_svn_real:
-    cmd: sbatch --wait --export=ALL,DATASET=svn,NEGATIVE_KIND=real 
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real 
       slurm/predict_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmpredict
@@ -12210,65 +12213,103 @@ stages:
       md5: c55cfc447d7882ad8e41427f06e00e68
       size: 135016
       isexec: true
-    - path: data/processed/svn/GRCh38/training/real
+    - path: data/processed/svn/GRCh38/real
       hash: md5
-      md5: fc8191fc5ab42d315d2186bf1d4a3940.dir
-      size: 206975206
-      nfiles: 98
-    - path: models/svn/GRCh38/real/ls-gkm/chromosome_learning_curves
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
+    - path: models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
       hash: md5
-      md5: 206c4da8c02183832ea9fbe6d6232b1c.dir
-      size: 434546103
+      md5: 6769b0e84bc2b9122b110c045a93b102.dir
+      size: 675626175
       nfiles: 21
     - path: slurm/predict_ls_gkm.sh
       hash: md5
-      md5: 3d845e3b6bfe33e7008e0019d90e9ef8
-      size: 2591
+      md5: ad3bd582c4763c60a54bac7d638e6ea8
+      size: 2651
+      isexec: true
     outs:
-    - path: predictions/svn/GRCh38/real/ls-gkm/chromosome_learning_curves
+    - path: predictions/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
       hash: md5
-      md5: 79a69f7560c59e1ee0a08efad329641a.dir
-      size: 203628747
+      md5: fad73be159ca4fb203eb4a611a5605d1.dir
+      size: 117136751
       nfiles: 126
   cross_predict_ls_gkm_GRCh38_synthetic:
-    cmd: sbatch --wait --export=ALL,NEGATIVE_KIND=synthetic 
-      slurm/cross_predict_ls_gkm.sh
+    cmd: sbatch --wait --export=ALL,TYPE=synthetic slurm/cross_predict_ls_gkm.sh
     deps:
     - path: ../lsgkm/bin/gkmpredict
       hash: md5
       md5: c55cfc447d7882ad8e41427f06e00e68
       size: 135016
       isexec: true
-    - path: data/processed/evn/GRCh38/training/synthetic
+    - path: data/processed/evn/GRCh38/synthetic/test_neg.fa
       hash: md5
-      md5: 8bee2de931d2847c190ebc991c72b20d.dir
-      size: 266317746
-      nfiles: 120
-    - path: data/processed/svn/GRCh38/training/synthetic
+      md5: 23efc6aeca95de29e6a139da9d697156
+      size: 5129035
+    - path: data/processed/evn/GRCh38/synthetic/test_pos.fa
       hash: md5
-      md5: ff9c4550096fcb92b02d23a0ca0be97c.dir
-      size: 233799527
-      nfiles: 118
-    - path: models/evn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+      md5: 66dd22e3c656a3976a66f567dc902568
+      size: 4955818
+    - path: data/processed/evn/GRCh38/synthetic/train_100_neg.fa
       hash: md5
-      md5: 4d05ccbf21a871955dc92dc30bc89c0d.dir
-      size: 905347315
-      nfiles: 42
-    - path: models/svn/GRCh38/synthetic/ls-gkm/chromosome_learning_curves
+      md5: e9fd1dde51b26340909c09ff26c12b6a
+      size: 49741697
+    - path: data/processed/evn/GRCh38/synthetic/train_100_pos.fa
       hash: md5
-      md5: 468e551b9bd39487a437f98f41c4cfb4.dir
-      size: 858719279
-      nfiles: 42
+      md5: 31247206ccd953fed339fa0c80edd9fd
+      size: 48125746
+    - path: data/processed/evn/GRCh38/synthetic/validation_neg.fa
+      hash: md5
+      md5: ea45a53297b67fbe0cc466b1d17895bc
+      size: 4880094
+    - path: data/processed/evn/GRCh38/synthetic/validation_pos.fa
+      hash: md5
+      md5: 331bc1b5b42f742b00c2fa9360cd9609
+      size: 4714940
+    - path: data/processed/svn/GRCh38/synthetic/test_neg.fa
+      hash: md5
+      md5: 1d94228f7f04bd143ee1fe63d61fb9eb
+      size: 4361289
+    - path: data/processed/svn/GRCh38/synthetic/test_pos.fa
+      hash: md5
+      md5: 9e60226b20e24c4d33041cccebc4f4a2
+      size: 4204088
+    - path: data/processed/svn/GRCh38/synthetic/train_100_neg.fa
+      hash: md5
+      md5: ba634fcd695b82bd89c5698dc1e8f2cc
+      size: 46430306
+    - path: data/processed/svn/GRCh38/synthetic/train_100_pos.fa
+      hash: md5
+      md5: 24d7f0841e667f40b9b7e99bf188fa7b
+      size: 44786444
+    - path: data/processed/svn/GRCh38/synthetic/validation_neg.fa
+      hash: md5
+      md5: e0e4dc544f75839431643e22e092dac4
+      size: 8796114
+    - path: data/processed/svn/GRCh38/synthetic/validation_pos.fa
+      hash: md5
+      md5: c65dd30f4617b1bc2ad736e7786ba35d
+      size: 8477994
+    - path: models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 5b1f9933618a0e05980c4fbb9cced9b5.dir
+      size: 153774744
+      nfiles: 21
+    - path: models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 6aa1e7f7cc240817b299eb590cd95590.dir
+      size: 140747766
+      nfiles: 21
     - path: slurm/cross_predict_ls_gkm.sh
       hash: md5
-      md5: d7ad200641b090a33d9072a1fd5a8c35
-      size: 1506
+      md5: f8f09e66ef6d9b1e9bb1dc86a9d6aa99
+      size: 3395
       isexec: true
     outs:
-    - path: predictions/cross_task/GRCh38/synthetic/ls-gkm
+    - path: predictions/cross_task/GRCh38/ls-gkm/synthetic
       hash: md5
-      md5: 4ee358553888c95c418043a95f1abfc8.dir
-      size: 708054455
+      md5: 85f97ef136703893cd07328c0843e70c.dir
+      size: 230240559
       nfiles: 252
   build_negatives_GRCh38_evn_and_svn:
     cmd: sbatch --wait slurm/genomic_backgrounds.sh
@@ -12918,873 +12959,6 @@ stages:
       hash: md5
       md5: d45b26c7d4a2c845808a8e0655d8c6ce
       size: 438772
-  build_chromosome_training_GRCh38:
-    cmd: python3 src/make_GRCh38_clean_training.py --seed 42 --overwrite
-    deps:
-    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
-      hash: md5
-      md5: 694ee26c9d8ace5a549eb57af79acd76
-      size: 4593180
-    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
-      hash: md5
-      md5: ac747b6ddcbc81b750082e1e6d320ef4
-      size: 38066773
-    - path: data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
-      hash: md5
-      md5: e270626a1d9fd43fae4a35e3d05068fe
-      size: 2927534
-    - path: data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
-      hash: md5
-      md5: 8449706f7e712dba93a5bcd1ed6d573f
-      size: 38824860
-    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
-      hash: md5
-      md5: e47002df5f9f31839c14c554cd7c18b9
-      size: 2901394
-    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
-      hash: md5
-      md5: 81765672eefa46ab0b7a34abe83aa890
-      size: 23804807
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
-      hash: md5
-      md5: 0922bbc405b3b398409ea7f5093a3405
-      size: 1827857
-    - path: data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
-      hash: md5
-      md5: 68097490661dd72f75afefc84ed2ae88
-      size: 24247850
-    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
-      hash: md5
-      md5: 03ee6c828734c8193f826a6c2823a656
-      size: 2744693
-    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
-      hash: md5
-      md5: 8f34b3424746e41cc533dca3110a1c04
-      size: 22495672
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
-      hash: md5
-      md5: 7759806cac24cb1bf90b4de0999f58da
-      size: 1730152
-    - path: data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
-      hash: md5
-      md5: 657eee8dc9950eb5e84cb863ff884d81
-      size: 22910376
-    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
-      hash: md5
-      md5: 98dc5457bc3850e36a227134c071eafe
-      size: 2849600
-    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
-      hash: md5
-      md5: f4ffd42c0124a019391483dcb2893370
-      size: 23411682
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
-      hash: md5
-      md5: 916704b02dcf7912eb57f953f5e714a2
-      size: 1796511
-    - path: data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
-      hash: md5
-      md5: d788df36cd53cc0fe73040c567ee5db7
-      size: 23845792
-    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
-      hash: md5
-      md5: d23e449bfcb6ea72496d207eb0559ab2
-      size: 1735552
-    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
-      hash: md5
-      md5: 6c97a3c84a8aa4f4529cd5ec55bb7e1f
-      size: 14341637
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
-      hash: md5
-      md5: b73dbc4965444f5e67206b25b6a64dcd
-      size: 1094228
-    - path: data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
-      hash: md5
-      md5: 9301fe740d2430d2e01d533ea16ee55d
-      size: 14611595
-    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
-      hash: md5
-      md5: 160e68ea64c894d3713e2b062636a678
-      size: 1888191
-    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
-      hash: md5
-      md5: e64e44add04520735024506d5e542e1e
-      size: 15524112
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
-      hash: md5
-      md5: f5b29057a1a978f8e4b5a4facd1ab629
-      size: 1192107
-    - path: data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
-      hash: md5
-      md5: ab5422ca43d27a96d2f7d57696c86380
-      size: 15811609
-    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
-      hash: md5
-      md5: da8ccd0195dc7c3029b9f87e5540c39e
-      size: 1718520
-    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
-      hash: md5
-      md5: a6a6f5892ef978778b60aa5776e583f4
-      size: 14152178
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
-      hash: md5
-      md5: 32d158d1a5c0e9cb24975d69d6f373d9
-      size: 1092501
-    - path: data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
-      hash: md5
-      md5: ba04c5e29926e6a6d02378bb382bab04
-      size: 14435062
-    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
-      hash: md5
-      md5: f41b7f5c36a054239a8af83caeab1c78
-      size: 1762941
-    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
-      hash: md5
-      md5: bf034e4ea42792a8ac4ec71981ca6917
-      size: 14661102
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
-      hash: md5
-      md5: dcd6bb0c8c830c8c574426b85ad0b125
-      size: 1131247
-    - path: data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
-      hash: md5
-      md5: 8f3c12f456e52b44c4610061a22f52ad
-      size: 14965183
-    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
-      hash: md5
-      md5: 72d069dc1d49bdfb00ff13224f5463cd
-      size: 2284245
-    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
-      hash: md5
-      md5: 5a8b42fb1d40f5052da4609211f40a3c
-      size: 18824498
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
-      hash: md5
-      md5: 63c261ec6c0de155e1547285d43489b1
-      size: 1464155
-    - path: data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
-      hash: md5
-      md5: eeba721121d359eac77d1dc81f25866d
-      size: 19217323
-    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
-      hash: md5
-      md5: fb51f1e252dcceb44996e36e6c7dce04
-      size: 1347420
-    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
-      hash: md5
-      md5: 3a5355307d65cbff46cad990e547206e
-      size: 11282441
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
-      hash: md5
-      md5: 76b9d03315cdc69d8106661ca3ee31c9
-      size: 865635
-    - path: data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
-      hash: md5
-      md5: 33641af1c70d6b9115a708b51b539563
-      size: 11523387
-    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
-      hash: md5
-      md5: 65296051192e093326e6f9c794288876
-      size: 1627019
-    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
-      hash: md5
-      md5: 4fbce0313e861e567e5fb1e1d4e24c79
-      size: 13319733
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
-      hash: md5
-      md5: 486b5a641a6e237c66b57c8edd8ba740
-      size: 1046944
-    - path: data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
-      hash: md5
-      md5: 9e42fee5a691d8ee7cf3b9fe192731b2
-      size: 13609866
-    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
-      hash: md5
-      md5: 6512a66690bc3e98b02763717154e9ef
-      size: 4813853
-    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
-      hash: md5
-      md5: 6bacacaab0c08e099142e1e6d00e34c4
-      size: 39918086
-    - path: data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
-      hash: md5
-      md5: 1ab27c0da8ae037a565d1b88479a5061
-      size: 3062983
-    - path: data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
-      hash: md5
-      md5: 5e180329210026faf570eae4da789150
-      size: 40704201
-    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
-      hash: md5
-      md5: ffe77ff2fa6cf41e0943a2141b67fc46
-      size: 1525710
-    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
-      hash: md5
-      md5: d48467b61ea20f94812561442bdc7940
-      size: 12720837
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
-      hash: md5
-      md5: 3dad0183f7e74df906b5346f5e5f4ba1
-      size: 980084
-    - path: data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
-      hash: md5
-      md5: 5af03038e7d7a043aa9affe441c30b89
-      size: 12986197
-    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
-      hash: md5
-      md5: dcdd75ee8a5d5902ba976ba59c45c6a6
-      size: 709207
-    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
-      hash: md5
-      md5: 1b7bc4c5f2078443dfa2db8ee1fba06d
-      size: 5870401
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
-      hash: md5
-      md5: 3b53cad9ce94734e73bdb436659ed142
-      size: 451670
-    - path: data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
-      hash: md5
-      md5: f2a53f1a48bc959f34d71ad8b5e64c01
-      size: 5986758
-    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
-      hash: md5
-      md5: 79e35b216fa19c1692af161537662cd7
-      size: 1097790
-    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
-      hash: md5
-      md5: f9435580b75c7bfc6cee6672a321ea97
-      size: 8960851
-    - path: 
-        data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
-      hash: md5
-      md5: 3d056bd32852e617c7883fd259faab03
-      size: 697163
-    - path: data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
-      hash: md5
-      md5: a5a4b0542b74b3384538dc5b4f3ea23e
-      size: 9137390
-    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
-      hash: md5
-      md5: ee39d92ca73617e8a5540a1730cebc4c
-      size: 3845548
-    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
-      hash: md5
-      md5: 6b6c4cf63daf9fa6e422251175aa4326
-      size: 32012475
-    - path: data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
-      hash: md5
-      md5: 10f769a987e1e2a3ef507788e715598e
-      size: 2452123
-    - path: data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
-      hash: md5
-      md5: 025434a3192d0f82996122cf12724fe4
-      size: 32655212
-    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
-      hash: md5
-      md5: 7184f53fe623a2e816a575c674ddcbfa
-      size: 2763406
-    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
-      hash: md5
-      md5: e01197ee5510030e09c1737333d0b10b
-      size: 23270820
-    - path: data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
-      hash: md5
-      md5: 82de9231aed0292387ff1f1ab37fea77
-      size: 1777275
-    - path: data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
-      hash: md5
-      md5: 84b8407b8fddeb8bd98b3837507de658
-      size: 23759854
-    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
-      hash: md5
-      md5: c0d49dc7a5be0b82746a6add2e75e2b6
-      size: 3209181
-    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
-      hash: md5
-      md5: a7c5973e49b4215efa5a2baae9dcab74
-      size: 26806070
-    - path: data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
-      hash: md5
-      md5: 14f78b8459a2e2fff339a2bbb6046251
-      size: 2050091
-    - path: data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
-      hash: md5
-      md5: ab1789bd1f3a778f3dbd64cc7bb99d22
-      size: 27354103
-    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
-      hash: md5
-      md5: 75c86caff361b901946289b2cd242bf6
-      size: 3125588
-    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
-      hash: md5
-      md5: 1e8f7fe98a7f12fdd24cc03abc8f73fa
-      size: 26124324
-    - path: data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
-      hash: md5
-      md5: a9873f0debf4db2496563a006180a03c
-      size: 2004414
-    - path: data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
-      hash: md5
-      md5: a1d40e499aeabc0c34257a83f4ab37de
-      size: 26676802
-    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
-      hash: md5
-      md5: d6b14df91eeef83c4ff8a2586541eca1
-      size: 3016807
-    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
-      hash: md5
-      md5: 14d1164add068eb7e8c92a63de3fb5d0
-      size: 25302824
-    - path: data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
-      hash: md5
-      md5: 68ad9787cddf93cc99afaac8b3ce1ffa
-      size: 1941490
-    - path: data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
-      hash: md5
-      md5: b65d60bd302f8f8e1b886c99f9164bf3
-      size: 25743342
-    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
-      hash: md5
-      md5: 0c08b62feeb851834890d0889651e600
-      size: 2773652
-    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
-      hash: md5
-      md5: 1c013cbe2a5646fb474cbda1d6662129
-      size: 23297135
-    - path: data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
-      hash: md5
-      md5: 01cc6d40bad78522c1d7ab5a019925fb
-      size: 1783924
-    - path: data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
-      hash: md5
-      md5: f172d32a31d80da1dd891f7d6efd2673
-      size: 23780646
-    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
-      hash: md5
-      md5: 14643295d986f0f80e1f329dd22d41bd
-      size: 2331899
-    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
-      hash: md5
-      md5: d92c1607e74e727f36c51af533eb3821
-      size: 19511365
-    - path: data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
-      hash: md5
-      md5: ecac9793b5ecd8186ee80b4cb99eb61b
-      size: 1500842
-    - path: data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
-      hash: md5
-      md5: a6be4bdab019d4c104ad23c94b85acda
-      size: 19918338
-    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
-      hash: md5
-      md5: 7cb9205bb222d34f49e1925558f1c724
-      size: 1464362
-    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
-      hash: md5
-      md5: 38543a7e9a30c481854808eb9bb61314
-      size: 12373591
-    - path: data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
-      hash: md5
-      md5: 7972c1e3303613115cfbca4690ccde5e
-      size: 945182
-    - path: data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
-      hash: md5
-      md5: e24ff26e124987bfec182e30daf7d62f
-      size: 12637337
-    - path: data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
-      hash: md5
-      md5: 8478c018e37eabb2bd93f16e420c5eb5
-      size: 7226163
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 4123944e83f4168a30b7d66d739083d1
-      size: 1058842
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 453836e01c1a1d32dc3618fc3eb63120
-      size: 8809857
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 96833610c1896dcd926232904d7e978a
-      size: 680729
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 866a03fa2a15f463aa7f482f91d6d6de
-      size: 8995566
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: c04e67b10bd7044a1da3067359a282d9
-      size: 289515
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: b72c3f199dafc437d0f8b0798c10a185
-      size: 2383169
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: dbce46c720f603263b8c74c79a8061c7
-      size: 183965
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: aa53b770f4888fabf19646cde1ee04ee
-      size: 2429950
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 510d5373fdb7131eb148fb665af0e42d
-      size: 449775
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: acc80a0f5b023c2770fc46fd1d6ffc9c
-      size: 3643793
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 2a7731ecba6e5553a84de09de70df2ea
-      size: 283387
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: be30ece2ea00744acd70d867e1b734ca
-      size: 3711933
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 4835b6dda5d3d05c8b830a2de53254bd
-      size: 282589
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: b1625afc7275f2c894eb2f39a5cce5f8
-      size: 2300418
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: a9c100b5e87c7b346ffa99b1f0f2635c
-      size: 177880
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: c1245f47034074630c33628098435896
-      size: 2344828
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 7e1357b74bf55709c290bd1e3e56620d
-      size: 53583
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 214e7c19bb3b9421e66e5aa5d934294d
-      size: 436178
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 9c0e9302e6fa2e24421b8c55d0d86ba7
-      size: 33693
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: cff7e819e71ae00041fcc47f846bc51e
-      size: 444652
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 7202f5cc77e659c632d9356c7af4aad0
-      size: 148252
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 30438395e792f27841e184c1983101cd
-      size: 1217799
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: f2e089c0926bf4ee297e6c44aff48228
-      size: 94012
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 5fb6ec153102361e770a93de4f976647
-      size: 1241107
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: b202398bfd7f303d9bc0317d15f9cc0e
-      size: 319743
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 5ff0b39ca7b783f9082803760670e4c3
-      size: 2629281
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: dc4d852334a3c46d7ff7db8107fe09e8
-      size: 203515
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: be8d122de03b0e62b82617c2b7e21302
-      size: 2683676
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 268e65e17aef49ac8b47500facf65f86
-      size: 300069
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 1305191a15da5947d74bf93934a8483a
-      size: 2498969
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 89ec229cf3adb3e9d9523b8390e4aaaa
-      size: 193455
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 3a3ac0530c058e603fdb4d5c887f8b8b
-      size: 2552573
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 66f1bd44a61410d3352a7502c6a7f11e
-      size: 281780
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 5fcad96c3511ccf403d5d4d5151d07ba
-      size: 2308394
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: d3e3ff9a2249e72b7aaf0a3787eb3a86
-      size: 179808
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 656e874ff489427a566462205ac59511
-      size: 2355053
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: c86a09c9e6ca6e9e7f258db743579b33
-      size: 129093
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 82d543bfc450a670f13acd1489311f7b
-      size: 1078049
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 9de6297dc988788e6173e6327cf914be
-      size: 83440
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 436fa40ac1f94aa316b1b3d38c605534
-      size: 1102448
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 09b7f49028a356c8579033e2bcb41383
-      size: 108995
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 8ddb61986305c22fcc0630e3698db53d
-      size: 894852
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 945020b7957160ee70aff60549b0ca8f
-      size: 69943
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 0877261a5327316c60f49ab69d7c82e7
-      size: 913732
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 2662f08d54be436904337cd4202967cb
-      size: 529702
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 8216af70f61f5cb6ed0c050deab937b9
-      size: 4362575
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 5d240e5366b699336c5d61f197896986
-      size: 336591
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 6d31eeb24e195b6c70ad492235d742b2
-      size: 4449323
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 93c8259f0cd18993157800e35bd595c2
-      size: 256005
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 7f15c395f596e09fc7ac5bd4bb399c2c
-      size: 2104288
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 20ac696eb00f16b2a5d15e08714dcf0b
-      size: 162957
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 1ff1ad18e9c26c593609cefd74837faf
-      size: 2145831
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: abeeae3264d114e1c98f4792cb4db208
-      size: 97382
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 95ffc9d5bd4e21a52dd30ec61f251b12
-      size: 797706
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 6afd158fac9b7f03719f3295f6783daf
-      size: 61832
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: def8f90ec67decc516a61c0349492f28
-      size: 814191
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 213e72a833966c2dd32500274caf2631
-      size: 178636
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 363e5407e5143d193bfd1e13b954c2fa
-      size: 1443997
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 7dd94a77ef559e60c6eb0b11f15c96ed
-      size: 113421
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 60025700873ab1e03720a12d12c7a262
-      size: 1473897
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 59282f99e229d2e92916a9ceed4f6c42
-      size: 350848
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: a7184e677219f28c88407748cc5e9bf2
-      size: 2908650
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 36f5cab9342521c9db52c8b30f9326fb
-      size: 225860
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: bedbd1db92f84ab2ea918fe7650376cd
-      size: 2973534
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 933b3f9884b3d9329599662ad7d74367
-      size: 398084
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: b54f6f0201fd89da2c3d9d491d4b485a
-      size: 3296018
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 8a28f80dfff619aee8fc20900e398d04
-      size: 255199
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: f0d9f48d2e8b8242619297cf7561697f
-      size: 3365436
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 3a47f563b8556d211dbbbfb4a7c7c568
-      size: 384998
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 71c3921101974a8a408254f7a11d0ff4
-      size: 3186549
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 29c8c1cea529c3b05a41c544f180dbec
-      size: 247155
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 4323dfc65826114521c558861aaa1e0d
-      size: 3253894
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 1d461b062dbe8ca5a1085ca96743cec7
-      size: 589958
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: aa14525f449f26847bca53bd2de25f44
-      size: 4952219
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: ccf79b7794298d6037a8f523bdfbd8f2
-      size: 382001
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 540764656b3fe30caab8b8887e86feda
-      size: 5061026
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: ef3ad67a1c401130576de75bd5b44d2a
-      size: 307640
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 8a2d04c98edb1db30223c8250107625e
-      size: 2529026
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 4e00a0137090f7d9990a19597672470d
-      size: 194545
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: edfeda1bebbc5d1d258a8caaf73fddc1
-      size: 2577465
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 294db78116fb8ecca29adf4d90030e88
-      size: 266384
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 3320fd265af086515c7ed7ba3978b853
-      size: 2227817
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: bd7d5ba9d09ff5b31232ca561a6457f0
-      size: 172476
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 931d2611eb14536d93d76d654ee99d41
-      size: 2278772
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: f132e55ae40c0446f8f5e2e7ee2b04f1
-      size: 392350
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 382af76d3d3854b98e9a6a1cd21b28d6
-      size: 3165592
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: df4ba820f4f2fd701cdbcc8bf98bae49
-      size: 246176
-    - path: 
-        data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: 57ef603288225e1f204ebd6fae5c8d90
-      size: 3223402
-    - path: 
-        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: 2d2f8d5a571146e7d93a782a937b0b08
-      size: 51940
-    - path: 
-        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: bf8c1b31ca076bf758575462ee1267a1
-      size: 430124
-    - path: 
-        data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
-      hash: md5
-      md5: d04c29bbca520504a3d8d893ea310ecf
-      size: 33071
-    - path: 
-        data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
-      hash: md5
-      md5: d45b26c7d4a2c845808a8e0655d8c6ce
-      size: 438772
-    - path: src/grch38_training_utils.py
-      hash: md5
-      md5: 68160d2241d2393e8ed78e298ca8c205
-      size: 5721
-    - path: src/make_GRCh38_clean_training.py
-      hash: md5
-      md5: 89a3df56d351d5f0390f39b30acaab1c
-      size: 9744
-    outs:
-    - path: data/processed/evn/GRCh38/training
-      hash: md5
-      md5: 63d83dd91dc8950f21780880aebbffa2.dir
-      size: 483246405
-      nfiles: 219
-    - path: data/processed/svn/GRCh38/training
-      hash: md5
-      md5: 51943e04c029ae3bb6a7ebc31094c1a7.dir
-      size: 440774523
-      nfiles: 217
   train_alphagenome_GRCh38_evn:
     cmd: sbatch --wait --export=ALL,DATASET=evn slurm/train_alphagenome.sh
     deps:
@@ -13850,4 +13024,3502 @@ stages:
       hash: md5
       md5: 88352269c084436242519fd86f002ea7.dir
       size: 264896037
+      nfiles: 126
+  generate_background_candidates_GRCh38_antinoise_synthetic:
+    cmd: bash src/make_synthetics.sh
+    deps:
+    - path: ../antinoise/bin/linux/mix0.exe
+      hash: md5
+      md5: fa24527a374652c08219882ce816d1c6
+      size: 17920
+      isexec: true
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
+      hash: md5
+      md5: 88aaff94c543c7a4ce70a4cd7e38669f
+      size: 13237878
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
+      hash: md5
+      md5: 5dbb7887e6eda8e1b68d388e4964d544
+      size: 5259387
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
+      hash: md5
+      md5: 46f010d571b664d1c56812174dffc2a8
+      size: 6322856
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.fa
+      hash: md5
+      md5: 10a0d3752724488025d7eeb57e5be0c3
+      size: 5142928
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.fa
+      hash: md5
+      md5: 5018947cc0d3b6c75601a1697da94d9d
+      size: 2208705
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.fa
+      hash: md5
+      md5: 0a534f29a9c9354f8bdde84b5e438b8d
+      size: 3113710
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.fa
+      hash: md5
+      md5: c1ea52748469742240a6af7d368413e6
+      size: 4307371
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.fa
+      hash: md5
+      md5: 82a66207e67ff8fdc67d5ec9547246af
+      size: 4231965
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.fa
+      hash: md5
+      md5: f39ba32d100635f135fc710383e2430e
+      size: 4579671
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.fa
+      hash: md5
+      md5: 0098a110198a10c76602b78dc247c3da
+      size: 2446068
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.fa
+      hash: md5
+      md5: 018842d2c2e20cafd4922f0da14c6650
+      size: 2513693
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.fa
+      hash: md5
+      md5: 7e93abe6978846336dcf1d153040e18e
+      size: 9190954
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.fa
+      hash: md5
+      md5: 8bee9e32fb44906d5b934722cab5de82
+      size: 3626600
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.fa
+      hash: md5
+      md5: 8b09cbf524c51b1a83d65e48e8581e6d
+      size: 1506943
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.fa
+      hash: md5
+      md5: 5939aac52a283d9647c710c5e2918c81
+      size: 2517650
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.fa
+      hash: md5
+      md5: 30c45bd1a63913588975782ecbaaaab8
+      size: 6801921
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.fa
+      hash: md5
+      md5: 870fbf87730ae48bcc3538b5649ba78f
+      size: 6085932
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.fa
+      hash: md5
+      md5: e335283bcdbfbfd76c30b34a441a5515
+      size: 6413396
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.fa
+      hash: md5
+      md5: d2020735aac8a9d97bc5d3be44747c42
+      size: 8039216
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.fa
+      hash: md5
+      md5: 60a8e2fb6a116b43e4ffcca4a139712f
+      size: 5599973
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.fa
+      hash: md5
+      md5: a36ed7877a5d5d7084a5d7960cafaa61
+      size: 5051531
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.fa
+      hash: md5
+      md5: 37ea6f39729fd1e71a5f021dc96fbb9b
+      size: 5498655
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.fa
+      hash: md5
+      md5: 8e94605d2057213e75055c6c1ca2b28d
+      size: 1961105
+    - path: src/make_synthetics.sh
+      hash: md5
+      md5: 408241ee33906d676a93e485d4845b72
+      size: 1877
+      isexec: true
+    outs:
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: a3f2be8f4b134b390edc4627fdf6ec94
+      size: 27352416
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 225448d3fa9ab3f3d3d4fa35e0a0a029
+      size: 10852954
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 8b43e0792dd0b53261f17ef87a56683f
+      size: 13054032
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: c450c3ba5203ad3f55228fa4da4541eb
+      size: 10611336
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 60021b979f251ecf9a175e35a6f01af4
+      size: 4548606
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 3b4f07843ccfe570ed0170f291a1a573
+      size: 6415560
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: e7dc6f4e15a81a9f7c7f9a24901a4adb
+      size: 8884842
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: e9863877c9ce6cf08bb0fa8828e97e27
+      size: 8730390
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: eb2b1145bef3bbcfd28aeeb5cf5d3efe
+      size: 9450678
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: ce57c234a01f39e11e6b68679a38b0c5
+      size: 5038884
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: d4a9e95ecf06cd2499d8e64cf056223f
+      size: 5182342
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 0bf32d7dc6e49959e1f9328d6a0469e7
+      size: 18980648
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 01934050385b85d2c346fa677772b86f
+      size: 7476880
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 66bb4ca9b6c7b3e2dd52f35b64f5c3b3
+      size: 3103536
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 2e6ada4a3aad0a9d0ec2ace22428162f
+      size: 5188852
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 5363473131d30e76d53820c85768e8c9
+      size: 14041502
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: ba86214e0932a01fbe56a2e359e577a6
+      size: 12560784
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 6ddd1413673f5e5563606f986eb69244
+      size: 13238812
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: ef421a03881f10973359a83a01b42edb
+      size: 16599852
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: a298247078697d94c20a43f8fd60bc64
+      size: 11556266
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: d5374708c8bee9b8daf106d1b2f8e7bc
+      size: 10422542
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: 8e50c621e27acf153a847d481e2a72f3
+      size: 11348770
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/synthetic_antinoise_candidates_2x.fa
+      hash: md5
+      md5: f220049466ee838aefb40960aeb7548f
+      size: 4038448
+  select_backgrounds_GRCh38_antinoise:
+    cmd: python3 src/select_GRCh38_antinoise_backgrounds.py --seed 42 
+      --overwrite
+    deps:
+    - path: data/processed/consolidation/GRCh38/chromosomes
+      hash: md5
+      md5: d950efd256cd64929bf9e2eb34a6e4d4.dir
+      size: 647007806
+      nfiles: 322
+    - path: data/raw/GRCh38-cCREs.bed
+      hash: md5
+      md5: 60c14d9f4903a7bd13b3db4f290ace48
+      size: 129083055
+    - path: src/select_GRCh38_antinoise_backgrounds.py
+      hash: md5
+      md5: 32a17ccf04961fa10c295bc08931d4f5
+      size: 22159
+      isexec: true
+    outs:
+    - path: data/processed/consolidation/GRCh38/antinoise_selection
+      hash: md5
+      md5: 09444ceda9a2e095f7a1a089a3d409af.dir
+      size: 40958927
+      nfiles: 2
+    - path: data/processed/evn/GRCh38/real
+      hash: md5
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
+    - path: data/processed/svn/GRCh38/real
+      hash: md5
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
+  select_backgrounds_GRCh38_antinoise_synthetic:
+    cmd: python3 src/select_GRCh38_antinoise_synthetic_backgrounds.py --seed 42 
+      --overwrite
+    deps:
+    - path: data/processed/consolidation/GRCh38/chromosomes
+      hash: md5
+      md5: 8aa0a8b1ab6b947a20bb2ee7dcd84610.dir
+      size: 647014660
+      nfiles: 322
+    - path: src/select_GRCh38_antinoise_synthetic_backgrounds.py
+      hash: md5
+      md5: 6add90fffbebd632b0939d0a4d55e4ae
+      size: 17770
+      isexec: true
+    outs:
+    - path: data/processed/consolidation/GRCh38/antinoise_synthetic_selection
+      hash: md5
+      md5: 9d35eefee33107c4a20a50b078da4cff.dir
+      size: 20661479
+      nfiles: 2
+    - path: data/processed/evn/GRCh38/synthetic
+      hash: md5
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
+    - path: data/processed/svn/GRCh38/synthetic
+      hash: md5
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
+  render_alphagenome_report_GRCh38_evn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model alphagenome --background-type real && bash 
+      src/render_GRCh38_alphagenome_report.sh evn real
+    deps:
+    - path: data/processed/evn/GRCh38/real
+      hash: md5
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
+    - path: models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: e5bfba8d26747671ce02c9c50f38cb5b.dir
+      size: 264910188
+      nfiles: 126
+    - path: reports/chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    - path: src/render_GRCh38_alphagenome_report.sh
+      hash: md5
+      md5: 6310cf5db84112b7efd78c19354a1ac6
+      size: 1573
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/evn/real/alphagenome_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 405eb35135097c3d9bd5e56ac2dad5c5
+      size: 1606066
+    - path: 
+        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 915f7cfd7ca86fd547c744658d71b4f2
+      size: 22866
+  render_alphagenome_report_GRCh38_svn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model alphagenome --background-type real && bash 
+      src/render_GRCh38_alphagenome_report.sh svn real
+    deps:
+    - path: data/processed/svn/GRCh38/real
+      hash: md5
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
+    - path: models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: 61129865a98613fcb33852fe151de153.dir
+      size: 264908315
+      nfiles: 126
+    - path: reports/chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    - path: src/render_GRCh38_alphagenome_report.sh
+      hash: md5
+      md5: 6310cf5db84112b7efd78c19354a1ac6
+      size: 1573
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/svn/real/alphagenome_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 8a7058cf2af1fa18a799447558b0a7a9
+      size: 1632258
+    - path: 
+        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8c8e3206fef260b5c8da89ca40df0508
+      size: 22853
+  cross_predict_alphagenome_GRCh38_real:
+    cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_alphagenome.sh
+    deps:
+    - path: data/processed/evn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: b1c43ccbb0f161fcae77e3c47653178e
+      size: 5267163
+    - path: data/processed/evn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 1b39293d0ba6538add143a4f7baf6ae8
+      size: 4912105
+    - path: data/processed/evn/GRCh38/real/train_100_neg.fa
+      hash: md5
+      md5: 2b1b3a93f0b9e0ad507698b7eb28ed86
+      size: 51055820
+    - path: data/processed/evn/GRCh38/real/train_100_pos.fa
+      hash: md5
+      md5: 36342c6d84ed3c007d2cbf7a50c96c1e
+      size: 47678262
+    - path: data/processed/evn/GRCh38/real/validation_neg.fa
+      hash: md5
+      md5: c5c3963c7a1bcc287146d782e95e97fc
+      size: 5003940
+    - path: data/processed/evn/GRCh38/real/validation_pos.fa
+      hash: md5
+      md5: 0b6b2ee3b31937c8e82d2c05cffbce05
+      size: 4664809
+    - path: data/processed/svn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: 0e37d76e08ccb19df2cb5e049dc8679e
+      size: 4456042
+    - path: data/processed/svn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 8a70c991e2a6c294923236fc5d3a7615
+      size: 4145864
+    - path: data/processed/svn/GRCh38/real/train_100_neg.fa
+      hash: md5
+      md5: 6fbb5146e79ebd1386ce2595660b5fdc
+      size: 47450922
+    - path: data/processed/svn/GRCh38/real/train_100_pos.fa
+      hash: md5
+      md5: 39fe557fb909c4c6215e7bfb5a0a20bd
+      size: 44172190
+    - path: data/processed/svn/GRCh38/real/validation_neg.fa
+      hash: md5
+      md5: b4f2de32cfe679203be8d28462e43f0a
+      size: 9004646
+    - path: data/processed/svn/GRCh38/real/validation_pos.fa
+      hash: md5
+      md5: 36864581249854a64f67d8fea321b7f8
+      size: 8367592
+    - path: models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: e5bfba8d26747671ce02c9c50f38cb5b.dir
+      size: 264910188
+      nfiles: 126
+    - path: models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: 61129865a98613fcb33852fe151de153.dir
+      size: 264908315
+      nfiles: 126
+    - path: slurm/cross_predict_alphagenome.sh
+      hash: md5
+      md5: bdf7e9595bb4d383a29b4638eeafaf57
+      size: 1733
+      isexec: true
+    - path: src/predict_alphagenome.py
+      hash: md5
+      md5: 8eaef98cf8d10878faf4c6a7116ebeaf
+      size: 6619
+      isexec: true
+    - path: weights/fold_0_weights.safetensors
+      hash: md5
+      md5: cb18d831d374e6dab5758a39021a719b
+      size: 920635044
+    outs:
+    - path: predictions/cross_task/GRCh38/alphagenome/real
+      hash: md5
+      md5: 00cfcbd12dcc0a94ec5b216ba24554b9.dir
+      size: 74070
+      nfiles: 126
+  render_alphagenome_cross_task_report_GRCh38_real:
+    cmd: bash src/render_alphagenome_cross_task_report.sh real
+    deps:
+    - path: predictions/cross_task/GRCh38/alphagenome/real
+      hash: md5
+      md5: 00cfcbd12dcc0a94ec5b216ba24554b9.dir
+      size: 74070
+      nfiles: 126
+    - path: reports/cross_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 674c4a759c504994b9ce7d62320dda8d
+      size: 4573
+    - path: 
+        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 915f7cfd7ca86fd547c744658d71b4f2
+      size: 22866
+    - path: 
+        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8c8e3206fef260b5c8da89ca40df0508
+      size: 22853
+    - path: src/prepare_cross_task_metrics.py
+      hash: md5
+      md5: 6dd8aa0258a83bf174e0b6f41182f972
+      size: 3054
+      isexec: true
+    - path: src/render_alphagenome_cross_task_report.sh
+      hash: md5
+      md5: ec70d5996d45819cd01677b0314f92bd
+      size: 924
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/comparison/real/alphagenome_native_vs_cross_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: a6afbaee43086cd320e07cc37f47f8f6
+      size: 2265802
+    - path: 
+        results/cross_task/GRCh38/real/alphagenome_native_vs_cross_metrics.tsv
+      hash: md5
+      md5: b16c1c31e24f4adea5aa282b7f17a149
+      size: 47650
+  render_alphagenome_native_comparison_report_GRCh38_real:
+    cmd: bash src/render_alphagenome_native_comparison_report.sh real
+    deps:
+    - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 6a9a6bff9e08e7bd6db50425b7d58c48
+      size: 5894
+    - path: 
+        results/cross_task/GRCh38/real/alphagenome_native_vs_cross_metrics.tsv
+      hash: md5
+      md5: b16c1c31e24f4adea5aa282b7f17a149
+      size: 47650
+    - path: src/render_alphagenome_native_comparison_report.sh
+      hash: md5
+      md5: 196ed9dd8e4cf4bd1c87130923329301
+      size: 962
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/comparison/real/alphagenome_native_evn_vs_svn_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 5bebbd4d1bea5a291d64491c57fa48f9
+      size: 1899096
+  render_alphagenome_background_comparison_report_GRCh38_evn:
+    cmd: bash src/render_alphagenome_background_comparison_report.sh evn
+    deps:
+    - path: reports/alphagenome_background_comparison_GRCh38_results.Rmd
+      hash: md5
+      md5: be4b0adbb5ed252be2c7c8fe6035a512
+      size: 6203
+    - path: 
+        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 915f7cfd7ca86fd547c744658d71b4f2
+      size: 22866
+    - path: 
+        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
+      size: 23236
+    - path: src/render_alphagenome_background_comparison_report.sh
+      hash: md5
+      md5: 623f64fe791eeef183e3db0c1884ca28
+      size: 1264
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/evn/real_vs_synthetic/alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: ecd0f330b5a73a21a21c2361a2cda76a
+      size: 1569342
+  render_alphagenome_background_comparison_report_GRCh38_svn:
+    cmd: bash src/render_alphagenome_background_comparison_report.sh svn
+    deps:
+    - path: reports/alphagenome_background_comparison_GRCh38_results.Rmd
+      hash: md5
+      md5: be4b0adbb5ed252be2c7c8fe6035a512
+      size: 6203
+    - path: 
+        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8c8e3206fef260b5c8da89ca40df0508
+      size: 22853
+    - path: 
+        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 2768b5860388b295b402a0370f9666de
+      size: 23246
+    - path: src/render_alphagenome_background_comparison_report.sh
+      hash: md5
+      md5: 623f64fe791eeef183e3db0c1884ca28
+      size: 1264
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/svn/real_vs_synthetic/alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: d257b628606f92a8f3a5891293e581a1
+      size: 1576818
+  render_lsgkm_report_GRCh38_evn_real:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh evn real
+    deps:
+    - path: reports/chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
+    - path: 
+        results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0db06ac1a871c5be48d0a0b7e863654d
+      size: 17907
+    - path: src/render_GRCh38_lsgkm_report.sh
+      hash: md5
+      md5: 8b97d33ef4c82370f92ead5286c5f9b1
+      size: 1557
+      isexec: true
+    outs:
+    - path: reports/rendered/evn/real/lsgkm_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 803a4e69318160ab93e6971a2d463975
+      size: 1515803
+  render_lsgkm_report_GRCh38_svn_real:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh svn real
+    deps:
+    - path: reports/chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 5d02a1f7439c89391562f47c497d6cd1
+      size: 8158
+    - path: 
+        results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 646747385471590d2434a2f58fd412ae
+      size: 17922
+    - path: src/render_GRCh38_lsgkm_report.sh
+      hash: md5
+      md5: 8b97d33ef4c82370f92ead5286c5f9b1
+      size: 1557
+      isexec: true
+    outs:
+    - path: reports/rendered/svn/real/lsgkm_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 1a5ff1b83129428c29e44dd789f22be9
+      size: 1509611
+  prepare_lsgkm_results_GRCh38_evn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model lsgkm --background-type real
+    deps:
+    - path: data/processed/evn/GRCh38/real
+      hash: md5
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
+    - path: predictions/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: 647573221f4c3956d070917435138fdf.dir
+      size: 118046732
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0db06ac1a871c5be48d0a0b7e863654d
+      size: 17907
+  prepare_lsgkm_results_GRCh38_evn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model lsgkm --background-type synthetic
+    deps:
+    - path: data/processed/evn/GRCh38/synthetic
+      hash: md5
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
+    - path: predictions/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 3b285ec54ce036a13932c88fb3ef87f5.dir
+      size: 114922684
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0afb78583ca7781effb1f65cbb589693
+      size: 18240
+  prepare_lsgkm_results_GRCh38_svn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model lsgkm --background-type real
+    deps:
+    - path: data/processed/svn/GRCh38/real
+      hash: md5
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
+    - path: predictions/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: fad73be159ca4fb203eb4a611a5605d1.dir
+      size: 117136751
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 646747385471590d2434a2f58fd412ae
+      size: 17922
+  prepare_lsgkm_results_GRCh38_svn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model lsgkm --background-type synthetic
+    deps:
+    - path: data/processed/svn/GRCh38/synthetic
+      hash: md5
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
+    - path: predictions/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: ed2682e23b591fe1d2311a956e122782.dir
+      size: 114650647
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8b0c5a9276269d42593871c7c8cb92b0
+      size: 18233
+  render_cross_task_reports_GRCh38_real:
+    cmd: bash src/render_cross_task_reports.sh real && bash 
+      src/render_native_comparison_report.sh real
+    deps:
+    - path: predictions/cross_task/GRCh38/alphagenome/real
+      hash: md5
+      md5: 00cfcbd12dcc0a94ec5b216ba24554b9.dir
+      size: 74070
+      nfiles: 126
+    - path: predictions/cross_task/GRCh38/ls-gkm/real
+      hash: md5
+      md5: 0e79f749341fbf128841f0531bdf739e.dir
+      size: 236309819
+      nfiles: 252
+    - path: reports/cross_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 674c4a759c504994b9ce7d62320dda8d
+      size: 4573
+    - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 6a9a6bff9e08e7bd6db50425b7d58c48
+      size: 5894
+    - path: 
+        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 915f7cfd7ca86fd547c744658d71b4f2
+      size: 22866
+    - path: 
+        results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0db06ac1a871c5be48d0a0b7e863654d
+      size: 17907
+    - path: 
+        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8c8e3206fef260b5c8da89ca40df0508
+      size: 22853
+    - path: 
+        results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 646747385471590d2434a2f58fd412ae
+      size: 17922
+    - path: src/prepare_cross_task_metrics.py
+      hash: md5
+      md5: 4c249507434f9c51371ed8f35308c0c1
+      size: 3407
+      isexec: true
+    - path: src/render_cross_task_reports.sh
+      hash: md5
+      md5: 20cf199e5a566914e0ab442dc8417454
+      size: 875
+      isexec: true
+    - path: src/render_native_comparison_report.sh
+      hash: md5
+      md5: a9573b52c11c3b447cb8ae3fb8438119
+      size: 910
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/comparison/real/native_evn_vs_svn_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 05aa75c661f2cbee862857ce8d47d4c7
+      size: 1944912
+    - path: 
+        reports/rendered/cross-task/real/native_vs_cross_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 556cfd016dcbf1074acdeb612177f8a0
+      size: 2257617
+    - path: results/cross_task/GRCh38/real/native_vs_cross_metrics.tsv
+      hash: md5
+      md5: 381e9067168784246c6004b466f8fbb0
+      size: 93593
+  render_cross_task_reports_GRCh38_synthetic:
+    cmd: bash src/render_cross_task_reports.sh synthetic && bash 
+      src/render_native_comparison_report.sh synthetic
+    deps:
+    - path: predictions/cross_task/GRCh38/alphagenome/synthetic
+      hash: md5
+      md5: 73bc12a92ebf939f21054b1f720600b1.dir
+      size: 76058
+      nfiles: 126
+    - path: predictions/cross_task/GRCh38/ls-gkm/synthetic
+      hash: md5
+      md5: 85f97ef136703893cd07328c0843e70c.dir
+      size: 230240559
+      nfiles: 252
+    - path: reports/cross_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 674c4a759c504994b9ce7d62320dda8d
+      size: 4573
+    - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: eaa2c95667ebe79f267354673c9f3472
+      size: 5886
+    - path: 
+        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
+      size: 23236
+    - path: 
+        results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0afb78583ca7781effb1f65cbb589693
+      size: 18240
+    - path: 
+        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 2768b5860388b295b402a0370f9666de
+      size: 23246
+    - path: 
+        results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8b0c5a9276269d42593871c7c8cb92b0
+      size: 18233
+    - path: src/prepare_cross_task_metrics.py
+      hash: md5
+      md5: 6dd8aa0258a83bf174e0b6f41182f972
+      size: 3054
+      isexec: true
+    - path: src/render_cross_task_reports.sh
+      hash: md5
+      md5: 55585193356099d3ea29d0e24ef22dec
+      size: 863
+      isexec: true
+    - path: src/render_native_comparison_report.sh
+      hash: md5
+      md5: 84b7509ccaf88a63b6dd577d74b21487
+      size: 886
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/comparison/synthetic/native_evn_vs_svn_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 5111fd4a4349c48e882f36d6a651944b
+      size: 1893086
+    - path: 
+        reports/rendered/comparison/synthetic/native_vs_cross_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: b97648c1137ff0cae812708e41ab403d
+      size: 2138578
+    - path: results/cross_task/GRCh38/synthetic/native_vs_cross_metrics.tsv
+      hash: md5
+      md5: c9b93b74624b66f6da3631b1e5cd588c
+      size: 96138
+  render_comparison_reports_GRCh38_synthetic:
+    cmd: bash src/render_native_comparison_report.sh synthetic
+    deps:
+    - path: predictions/cross_task/GRCh38/alphagenome/synthetic
+      hash: md5
+      md5: 73bc12a92ebf939f21054b1f720600b1.dir
+      size: 76058
+      nfiles: 126
+    - path: predictions/cross_task/GRCh38/ls-gkm/synthetic
+      hash: md5
+      md5: 85f97ef136703893cd07328c0843e70c.dir
+      size: 230240559
+      nfiles: 252
+    - path: reports/cross_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 674c4a759c504994b9ce7d62320dda8d
+      size: 4573
+    - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 6a9a6bff9e08e7bd6db50425b7d58c48
+      size: 5894
+    - path: 
+        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
+      size: 23236
+    - path: 
+        results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0afb78583ca7781effb1f65cbb589693
+      size: 18240
+    - path: 
+        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 2768b5860388b295b402a0370f9666de
+      size: 23246
+    - path: 
+        results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8b0c5a9276269d42593871c7c8cb92b0
+      size: 18233
+    - path: src/prepare_cross_task_metrics.py
+      hash: md5
+      md5: 4c249507434f9c51371ed8f35308c0c1
+      size: 3407
+      isexec: true
+    - path: src/render_cross_task_reports.sh
+      hash: md5
+      md5: 20cf199e5a566914e0ab442dc8417454
+      size: 875
+      isexec: true
+    - path: src/render_native_comparison_report.sh
+      hash: md5
+      md5: a9573b52c11c3b447cb8ae3fb8438119
+      size: 910
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/comparison/synthetic/native_evn_vs_svn_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 5111fd4a4349c48e882f36d6a651944b
+      size: 1893086
+    - path: results/cross_task/GRCh38/synthetic/native_vs_cross_metrics.tsv
+      hash: md5
+      md5: c9b93b74624b66f6da3631b1e5cd588c
+      size: 96138
+  evn_downsampling_and_consolidation_GRCh38:
+    cmd: python3 src/make_GRCh38_positive_consolidation.py --seed 42 --overwrite
+    deps:
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: 694ee26c9d8ace5a549eb57af79acd76
+      size: 4593180
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: e47002df5f9f31839c14c554cd7c18b9
+      size: 2901394
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: 03ee6c828734c8193f826a6c2823a656
+      size: 2744693
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 98dc5457bc3850e36a227134c071eafe
+      size: 2849600
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: d23e449bfcb6ea72496d207eb0559ab2
+      size: 1735552
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: 160e68ea64c894d3713e2b062636a678
+      size: 1888191
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: da8ccd0195dc7c3029b9f87e5540c39e
+      size: 1718520
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: f41b7f5c36a054239a8af83caeab1c78
+      size: 1762941
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: 72d069dc1d49bdfb00ff13224f5463cd
+      size: 2284245
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: fb51f1e252dcceb44996e36e6c7dce04
+      size: 1347420
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: 65296051192e093326e6f9c794288876
+      size: 1627019
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 6512a66690bc3e98b02763717154e9ef
+      size: 4813853
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: ffe77ff2fa6cf41e0943a2141b67fc46
+      size: 1525710
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: dcdd75ee8a5d5902ba976ba59c45c6a6
+      size: 709207
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 79e35b216fa19c1692af161537662cd7
+      size: 1097790
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: ee39d92ca73617e8a5540a1730cebc4c
+      size: 3845548
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 7184f53fe623a2e816a575c674ddcbfa
+      size: 2763406
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: c0d49dc7a5be0b82746a6add2e75e2b6
+      size: 3209181
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: 75c86caff361b901946289b2cd242bf6
+      size: 3125588
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: d6b14df91eeef83c4ff8a2586541eca1
+      size: 3016807
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 0c08b62feeb851834890d0889651e600
+      size: 2773652
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 14643295d986f0f80e1f329dd22d41bd
+      size: 2331899
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: 7cb9205bb222d34f49e1925558f1c724
+      size: 1464362
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4123944e83f4168a30b7d66d739083d1
+      size: 1058842
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c04e67b10bd7044a1da3067359a282d9
+      size: 289515
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 510d5373fdb7131eb148fb665af0e42d
+      size: 449775
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4835b6dda5d3d05c8b830a2de53254bd
+      size: 282589
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7e1357b74bf55709c290bd1e3e56620d
+      size: 53583
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7202f5cc77e659c632d9356c7af4aad0
+      size: 148252
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b202398bfd7f303d9bc0317d15f9cc0e
+      size: 319743
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 268e65e17aef49ac8b47500facf65f86
+      size: 300069
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 66f1bd44a61410d3352a7502c6a7f11e
+      size: 281780
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c86a09c9e6ca6e9e7f258db743579b33
+      size: 129093
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 09b7f49028a356c8579033e2bcb41383
+      size: 108995
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2662f08d54be436904337cd4202967cb
+      size: 529702
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 93c8259f0cd18993157800e35bd595c2
+      size: 256005
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: abeeae3264d114e1c98f4792cb4db208
+      size: 97382
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 213e72a833966c2dd32500274caf2631
+      size: 178636
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 59282f99e229d2e92916a9ceed4f6c42
+      size: 350848
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 933b3f9884b3d9329599662ad7d74367
+      size: 398084
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 3a47f563b8556d211dbbbfb4a7c7c568
+      size: 384998
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 1d461b062dbe8ca5a1085ca96743cec7
+      size: 589958
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: ef3ad67a1c401130576de75bd5b44d2a
+      size: 307640
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 294db78116fb8ecca29adf4d90030e88
+      size: 266384
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: f132e55ae40c0446f8f5e2e7ee2b04f1
+      size: 392350
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2d2f8d5a571146e7d93a782a937b0b08
+      size: 51940
+    - path: src/make_GRCh38_positive_consolidation.py
+      hash: md5
+      md5: c25d15c3bb4ec5b792bd2440bdd78a39
+      size: 10590
+    outs:
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.bed
+      hash: md5
+      md5: 1221b9146a7df2eac7a303ac4764d71b
+      size: 1651310
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom1/evn_pos.bed
+      hash: md5
+      md5: 045914c808505aa7cb3de12230c521de
+      size: 592468
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom1/svn_pos.bed
+      hash: md5
+      md5: 4123944e83f4168a30b7d66d739083d1
+      size: 1058842
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.bed
+      hash: md5
+      md5: 3bdd0242b02544de7edae60196094b77
+      size: 663548
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom10/evn_pos.bed
+      hash: md5
+      md5: 5b19c40be07e812d0b320216cbf01b2c
+      size: 374033
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom10/svn_pos.bed
+      hash: md5
+      md5: c04e67b10bd7044a1da3067359a282d9
+      size: 289515
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.bed
+      hash: md5
+      md5: f1f68d2ba00287b733901ce139a867e8
+      size: 803733
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom11/evn_pos.bed
+      hash: md5
+      md5: 628c0924419461d33d0b10a6d8766465
+      size: 353958
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom11/svn_pos.bed
+      hash: md5
+      md5: 510d5373fdb7131eb148fb665af0e42d
+      size: 449775
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.bed
+      hash: md5
+      md5: 46d1ecc2d6afc0c89cc337ad42d60c60
+      size: 649957
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom12/evn_pos.bed
+      hash: md5
+      md5: 56d9dd7c3fb5be6abd6e50dc91b172fb
+      size: 367368
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom12/svn_pos.bed
+      hash: md5
+      md5: 4835b6dda5d3d05c8b830a2de53254bd
+      size: 282589
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.bed
+      hash: md5
+      md5: 6a724e6745310eb8af68d87608c08f17
+      size: 277486
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom13/evn_pos.bed
+      hash: md5
+      md5: 0708ffa0f491c92499e19894e6b532b5
+      size: 223903
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom13/svn_pos.bed
+      hash: md5
+      md5: 7e1357b74bf55709c290bd1e3e56620d
+      size: 53583
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.bed
+      hash: md5
+      md5: 64fc4eded5b40bf74b2d28f2799de49f
+      size: 391694
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom14/evn_pos.bed
+      hash: md5
+      md5: 971202a2b41c2c217a1731014340254e
+      size: 243442
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom14/svn_pos.bed
+      hash: md5
+      md5: 7202f5cc77e659c632d9356c7af4aad0
+      size: 148252
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.bed
+      hash: md5
+      md5: 234affdbfa1ed95900272b41e10faaf1
+      size: 541302
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom15/evn_pos.bed
+      hash: md5
+      md5: 383812d0e4163ff5319c45ef4b77d728
+      size: 221559
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom15/svn_pos.bed
+      hash: md5
+      md5: b202398bfd7f303d9bc0317d15f9cc0e
+      size: 319743
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.bed
+      hash: md5
+      md5: 0b70022baa4631782cf1bee1707e667c
+      size: 527280
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom16/evn_pos.bed
+      hash: md5
+      md5: 762ee4eb240757c48e9e5c2455779126
+      size: 227211
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom16/svn_pos.bed
+      hash: md5
+      md5: 268e65e17aef49ac8b47500facf65f86
+      size: 300069
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.bed
+      hash: md5
+      md5: 529e73a375d87267c651bc07fc045103
+      size: 576378
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom17/evn_pos.bed
+      hash: md5
+      md5: 36008495d59e5f5cc1a6d1b22a629e42
+      size: 294598
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom17/svn_pos.bed
+      hash: md5
+      md5: 66f1bd44a61410d3352a7502c6a7f11e
+      size: 281780
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.bed
+      hash: md5
+      md5: aad40c70c9468913067fb94c77bc6e74
+      size: 302892
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom18/evn_pos.bed
+      hash: md5
+      md5: 6fcffdf509bda68117412c2fbd5f2a51
+      size: 173799
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom18/svn_pos.bed
+      hash: md5
+      md5: c86a09c9e6ca6e9e7f258db743579b33
+      size: 129093
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.bed
+      hash: md5
+      md5: 3d53b6a8d41d2bc384c1b9a031d644a4
+      size: 318724
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom19/evn_pos.bed
+      hash: md5
+      md5: 00e402ba542a422f9f01a834ed38ecc9
+      size: 209729
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom19/svn_pos.bed
+      hash: md5
+      md5: 09b7f49028a356c8579033e2bcb41383
+      size: 108995
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.bed
+      hash: md5
+      md5: 1bfe2d9ac885279f3de8b7b4319947c3
+      size: 1150462
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom2/evn_pos.bed
+      hash: md5
+      md5: ec9a7d4b950a0e587398ca9fd52f85af
+      size: 620760
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom2/svn_pos.bed
+      hash: md5
+      md5: 2662f08d54be436904337cd4202967cb
+      size: 529702
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.bed
+      hash: md5
+      md5: ed7e4b4ec742f8cd6e87219060a144e2
+      size: 452725
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom20/evn_pos.bed
+      hash: md5
+      md5: b951124a7b8acc258f9c2608a53fe677
+      size: 196720
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom20/svn_pos.bed
+      hash: md5
+      md5: 93c8259f0cd18993157800e35bd595c2
+      size: 256005
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.bed
+      hash: md5
+      md5: f4565fff3bcb76b8bd917a93842f0ab0
+      size: 188819
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom21/evn_pos.bed
+      hash: md5
+      md5: b016aeb3b1b6c638aa72e33f81da8fe3
+      size: 91437
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom21/svn_pos.bed
+      hash: md5
+      md5: abeeae3264d114e1c98f4792cb4db208
+      size: 97382
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.bed
+      hash: md5
+      md5: 4b6dac216a1b87d2253213746344c2f1
+      size: 320198
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom22/evn_pos.bed
+      hash: md5
+      md5: b1365959a07ffbaa420618e991b8d032
+      size: 141562
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom22/svn_pos.bed
+      hash: md5
+      md5: 213e72a833966c2dd32500274caf2631
+      size: 178636
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.bed
+      hash: md5
+      md5: 054856dca7112daf4cc5ff00ee948c8f
+      size: 846624
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom3/evn_pos.bed
+      hash: md5
+      md5: 038319d209c3800b9a2e34d8788b7e10
+      size: 495776
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom3/svn_pos.bed
+      hash: md5
+      md5: 59282f99e229d2e92916a9ceed4f6c42
+      size: 350848
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.bed
+      hash: md5
+      md5: 85f14eb4a9a0e0c1f41eda04b7745d4c
+      size: 754457
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom4/evn_pos.bed
+      hash: md5
+      md5: a2ac638fad2d958e279cf0272832fe5d
+      size: 356373
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom4/svn_pos.bed
+      hash: md5
+      md5: 933b3f9884b3d9329599662ad7d74367
+      size: 398084
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.bed
+      hash: md5
+      md5: 57983e235a90c7a594a0b26d988396e1
+      size: 798736
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom5/evn_pos.bed
+      hash: md5
+      md5: 62b514a4a9280a97d17de88c37faf570
+      size: 413738
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom5/svn_pos.bed
+      hash: md5
+      md5: 3a47f563b8556d211dbbbfb4a7c7c568
+      size: 384998
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.bed
+      hash: md5
+      md5: bace5edd3a37d62a5b199eb4d895e8ab
+      size: 993132
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom6/evn_pos.bed
+      hash: md5
+      md5: 038701bf2a82c9e64e4d8cc90698cd51
+      size: 403174
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom6/svn_pos.bed
+      hash: md5
+      md5: 1d461b062dbe8ca5a1085ca96743cec7
+      size: 589958
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.bed
+      hash: md5
+      md5: aeded10bee22e0f78c8af6774e37128b
+      size: 696911
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom7/evn_pos.bed
+      hash: md5
+      md5: 1afb14bdba648000b70e2654b776a6e4
+      size: 389271
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom7/svn_pos.bed
+      hash: md5
+      md5: ef3ad67a1c401130576de75bd5b44d2a
+      size: 307640
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.bed
+      hash: md5
+      md5: 0f30209139035b66ca9b0a797161e34b
+      size: 624118
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom8/evn_pos.bed
+      hash: md5
+      md5: c40a5b7da29144bdd7993ba94dae92dd
+      size: 357734
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom8/svn_pos.bed
+      hash: md5
+      md5: 294db78116fb8ecca29adf4d90030e88
+      size: 266384
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.bed
+      hash: md5
+      md5: 89d6299b27dbcf3a36f67ef77a8f0387
+      size: 692978
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom9/evn_pos.bed
+      hash: md5
+      md5: fb54d17d91c6099340abd97c59390945
+      size: 300628
+    - path: data/processed/consolidation/GRCh38/chromosomes/chrom9/svn_pos.bed
+      hash: md5
+      md5: f132e55ae40c0446f8f5e2e7ee2b04f1
+      size: 392350
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.bed
+      hash: md5
+      md5: b2bf25fcb1a797f84c91ecf19d16c06d
+      size: 240872
+    - path: data/processed/consolidation/GRCh38/chromosomes/chromX/evn_pos.bed
+      hash: md5
+      md5: 40c353ad12119853f5f84090900c1dd3
+      size: 188932
+    - path: data/processed/consolidation/GRCh38/chromosomes/chromX/svn_pos.bed
+      hash: md5
+      md5: 2d2f8d5a571146e7d93a782a937b0b08
+      size: 51940
+    - path: data/processed/consolidation/GRCh38/manifest.tsv
+      hash: md5
+      md5: 77cd911c9466f57be4896ac993ac1bf5
+      size: 3851
+    - path: data/processed/consolidation/GRCh38/summary.json
+      hash: md5
+      md5: 67965405ecdb5b5050e038ec5f39b17f
+      size: 581
+  prepare_masked_reference_GRCh38_antinoise:
+    cmd: bash src/prepare_masked_reference.sh
+    deps:
+    - path: ../antinoise/bin/linux/area_self_overlap.exe
+      hash: md5
+      md5: c1cb5374a76d98513a055b270584198b
+      size: 23688
+      isexec: true
+    - path: ../antinoise/bin/linux/bed_chr_mask.exe
+      hash: md5
+      md5: f9ab38e0551b4a80c8169f55f9db7a21
+      size: 19136
+      isexec: true
+    - path: ../antinoise/bin/linux/bed_chr_separation.exe
+      hash: md5
+      md5: 564452ed3570fc1a48cef55afae8a6c9
+      size: 19168
+      isexec: true
+    - path: ../antinoise/bin/linux/bed_sort.exe
+      hash: md5
+      md5: 83b9bd48630683db28c204c5a77ab8da
+      size: 19288
+      isexec: true
+    - path: ../antinoise/bin/linux/fasta_muliplefiles.exe
+      hash: md5
+      md5: 938ffabe791056b7bb527c360fb6f3c3
+      size: 17552
+      isexec: true
+    - path: ../antinoise/bin/linux/fasta_to_plain0.exe
+      hash: md5
+      md5: 3fe359af4516a275f9aed8d213ad436b
+      size: 18896
+      isexec: true
+    - path: src/prepare_masked_reference.sh
+      hash: md5
+      md5: b698bd01c346e3cbd259420a715106db
+      size: 2910
+      isexec: true
+    outs:
+    - path: data/processed/GRCh38-cCREs_sorted.bed
+      hash: md5
+      md5: 9af83fbc8e864496a8812ed0f53a5df0
+      size: 58487829
+    - path: data/raw/GRCh38-cCREs.bed
+      hash: md5
+      md5: 60c14d9f4903a7bd13b3db4f290ace48
+      size: 129083055
+    - path: data/reference/antinoise/hg38-PLAIN-canonical
+      hash: md5
+      md5: c9f73a403f42d0f1037296ef09f98c22.dir
+      size: 6238305254
+      nfiles: 48
+    - path: data/reference/antinoise/hg38-PLAIN-canonical-masked
+      hash: md5
+      md5: 2ba5e20258c2dda160c98b2785f69209.dir
+      size: 3088269856
+      nfiles: 24
+    - path: data/reference/antinoise/hg38-PLAIN-canonical-merged
+      hash: md5
+      md5: 4dde8c90d105f40287bbab1cf8a4549c.dir
+      size: 252745498
+      nfiles: 73
+    - path: data/reference/antinoise/hg38-chroms
+      hash: md5
+      md5: 219f1a0e57ae70b53d1042ba038deee3.dir
+      size: 215173792
+      nfiles: 687
+    - path: data/reference/hg38.fa
+      hash: md5
+      md5: 398383d7d1242c685510f330067d308e
+      size: 3365209190
+  positive_foregrounds_GRCh38_antinoise:
+    cmd: bash src/positive_foregrounds_antinoise.sh
+    deps:
+    - path: ../antinoise/bin/linux/longext_many.exe
+      hash: md5
+      md5: c09984b27c60968adda4986221aee14e
+      size: 49656
+      isexec: true
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.bed
+      hash: md5
+      md5: 1221b9146a7df2eac7a303ac4764d71b
+      size: 1651310
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.bed
+      hash: md5
+      md5: 3bdd0242b02544de7edae60196094b77
+      size: 663548
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.bed
+      hash: md5
+      md5: f1f68d2ba00287b733901ce139a867e8
+      size: 803733
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.bed
+      hash: md5
+      md5: 46d1ecc2d6afc0c89cc337ad42d60c60
+      size: 649957
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.bed
+      hash: md5
+      md5: 6a724e6745310eb8af68d87608c08f17
+      size: 277486
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.bed
+      hash: md5
+      md5: 64fc4eded5b40bf74b2d28f2799de49f
+      size: 391694
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.bed
+      hash: md5
+      md5: 234affdbfa1ed95900272b41e10faaf1
+      size: 541302
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.bed
+      hash: md5
+      md5: 0b70022baa4631782cf1bee1707e667c
+      size: 527280
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.bed
+      hash: md5
+      md5: 529e73a375d87267c651bc07fc045103
+      size: 576378
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.bed
+      hash: md5
+      md5: aad40c70c9468913067fb94c77bc6e74
+      size: 302892
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.bed
+      hash: md5
+      md5: 3d53b6a8d41d2bc384c1b9a031d644a4
+      size: 318724
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.bed
+      hash: md5
+      md5: 1bfe2d9ac885279f3de8b7b4319947c3
+      size: 1150462
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.bed
+      hash: md5
+      md5: ed7e4b4ec742f8cd6e87219060a144e2
+      size: 452725
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.bed
+      hash: md5
+      md5: f4565fff3bcb76b8bd917a93842f0ab0
+      size: 188819
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.bed
+      hash: md5
+      md5: 4b6dac216a1b87d2253213746344c2f1
+      size: 320198
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.bed
+      hash: md5
+      md5: 054856dca7112daf4cc5ff00ee948c8f
+      size: 846624
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.bed
+      hash: md5
+      md5: 85f14eb4a9a0e0c1f41eda04b7745d4c
+      size: 754457
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.bed
+      hash: md5
+      md5: 57983e235a90c7a594a0b26d988396e1
+      size: 798736
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.bed
+      hash: md5
+      md5: bace5edd3a37d62a5b199eb4d895e8ab
+      size: 993132
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.bed
+      hash: md5
+      md5: aeded10bee22e0f78c8af6774e37128b
+      size: 696911
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.bed
+      hash: md5
+      md5: 0f30209139035b66ca9b0a797161e34b
+      size: 624118
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.bed
+      hash: md5
+      md5: 89d6299b27dbcf3a36f67ef77a8f0387
+      size: 692978
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.bed
+      hash: md5
+      md5: b2bf25fcb1a797f84c91ecf19d16c06d
+      size: 240872
+    - path: data/reference/antinoise/hg38-PLAIN-canonical
+      hash: md5
+      md5: c9f73a403f42d0f1037296ef09f98c22.dir
+      size: 6238305254
+      nfiles: 48
+    - path: src/positive_foregrounds_antinoise.sh
+      hash: md5
+      md5: f51c3b9a2c4bc7ef1dfd994faf4ee08a
+      size: 2628
+      isexec: true
+    outs:
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
+      hash: md5
+      md5: 88aaff94c543c7a4ce70a4cd7e38669f
+      size: 13237878
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
+      hash: md5
+      md5: 5dbb7887e6eda8e1b68d388e4964d544
+      size: 5259387
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
+      hash: md5
+      md5: 46f010d571b664d1c56812174dffc2a8
+      size: 6322856
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.fa
+      hash: md5
+      md5: 10a0d3752724488025d7eeb57e5be0c3
+      size: 5142928
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.fa
+      hash: md5
+      md5: 5018947cc0d3b6c75601a1697da94d9d
+      size: 2208705
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.fa
+      hash: md5
+      md5: 0a534f29a9c9354f8bdde84b5e438b8d
+      size: 3113710
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.fa
+      hash: md5
+      md5: c1ea52748469742240a6af7d368413e6
+      size: 4307371
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.fa
+      hash: md5
+      md5: 82a66207e67ff8fdc67d5ec9547246af
+      size: 4231965
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.fa
+      hash: md5
+      md5: f39ba32d100635f135fc710383e2430e
+      size: 4579671
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.fa
+      hash: md5
+      md5: 0098a110198a10c76602b78dc247c3da
+      size: 2446068
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.fa
+      hash: md5
+      md5: 018842d2c2e20cafd4922f0da14c6650
+      size: 2513693
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.fa
+      hash: md5
+      md5: 7e93abe6978846336dcf1d153040e18e
+      size: 9190954
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.fa
+      hash: md5
+      md5: 8bee9e32fb44906d5b934722cab5de82
+      size: 3626600
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.fa
+      hash: md5
+      md5: 8b09cbf524c51b1a83d65e48e8581e6d
+      size: 1506943
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.fa
+      hash: md5
+      md5: 5939aac52a283d9647c710c5e2918c81
+      size: 2517650
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.fa
+      hash: md5
+      md5: 30c45bd1a63913588975782ecbaaaab8
+      size: 6801921
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.fa
+      hash: md5
+      md5: 870fbf87730ae48bcc3538b5649ba78f
+      size: 6085932
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.fa
+      hash: md5
+      md5: e335283bcdbfbfd76c30b34a441a5515
+      size: 6413396
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.fa
+      hash: md5
+      md5: d2020735aac8a9d97bc5d3be44747c42
+      size: 8039216
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.fa
+      hash: md5
+      md5: 60a8e2fb6a116b43e4ffcca4a139712f
+      size: 5599973
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.fa
+      hash: md5
+      md5: a36ed7877a5d5d7084a5d7960cafaa61
+      size: 5051531
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.fa
+      hash: md5
+      md5: 37ea6f39729fd1e71a5f021dc96fbb9b
+      size: 5498655
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.fa
+      hash: md5
+      md5: 8e94605d2057213e75055c6c1ca2b28d
+      size: 1961105
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/longext_many.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+  build_background_generator_GRCh38_antinoise:
+    cmd: python3 src/build_antinoise_split.py
+    deps:
+    - path: ../antinoise/src/background_genome_mono.cpp
+      hash: md5
+      md5: 9789bddddab268dc94f854ad231e4618
+      size: 28275
+    - path: ../antinoise/src/chromosome_len.h
+      hash: md5
+      md5: 5b5a21ec57586e562a204ae36f4ae906
+      size: 86349
+    - path: ../antinoise/src/chromosome_name.h
+      hash: md5
+      md5: f22db595d88993f83df0611e8c03cdb1
+      size: 2051
+    - path: src/build_antinoise_split.py
+      hash: md5
+      md5: d7d3d801b665fac8c9606d31b3af2e32
+      size: 5831
+      isexec: true
+    outs:
+    - path: bin/background_genome_mono_split.exe
+      hash: md5
+      md5: 792f86841f8e30b61bbf8327eda5d55e
+      size: 62272
+      isexec: true
+  generate_background_candidates_GRCh38_antinoise_real:
+    cmd: sbatch --wait slurm/genomic_backgrounds.sh
+    deps:
+    - path: bin/background_genome_mono_split.exe
+      hash: md5
+      md5: 792f86841f8e30b61bbf8327eda5d55e
+      size: 62272
+      isexec: true
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
+      hash: md5
+      md5: 88aaff94c543c7a4ce70a4cd7e38669f
+      size: 13237878
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
+      hash: md5
+      md5: 5dbb7887e6eda8e1b68d388e4964d544
+      size: 5259387
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
+      hash: md5
+      md5: 46f010d571b664d1c56812174dffc2a8
+      size: 6322856
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.fa
+      hash: md5
+      md5: 10a0d3752724488025d7eeb57e5be0c3
+      size: 5142928
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.fa
+      hash: md5
+      md5: 5018947cc0d3b6c75601a1697da94d9d
+      size: 2208705
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.fa
+      hash: md5
+      md5: 0a534f29a9c9354f8bdde84b5e438b8d
+      size: 3113710
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.fa
+      hash: md5
+      md5: c1ea52748469742240a6af7d368413e6
+      size: 4307371
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.fa
+      hash: md5
+      md5: 82a66207e67ff8fdc67d5ec9547246af
+      size: 4231965
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.fa
+      hash: md5
+      md5: f39ba32d100635f135fc710383e2430e
+      size: 4579671
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.fa
+      hash: md5
+      md5: 0098a110198a10c76602b78dc247c3da
+      size: 2446068
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.fa
+      hash: md5
+      md5: 018842d2c2e20cafd4922f0da14c6650
+      size: 2513693
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.fa
+      hash: md5
+      md5: 7e93abe6978846336dcf1d153040e18e
+      size: 9190954
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.fa
+      hash: md5
+      md5: 8bee9e32fb44906d5b934722cab5de82
+      size: 3626600
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.fa
+      hash: md5
+      md5: 8b09cbf524c51b1a83d65e48e8581e6d
+      size: 1506943
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.fa
+      hash: md5
+      md5: 5939aac52a283d9647c710c5e2918c81
+      size: 2517650
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.fa
+      hash: md5
+      md5: 30c45bd1a63913588975782ecbaaaab8
+      size: 6801921
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.fa
+      hash: md5
+      md5: 870fbf87730ae48bcc3538b5649ba78f
+      size: 6085932
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.fa
+      hash: md5
+      md5: e335283bcdbfbfd76c30b34a441a5515
+      size: 6413396
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.fa
+      hash: md5
+      md5: d2020735aac8a9d97bc5d3be44747c42
+      size: 8039216
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.fa
+      hash: md5
+      md5: 60a8e2fb6a116b43e4ffcca4a139712f
+      size: 5599973
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.fa
+      hash: md5
+      md5: a36ed7877a5d5d7084a5d7960cafaa61
+      size: 5051531
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.fa
+      hash: md5
+      md5: 37ea6f39729fd1e71a5f021dc96fbb9b
+      size: 5498655
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.fa
+      hash: md5
+      md5: 8e94605d2057213e75055c6c1ca2b28d
+      size: 1961105
+    - path: data/reference/antinoise/hg38-PLAIN-canonical-masked
+      hash: md5
+      md5: 2ba5e20258c2dda160c98b2785f69209.dir
+      size: 3088269856
+      nfiles: 24
+    - path: slurm/genomic_backgrounds.sh
+      hash: md5
+      md5: fc1e18d30e89bdd105ac6e129190c81a
+      size: 4990
+      isexec: true
+    outs:
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 9cadf147e7c725289f41297cf53b7e75
+      size: 2127427
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 968b16a3cb75bbbbe050e1fa39a3c43a
+      size: 28008745
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outd
+      hash: md5
+      md5: ebcf2c5455a188f99cedfa94542ac1ca
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: be63482cd5e89a2f0ff6e122ba9a99b4
+      size: 76357
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: df911c02ece35ce37a18898d0e7a3591
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 3e1ccec55c7ba25606a5e4284da9bf60
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 7e0f1bc6af473870914ff76e323ffe24
+      size: 14810
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.bed
+      hash: md5
+      md5: bd4800302e07f7fff53af70839bf5407
+      size: 861068
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 12732960429cac0aecb99bae48008bca
+      size: 11114753
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 540038f1fbead87a317ef8eaaafdabce
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 06bef43d17d13dd1813a52d4a034101d
+      size: 30651
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: b9d0b3272a9a798c268a1e2f30d9b74b
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 3684e6152ca6310223575b7f95b0df35
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 6fb944054f94c334919b5a98619accfa
+      size: 5973
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.bed
+      hash: md5
+      md5: fa2c2c1115efc981fe02ca01abd4b6ca
+      size: 1032728
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 4bf58bad1e5c8d5bc9b5ae3f17b874d9
+      size: 13357251
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outd
+      hash: md5
+      md5: a9a94cc74422321498d5fb259d360afa
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 1a30d8582f81ca711ec5a2fd6913ba38
+      size: 36955
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 2761c1777c6bee315fe82a05df36dbab
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 2f6cc7a7c1b4e3d83a436b3bd3d22564
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 649d801218d0286d3d7c0dbc463626d3
+      size: 7198
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 94e3f9a3e02417fdfc025e60994eda76
+      size: 840075
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.fa
+      hash: md5
+      md5: d8d2a5978545b1a42762d9d51191429a
+      size: 10864283
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outd
+      hash: md5
+      md5: db4f24d7186884c547615a733d166992
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 2aecd63e36788069c86136e2dd4f75c5
+      size: 29791
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 815978cd90e9d9b3ba32c19f78d117ec
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 010995fba7edd546dd49fa574ad3c43e
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 041e997a4e3739cc844dda5012ae1192
+      size: 5803
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.bed
+      hash: md5
+      md5: ebf35fd6fdf0660be7d83d9fdc39d5ae
+      size: 356878
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 63cde2bad4ac2e0776e051f0cccc34bc
+      size: 4659032
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outd
+      hash: md5
+      md5: d1afac85e603225cddd910597e53c741
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 5fc1be48122de65fed10269b4c48e5fe
+      size: 12984
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: fbdf48b98da6ca51b0a320450e046b8c
+      size: 112
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 574ba855acb4d565fbf06b3b7e8cddd7
+      size: 1103
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 0275d002ce362428abb5d61629540967
+      size: 2541
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.bed
+      hash: md5
+      md5: dceacc19a02d89b9e4b5ea324de52e53
+      size: 504470
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 3a3f24d0f7fa7b2d0fee4e27673d3dbf
+      size: 6569250
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 5b67538aed63d84fe49e0de41accb74f
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: ad89bded29e6d5005d9e672437bf5ccf
+      size: 18240
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 15b08498aca032900b3d1ef344dfd1a3
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 1ff5755764e9117afe632ca9ce7e3ba3
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 0a9e6356c9300a2ed2778a149689a9f7
+      size: 3547
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 3214f559f718bc05c392e43935cabd67
+      size: 696354
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 8877ebbe715a67453cf5d20d5f9b3566
+      size: 9104134
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 9c8dbf6226565fc8c6bd2ab4cd664318
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: cc4217acfa7fceb9d85475d809863f83
+      size: 25064
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 978103e0ddc0995ce6f13f475c7e40f7
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 3bb45c93c6880bb2537163ec12d8d4d5
+      size: 1242
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: b2f55471962a27cc0a49d2d4c2e769c5
+      size: 4859
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 94766a2be746e27193fdad6d096030b9
+      size: 677658
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.fa
+      hash: md5
+      md5: b25aeb4775a76040eebb1e89c7831303
+      size: 8945871
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 8bbc9529099af321ac7f7aaac1935b61
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: a32c8b63f0238458f866f5fd7e9977b0
+      size: 24517
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: a231219d533ad04efae6494964e51050
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outm
+      hash: md5
+      md5: ba2c1815c676065f7263e23225c5d516
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 2b347c963cb50ad82d191e41de593dcf
+      size: 4744
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.bed
+      hash: md5
+      md5: a6e0509dc11c3acdf43e669847a2aa7d
+      size: 735281
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 929a70a3e6024bbf79640dd9871ec7d3
+      size: 9674781
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 525ab52f5dc878faeb278358a9d15c22
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: d9319b29ca15cb2df1a6de167262c666
+      size: 26241
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 06ef2c7fd0c3b7ebb4b4035712e86fdd
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 9daf529f56c7ef18dc81196e9f5d4306
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: a8627863bc08c83acad686ab93e9f3df
+      size: 5100
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 67599662dea1e37bd47c16736e307f29
+      size: 388853
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 834895f88efa4567941aaa64fcbf2981
+      size: 5165809
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 793b8ab09d3f4f9c77e89ab4ed251492
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 2de94a91b3f7393baac51f70db373bed
+      size: 14349
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: f2ac45b14cf455e18d5dd448ca4fbd32
+      size: 112
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 8e5460757f5c1c120b4bd39549f611b0
+      size: 1104
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 6ce336796685e069064a6c4f500e8b42
+      size: 2797
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 675fc8046feb62c8c4da8992bebdc515
+      size: 408578
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.fa
+      hash: md5
+      md5: d425e2d39cf6e5317b027ba648ca01b0
+      size: 5314808
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 7b2a9a5ca1bd47887a3fd94ad47ebe96
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 0c57b5eb8b520f56aa5fa904bf71fb25
+      size: 14843
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: d755dbca60de7de416056c2b92d19957
+      size: 112
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outm
+      hash: md5
+      md5: b544df3624ba9fe7696842f7735c2c00
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: ac612d6b6333e15e63c3cf0adf719a6d
+      size: 2893
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.bed
+      hash: md5
+      md5: ae466d87a63116952a267a6de8dda65f
+      size: 1478440
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.fa
+      hash: md5
+      md5: a56ef74608cbb42d985d83f7f32c4339
+      size: 19439140
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 13f9e65223e4d606fd39d5d24b31f770
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: f93b60ea048c0973a814266e7c696525
+      size: 53159
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 4d044d2991bc48912e00249a1fd84d1d
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outm
+      hash: md5
+      md5: e93a2cd1d290dc673bd8cba59cf471a4
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 051c27c06d6090195f698c13380596d6
+      size: 10338
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.bed
+      hash: md5
+      md5: e02fa161d0f218dc7a0648a7f35cbccf
+      size: 576482
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 29f677a2c98543bb7fa49838e50d811f
+      size: 7652255
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 6df60af1ac6aa08059cb1dae435e16e2
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 70604285a04d517271de29eac1ed599f
+      size: 21127
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 6869316a41f05a8f26af3936a2da3187
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 6ce0ddb68ec4ee0e8a838360ccc833b3
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 5f275dcc48bf7d9c5e717f8e3dde04c4
+      size: 4111
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 8c6e22bf8864156ee7015fba6abb367e
+      size: 238276
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.fa
+      hash: md5
+      md5: eca643a04c72c894e3340ee11b41f9b0
+      size: 3173628
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 7f9e32c890f50092b353d18e4e5cb64d
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 9f0c9ee0ca8f6773624d73e78e6cee86
+      size: 8751
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 78d215fa126f275b3c19773fd6b4453e
+      size: 112
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outm
+      hash: md5
+      md5: b3dabb24efdc8086e4a2ecfb6a6314f8
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 491a982237b83ff89c94be48d23792e8
+      size: 1741
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.bed
+      hash: md5
+      md5: cce3429a2b46124bf6127a78ec01d88c
+      size: 411504
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 0019d18e95dbe5b70c6b56b94420e47a
+      size: 5316038
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 604fc68b7c999efd8b39f353e8cee395
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 17f81c93664545cba927e10365c368e6
+      size: 14509
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 43d679324a1cb0814e5aafd4b4afb489
+      size: 112
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outm
+      hash: md5
+      md5: a2af849877dc725037db1432bb6bab78
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 68eaf435b4a9fa4173a1c3170058da3f
+      size: 2829
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 3c3c7cbca8bfe378fb3d3a29e6065856
+      size: 1085684
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.fa
+      hash: md5
+      md5: ce9a7dd31c23fb00089447dd4c4ee629
+      size: 14383991
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 3018a005efb4f1dd116355dc6311a5e9
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 17635a3097d3cd0a87dcea52d9643f7f
+      size: 39297
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: b9abe078def44ec8fd1e44cc53f93b7d
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outm
+      hash: md5
+      md5: b230106495cf01492444b25618b59fc8
+      size: 1242
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: e5c68e94c2b859134199e2bdbce526bf
+      size: 7639
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 631e3f2284d7c8bd53e349057fa4aed7
+      size: 965368
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.fa
+      hash: md5
+      md5: f41f2d4a1211af8412ef9d48029f190a
+      size: 12858685
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outd
+      hash: md5
+      md5: c7e3bcc5a70fb1184a5683a767ca2c92
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: a640d17990ac0fb592024e4156969345
+      size: 35231
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 625c0c60472de663afebc3c65a3f7ae7
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 6383ce8a5b09b468df476ad2f403fd0b
+      size: 1244
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 8e7eaf3c8e7e7caabc3b1f28fa08b0f1
+      size: 6840
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 205531c20c3f4b0d0a35a4dcd24d73bd
+      size: 1019497
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 1f1b57cdb92be409182fb2610ce12769
+      size: 13549485
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outd
+      hash: md5
+      md5: f8aaf56d724c652733e37a88e160ed37
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 97ea5ab5c4fbd84afb562c9cd3ec0eea
+      size: 37346
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 4ac4303bbc57440c8a13eaefe77c6814
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 41fadfb7e50c3b9bb3ee5ad5d3053b6c
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 9224bf3933e99a8eb31984aa5ff6d294
+      size: 7292
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.bed
+      hash: md5
+      md5: dd63b0ada9bb8ec647d33349cd3ba4be
+      size: 1273619
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 73d9885da496f96000e7c282ca3c95ab
+      size: 17001660
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outd
+      hash: md5
+      md5: abcf576d41ca52a39a123233b40092cb
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 6de25fa70f03ebb3a890050cb6ea682e
+      size: 46490
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 8bb0d020d5dbf6de91d6327b68e72317
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outm
+      hash: md5
+      md5: cf29dc2426323f74cd03331996f4ad38
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: dc44969683ae3a895c488d7936257cf7
+      size: 9067
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.bed
+      hash: md5
+      md5: b25ed4952b8f40ee09e93c7796154160
+      size: 883299
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.fa
+      hash: md5
+      md5: f1286bf7bbf4f97daa77651e15b1a27c
+      size: 11824665
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 4200f8227a505e34afb201f4afee0e22
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: b0eadc0dfab45d8f3de84e35911fdc5b
+      size: 32225
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 09eafea01198bd274f3ae23d62079273
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outm
+      hash: md5
+      md5: a60ceae51d56afdd7d8cb9ec4af2138a
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 4e3d96e7d8638b739a6e2a194e7018e2
+      size: 6260
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 989ea93f50419f4336046fa3145c4a7d
+      size: 788832
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.fa
+      hash: md5
+      md5: d71246ceead949a13f971f487d058019
+      size: 10665998
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 3c40f1f7cb23f0826a24b7fef09146c3
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 273200c6e2711bfbc94787981f875750
+      size: 29297
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 4274c311bd0b6a60919c4c5b783fb451
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outm
+      hash: md5
+      md5: b76288e5f397fdded3d2ddc7e3036058
+      size: 1384
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: 7e3aa8978ea7f28782214fa549187b79
+      size: 5689
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.bed
+      hash: md5
+      md5: 8b4f8673c81dd9079335f66915ef2189
+      size: 869159
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 8a70177facd2a1c6847f0c369ba18a8d
+      size: 11594631
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outd
+      hash: md5
+      md5: b7c64b635b19e24b05dc2810f687bded
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: f6445690a20e6d3467d4d31e6744f167
+      size: 32020
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: 3232c57edf773bd11f0bd4743710028b
+      size: 114
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outm
+      hash: md5
+      md5: b31e4001afe63557d737015148f738a4
+      size: 1102
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: e8ec1711dd98530bf5692d523551621b
+      size: 6229
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.bed
+      hash: md5
+      md5: acdd4dc36bb73f91559f75bad8c225d5
+      size: 307362
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.fa
+      hash: md5
+      md5: 78ca835918a83a2aed33198be351b50b
+      size: 4135277
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outd
+      hash: md5
+      md5: 5f1cbff91296566aa945ff5ecb355973
+      size: 424
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outd_one
+      hash: md5
+      md5: 846ad8c311bdc28a2b114637ae83b157
+      size: 11460
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outlog
+      hash: md5
+      md5: bc65cf38e1458ce5c9992ce8b7dd7019
+      size: 112
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outm
+      hash: md5
+      md5: 4e7c5a7968b364a5055870e5d387a4c1
+      size: 1387
+    - path: 
+        data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outm_one
+      hash: md5
+      md5: ada5afdd2978f87fa058f1a25ed8de36
+      size: 2254
+  select_backgrounds_GRCh38_antinoise_real:
+    cmd: python3 src/select_GRCh38_antinoise_backgrounds.py --seed 42 
+      --overwrite
+    deps:
+    - path: data/processed/consolidation/GRCh38/chromosomes
+      hash: md5
+      md5: 8aa0a8b1ab6b947a20bb2ee7dcd84610.dir
+      size: 647014660
+      nfiles: 322
+    - path: data/raw/GRCh38-cCREs.bed
+      hash: md5
+      md5: 60c14d9f4903a7bd13b3db4f290ace48
+      size: 129083055
+    - path: src/select_GRCh38_antinoise_backgrounds.py
+      hash: md5
+      md5: 32a17ccf04961fa10c295bc08931d4f5
+      size: 22159
+      isexec: true
+    outs:
+    - path: data/processed/consolidation/GRCh38/antinoise_selection
+      hash: md5
+      md5: 09444ceda9a2e095f7a1a089a3d409af.dir
+      size: 40958927
+      nfiles: 2
+    - path: data/processed/evn/GRCh38/real
+      hash: md5
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
+    - path: data/processed/svn/GRCh38/real
+      hash: md5
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
+  cross_predict_ls_gkm_GRCh38_real:
+    cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_ls_gkm.sh
+    deps:
+    - path: ../lsgkm/bin/gkmpredict
+      hash: md5
+      md5: c55cfc447d7882ad8e41427f06e00e68
+      size: 135016
+      isexec: true
+    - path: data/processed/evn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: b1c43ccbb0f161fcae77e3c47653178e
+      size: 5267163
+    - path: data/processed/evn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 1b39293d0ba6538add143a4f7baf6ae8
+      size: 4912105
+    - path: data/processed/evn/GRCh38/real/train_100_neg.fa
+      hash: md5
+      md5: 2b1b3a93f0b9e0ad507698b7eb28ed86
+      size: 51055820
+    - path: data/processed/evn/GRCh38/real/train_100_pos.fa
+      hash: md5
+      md5: 36342c6d84ed3c007d2cbf7a50c96c1e
+      size: 47678262
+    - path: data/processed/evn/GRCh38/real/validation_neg.fa
+      hash: md5
+      md5: c5c3963c7a1bcc287146d782e95e97fc
+      size: 5003940
+    - path: data/processed/evn/GRCh38/real/validation_pos.fa
+      hash: md5
+      md5: 0b6b2ee3b31937c8e82d2c05cffbce05
+      size: 4664809
+    - path: data/processed/svn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: 0e37d76e08ccb19df2cb5e049dc8679e
+      size: 4456042
+    - path: data/processed/svn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 8a70c991e2a6c294923236fc5d3a7615
+      size: 4145864
+    - path: data/processed/svn/GRCh38/real/train_100_neg.fa
+      hash: md5
+      md5: 6fbb5146e79ebd1386ce2595660b5fdc
+      size: 47450922
+    - path: data/processed/svn/GRCh38/real/train_100_pos.fa
+      hash: md5
+      md5: 39fe557fb909c4c6215e7bfb5a0a20bd
+      size: 44172190
+    - path: data/processed/svn/GRCh38/real/validation_neg.fa
+      hash: md5
+      md5: b4f2de32cfe679203be8d28462e43f0a
+      size: 9004646
+    - path: data/processed/svn/GRCh38/real/validation_pos.fa
+      hash: md5
+      md5: 36864581249854a64f67d8fea321b7f8
+      size: 8367592
+    - path: models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: 6682e3f4e8db2ec809427202538c5db3.dir
+      size: 742701844
+      nfiles: 21
+    - path: models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: 6769b0e84bc2b9122b110c045a93b102.dir
+      size: 675626175
+      nfiles: 21
+    - path: slurm/cross_predict_ls_gkm.sh
+      hash: md5
+      md5: f8f09e66ef6d9b1e9bb1dc86a9d6aa99
+      size: 3395
+      isexec: true
+    outs:
+    - path: predictions/cross_task/GRCh38/ls-gkm/real
+      hash: md5
+      md5: 0e79f749341fbf128841f0531bdf739e.dir
+      size: 236309819
+      nfiles: 252
+  prepare_GRCh38_evs:
+    cmd: python3 src/make_GRCh38_evs_training.py --seed 42 --overwrite
+    deps:
+    - path: data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+      hash: md5
+      md5: 694ee26c9d8ace5a549eb57af79acd76
+      size: 4593180
+    - path: data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+      hash: md5
+      md5: e47002df5f9f31839c14c554cd7c18b9
+      size: 2901394
+    - path: data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+      hash: md5
+      md5: 03ee6c828734c8193f826a6c2823a656
+      size: 2744693
+    - path: data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+      hash: md5
+      md5: 98dc5457bc3850e36a227134c071eafe
+      size: 2849600
+    - path: data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+      hash: md5
+      md5: d23e449bfcb6ea72496d207eb0559ab2
+      size: 1735552
+    - path: data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+      hash: md5
+      md5: 160e68ea64c894d3713e2b062636a678
+      size: 1888191
+    - path: data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+      hash: md5
+      md5: da8ccd0195dc7c3029b9f87e5540c39e
+      size: 1718520
+    - path: data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+      hash: md5
+      md5: f41b7f5c36a054239a8af83caeab1c78
+      size: 1762941
+    - path: data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+      hash: md5
+      md5: 72d069dc1d49bdfb00ff13224f5463cd
+      size: 2284245
+    - path: data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+      hash: md5
+      md5: fb51f1e252dcceb44996e36e6c7dce04
+      size: 1347420
+    - path: data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+      hash: md5
+      md5: 65296051192e093326e6f9c794288876
+      size: 1627019
+    - path: data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+      hash: md5
+      md5: 6512a66690bc3e98b02763717154e9ef
+      size: 4813853
+    - path: data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+      hash: md5
+      md5: ffe77ff2fa6cf41e0943a2141b67fc46
+      size: 1525710
+    - path: data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+      hash: md5
+      md5: dcdd75ee8a5d5902ba976ba59c45c6a6
+      size: 709207
+    - path: data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+      hash: md5
+      md5: 79e35b216fa19c1692af161537662cd7
+      size: 1097790
+    - path: data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+      hash: md5
+      md5: ee39d92ca73617e8a5540a1730cebc4c
+      size: 3845548
+    - path: data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+      hash: md5
+      md5: 7184f53fe623a2e816a575c674ddcbfa
+      size: 2763406
+    - path: data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+      hash: md5
+      md5: c0d49dc7a5be0b82746a6add2e75e2b6
+      size: 3209181
+    - path: data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+      hash: md5
+      md5: 75c86caff361b901946289b2cd242bf6
+      size: 3125588
+    - path: data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+      hash: md5
+      md5: d6b14df91eeef83c4ff8a2586541eca1
+      size: 3016807
+    - path: data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+      hash: md5
+      md5: 0c08b62feeb851834890d0889651e600
+      size: 2773652
+    - path: data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+      hash: md5
+      md5: 14643295d986f0f80e1f329dd22d41bd
+      size: 2331899
+    - path: data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+      hash: md5
+      md5: 7cb9205bb222d34f49e1925558f1c724
+      size: 1464362
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4123944e83f4168a30b7d66d739083d1
+      size: 1058842
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c04e67b10bd7044a1da3067359a282d9
+      size: 289515
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 510d5373fdb7131eb148fb665af0e42d
+      size: 449775
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 4835b6dda5d3d05c8b830a2de53254bd
+      size: 282589
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7e1357b74bf55709c290bd1e3e56620d
+      size: 53583
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 7202f5cc77e659c632d9356c7af4aad0
+      size: 148252
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: b202398bfd7f303d9bc0317d15f9cc0e
+      size: 319743
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 268e65e17aef49ac8b47500facf65f86
+      size: 300069
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 66f1bd44a61410d3352a7502c6a7f11e
+      size: 281780
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: c86a09c9e6ca6e9e7f258db743579b33
+      size: 129093
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 09b7f49028a356c8579033e2bcb41383
+      size: 108995
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2662f08d54be436904337cd4202967cb
+      size: 529702
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 93c8259f0cd18993157800e35bd595c2
+      size: 256005
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: abeeae3264d114e1c98f4792cb4db208
+      size: 97382
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 213e72a833966c2dd32500274caf2631
+      size: 178636
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 59282f99e229d2e92916a9ceed4f6c42
+      size: 350848
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 933b3f9884b3d9329599662ad7d74367
+      size: 398084
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 3a47f563b8556d211dbbbfb4a7c7c568
+      size: 384998
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 1d461b062dbe8ca5a1085ca96743cec7
+      size: 589958
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: ef3ad67a1c401130576de75bd5b44d2a
+      size: 307640
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 294db78116fb8ecca29adf4d90030e88
+      size: 266384
+    - path: 
+        data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: f132e55ae40c0446f8f5e2e7ee2b04f1
+      size: 392350
+    - path: 
+        data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+      hash: md5
+      md5: 2d2f8d5a571146e7d93a782a937b0b08
+      size: 51940
+    - path: data/reference/hg38.fa
+      hash: md5
+      md5: 398383d7d1242c685510f330067d308e
+      size: 3365209190
+    - path: src/make_GRCh38_evs_training.py
+      hash: md5
+      md5: e45352bff96afbaa9fce1647f3ce8ab1
+      size: 14679
+      isexec: true
+    outs:
+    - path: data/processed/evs/GRCh38/chroms/chrom1
+      hash: md5
+      md5: 55c0bcf79454ab5ec52b252783ae7d2d.dir
+      size: 19812457
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom10
+      hash: md5
+      md5: ab0de241a3d11a5ec90751767e8e9eb4.dir
+      size: 5373510
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom11
+      hash: md5
+      md5: bb5711384d8f2e61275294bb4f0ebc4c.dir
+      size: 8251219
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom12
+      hash: md5
+      md5: d0e0abe161edeccf181646a2f2a108b5.dir
+      size: 5198244
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom13
+      hash: md5
+      md5: a9337a4b8db91b1c060c51c0fb11b8b1.dir
+      size: 986334
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom14
+      hash: md5
+      md5: 425dd236d15d1a0922a77a9058f697ce.dir
+      size: 2742407
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom15
+      hash: md5
+      md5: c75ed3b7b67c1cca6d34621f1fd218fe.dir
+      size: 5921647
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom16
+      hash: md5
+      md5: fd0b7f4b1d87a0ef9b10ccacf0d8e8bd.dir
+      size: 5615229
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom17
+      hash: md5
+      md5: 6320ce996771313a1f1d5e918df097d2.dir
+      size: 5198262
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom18
+      hash: md5
+      md5: b003d814fe1705d3cc46b3bfd9eadf85.dir
+      size: 2430468
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom19
+      hash: md5
+      md5: 44e16aef03bd59d125f48c133e4dd02d.dir
+      size: 2002205
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom2
+      hash: md5
+      md5: 5875cf09feed52d02fedded4ac9654f0.dir
+      size: 9834258
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom20
+      hash: md5
+      md5: b6bc76cfa26f2b755960abc2712b6c75.dir
+      size: 4747931
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom21
+      hash: md5
+      md5: bcbf7a77098ab4f9d94fbcdda065739b.dir
+      size: 1805619
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom22
+      hash: md5
+      md5: fd979d0b712eb397f98669174e50faab.dir
+      size: 3272843
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom3
+      hash: md5
+      md5: 08e2e070d2de37a2352846d7fbe462b4.dir
+      size: 6580169
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom4
+      hash: md5
+      md5: 8045986c72b2472f34920a1641ad9718.dir
+      size: 7447276
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom5
+      hash: md5
+      md5: 3e6f565a4648e92359355171ef93f506.dir
+      size: 7205402
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom6
+      hash: md5
+      md5: a84302278d1d7c363891c2ab45bb5143.dir
+      size: 11145267
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom7
+      hash: md5
+      md5: 263722aae02faa77b27fcc7d759bb179.dir
+      size: 5686432
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom8
+      hash: md5
+      md5: c916be9be7c7c44071cb08485df4c060.dir
+      size: 5024504
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chrom9
+      hash: md5
+      md5: 3ccf9ba1267c635404df62ed61f51b4e.dir
+      size: 7165446
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chromX
+      hash: md5
+      md5: a5c1a11f41671f340f76b8bd965f38ee.dir
+      size: 972546
+      nfiles: 5
+    - path: data/processed/evs/GRCh38/chroms/chromosome_counts.csv
+      hash: md5
+      md5: d9cb098fa4a4819ae609ade6b5a4938c
+      size: 721
+    - path: data/processed/evs/GRCh38/evs_manifest.tsv
+      hash: md5
+      md5: c42d6b447c70934c5dc1823b082c7ca5
+      size: 7039
+    - path: data/processed/evs/GRCh38/evs_summary.json
+      hash: md5
+      md5: c84cacd422cc1cfd70f0b7144d64bcbf
+      size: 812
+    - path: data/processed/evs/GRCh38/real
+      hash: md5
+      md5: 71d21496b9735a01cf6ef7ea2472b63b.dir
+      size: 239178435
+      nfiles: 96
+  prepare_lsgkm_results_GRCh38_evs_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evs
+      --model lsgkm --background-type real
+    deps:
+    - path: data/processed/evs/GRCh38/real
+      hash: md5
+      md5: 71d21496b9735a01cf6ef7ea2472b63b.dir
+      size: 239178435
+      nfiles: 96
+    - path: predictions/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: 013624ec7ab2435ca16a492601112de0.dir
+      size: 388617099
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 3eef36384ec0fa21bd72bdae641e5906
+      size: 17921
+  prepare_alphagenome_results_GRCh38_evs_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evs
+      --model alphagenome --background-type real
+    deps:
+    - path: data/processed/evs/GRCh38/real
+      hash: md5
+      md5: 71d21496b9735a01cf6ef7ea2472b63b.dir
+      size: 239178435
+      nfiles: 96
+    - path: models/evs/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: dca145e5104afaa08c5159ff892eecaf.dir
+      size: 264907300
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/evs/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: fe265a96fe3ec1e307e553fd3ff26882
+      size: 22852
+  render_native_report_GRCh38_evs_real:
+    cmd: bash src/render_native_evs_report.sh
+    deps:
+    - path: reports/native_evs_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: caacb1eb72741e624781ae8299fbfba2
+      size: 4551
+    - path: 
+        results/evs/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: fe265a96fe3ec1e307e553fd3ff26882
+      size: 22852
+    - path: 
+        results/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 3eef36384ec0fa21bd72bdae641e5906
+      size: 17921
+    - path: src/render_native_evs_report.sh
+      hash: md5
+      md5: 18de1185257a22746dd895d43c9250f3
+      size: 721
+      isexec: true
+    outs:
+    - path: reports/rendered/evs/native_evs_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: e50a46a602b629e3bac7c8abac35e54a
+      size: 1676822
+  train_ls_gkm_GRCh38_evs_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real --array=1-12%5 
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
+      --export=ALL,DATASET=evs,TYPE=real --array=13-21%5 --mem=200G 
+      slurm/train_ls_gkm.sh
+    deps:
+    - path: ../lsgkm/bin/gkmtrain
+      hash: md5
+      md5: 038f6f2fc057ff25a66b32faa6895343
+      size: 143632
+      isexec: true
+    - path: data/processed/evs/GRCh38/real
+      hash: md5
+      md5: 71d21496b9735a01cf6ef7ea2472b63b.dir
+      size: 239178435
+      nfiles: 96
+    - path: slurm/train_ls_gkm.sh
+      hash: md5
+      md5: 8b9930b88a5031647dfab37fbbaa9333
+      size: 3986
+      isexec: true
+    outs:
+    - path: models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: bbc97b51527dae8a9738d7a8efdc667d.dir
+      size: 970146684
+      nfiles: 21
+  train_alphagenome_GRCh38_evs_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real 
+      slurm/train_alphagenome.sh
+    deps:
+    - path: data/processed/evs/GRCh38/real
+      hash: md5
+      md5: 71d21496b9735a01cf6ef7ea2472b63b.dir
+      size: 239178435
+      nfiles: 96
+    - path: slurm/train_alphagenome.sh
+      hash: md5
+      md5: be65c3ad1eb35adf94237a7055290349
+      size: 5159
+      isexec: true
+    - path: src/predict_alphagenome.py
+      hash: md5
+      md5: 8eaef98cf8d10878faf4c6a7116ebeaf
+      size: 6619
+      isexec: true
+    - path: src/train_alphagenome.py
+      hash: md5
+      md5: 052a1077bcded5458cd7581643485548
+      size: 26432
+      isexec: true
+    - path: weights/fold_0_weights.safetensors
+      hash: md5
+      md5: cb18d831d374e6dab5758a39021a719b
+      size: 920635044
+    outs:
+    - path: models/evs/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: dca145e5104afaa08c5159ff892eecaf.dir
+      size: 264907300
+      nfiles: 126
+  test_ls_gkm_GRCh38_evs_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real 
+      slurm/predict_ls_gkm.sh
+    deps:
+    - path: ../lsgkm/bin/gkmpredict
+      hash: md5
+      md5: c55cfc447d7882ad8e41427f06e00e68
+      size: 135016
+      isexec: true
+    - path: data/processed/evs/GRCh38/real
+      hash: md5
+      md5: 71d21496b9735a01cf6ef7ea2472b63b.dir
+      size: 239178435
+      nfiles: 96
+    - path: models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: bbc97b51527dae8a9738d7a8efdc667d.dir
+      size: 970146684
+      nfiles: 21
+    - path: slurm/predict_ls_gkm.sh
+      hash: md5
+      md5: ad3bd582c4763c60a54bac7d638e6ea8
+      size: 2651
+      isexec: true
+    outs:
+    - path: predictions/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+      hash: md5
+      md5: 013624ec7ab2435ca16a492601112de0.dir
+      size: 388617099
       nfiles: 126

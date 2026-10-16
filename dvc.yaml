@@ -69,7 +69,8 @@ stages:
     - data/processed/evn/hepg2/ls-gkm/training/outer5/train_neg.fa
     - data/processed/evn/hepg2/ls-gkm/training/outer5/train_pos.fa
   train_ls_gkm_hepg2:
-    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>' 'output_prefix'
+    cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>'
+      'output_prefix'
     deps:
     - ../lsgkm/bin/gkmtrain
     - data/processed/evn/hepg2/ls-gkm/training/outer1/train_neg.fa
@@ -109,7 +110,8 @@ stages:
     - predictions/evn/hepg2/ls-gkm/outer5/pos_scores.txt
     - predictions/evn/hepg2/ls-gkm/outer5/neg_scores.txt
   merge_pos_negs_hepg2:
-    cmd: for i in 1 2 3 4 5; do Rscript src/prepare_lsgkm_scores.R predictions/evn/hepg2/ls-gkm/outer"$i"; done
+    cmd: for i in 1 2 3 4 5; do Rscript src/prepare_lsgkm_scores.R
+      predictions/evn/hepg2/ls-gkm/outer"$i"; done
     deps:
     - predictions/evn/hepg2/ls-gkm/outer1/neg_scores.txt
     - predictions/evn/hepg2/ls-gkm/outer1/pos_scores.txt
@@ -129,8 +131,9 @@ stages:
     - results/evn/hepg2/ls-gkm/outer4.tsv
     - results/evn/hepg2/ls-gkm/outer5.tsv
   merge_outers_hepg2:
-    cmd: "{\n  head -n 1 results/evn/hepg2/ls-gkm/outer1.tsv\n  for FOLD in 1 2 3 4 5; do\n    tail -n +2 \"results/evn/hepg2/ls-gkm/outer$FOLD.tsv\"\
-      \n  done\n} > results/evn/hepg2/ls-gkm/all_outers.tsv\n"
+    cmd: "{\n  head -n 1 results/evn/hepg2/ls-gkm/outer1.tsv\n  for FOLD in 1 2 3
+      4 5; do\n    tail -n +2 \"results/evn/hepg2/ls-gkm/outer$FOLD.tsv\"\n  done\n\
+      } > results/evn/hepg2/ls-gkm/all_outers.tsv\n"
     deps:
     - results/evn/hepg2/ls-gkm/outer1.tsv
     - results/evn/hepg2/ls-gkm/outer2.tsv
@@ -219,7 +222,129 @@ stages:
     - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
     - data/processed/svn/GRCh38/chroms/chromY/chromY_GRCh38_Silencer_ELS.bed
-  prepare_masked_reference_GRCh38:
+  evn_downsampling_and_consolidation_GRCh38:
+    cmd: python3 src/make_GRCh38_positive_consolidation.py --seed 42 --overwrite
+    deps:
+    - src/make_GRCh38_positive_consolidation.py
+    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+    outs:
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/evn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/svn_pos.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.bed
+    - data/processed/consolidation/GRCh38/manifest.tsv
+    - data/processed/consolidation/GRCh38/summary.json
+  prepare_masked_reference_GRCh38_antinoise:
     cmd: bash src/prepare_masked_reference.sh
     deps:
     - ../antinoise/bin/linux/area_self_overlap.exe
@@ -232,590 +357,894 @@ stages:
     outs:
     - data/processed/GRCh38-cCREs_sorted.bed
     - data/raw/GRCh38-cCREs.bed
-    - data/reference/hg38-PLAIN-canonical
-    - data/reference/hg38-PLAIN-canonical-masked
-    - data/reference/hg38-PLAIN-canonical-merged
-    - data/reference/hg38-chroms
+    - data/reference/antinoise/hg38-PLAIN-canonical
+    - data/reference/antinoise/hg38-PLAIN-canonical-masked
+    - data/reference/antinoise/hg38-PLAIN-canonical-merged
+    - data/reference/antinoise/hg38-chroms
     - data/reference/hg38.fa
-  build_negatives_GRCh38_evn_and_svn:
+  positive_foregrounds_GRCh38_antinoise:
+    cmd: bash src/positive_foregrounds_antinoise.sh
+    deps:
+    - ../antinoise/bin/linux/longext_many.exe
+    - src/positive_foregrounds_antinoise.sh
+    - data/reference/antinoise/hg38-PLAIN-canonical
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.bed
+    outs:
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/longext_many.log
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/longext_many.log
+  build_background_generator_GRCh38_antinoise:
+    cmd: python3 src/build_antinoise_split.py
+    deps:
+    - src/build_antinoise_split.py
+    - ../antinoise/src/background_genome_mono.cpp
+    - ../antinoise/src/chromosome_name.h
+    - ../antinoise/src/chromosome_len.h
+    outs:
+    - bin/background_genome_mono_split.exe
+  generate_background_candidates_GRCh38_antinoise_real:
     cmd: sbatch --wait slurm/genomic_backgrounds.sh
     deps:
+    - bin/background_genome_mono_split.exe
     - slurm/genomic_backgrounds.sh
-    - data/reference/hg38-PLAIN-canonical-masked
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
+    - data/reference/antinoise/hg38-PLAIN-canonical-masked
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.fa
     outs:
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed:
-        persist: true
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed:
-        persist: true
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa:
-        persist: true
-  build_chromosome_training_GRCh38:
-    cmd: python3 src/make_GRCh38_clean_training.py --seed 42 --overwrite
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/antinoise_candidates_2x.outlog
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.bed
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outm
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outd
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outm_one
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outd_one
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/antinoise_candidates_2x.outlog
+  select_backgrounds_GRCh38_antinoise_real:
+    cmd: python3 src/select_GRCh38_antinoise_backgrounds.py --seed 42
+      --overwrite
     deps:
-    - src/make_GRCh38_clean_training.py
-    - src/grch38_training_utils.py
-    - data/processed/svn/GRCh38/GRCh38_Silencer_ELS.trimmed.bed
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.fa
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.bed
-    - data/processed/evn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom1/neg1x_chrom1_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom2/neg1x_chrom2_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom3/neg1x_chrom3_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom4/neg1x_chrom4_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom5/neg1x_chrom5_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom6/neg1x_chrom6_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom7/neg1x_chrom7_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom8/neg1x_chrom8_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom9/neg1x_chrom9_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom10/neg1x_chrom10_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom11/neg1x_chrom11_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom12/neg1x_chrom12_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom13/neg1x_chrom13_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom14/neg1x_chrom14_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom15/neg1x_chrom15_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom16/neg1x_chrom16_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom17/neg1x_chrom17_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom18/neg1x_chrom18_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom19/neg1x_chrom19_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom20/neg1x_chrom20_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom21/neg1x_chrom21_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chrom22/neg1x_chrom22_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.fa
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.bed
-    - data/processed/svn/GRCh38/chroms/chromX/neg1x_chromX_GRCh38_Silencer_ELS.fa
+    - data/processed/consolidation/GRCh38/chromosomes
+    - data/raw/GRCh38-cCREs.bed
+    - src/select_GRCh38_antinoise_backgrounds.py
     outs:
-    - data/processed/evn/GRCh38/training
-    - data/processed/svn/GRCh38/training
-  train_ls_gkm_GRCh38_evn:
-    cmd: sbatch --wait --export=ALL,DATASET=evn --array=1-13%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait --export=ALL,DATASET=evn
-      --array=14-21%5 --mem=200G slurm/train_ls_gkm.sh
+    - data/processed/consolidation/GRCh38/antinoise_selection
+    - data/processed/evn/GRCh38/real
+    - data/processed/svn/GRCh38/real
+
+  generate_background_candidates_GRCh38_antinoise_synthetic:
+    cmd: bash src/make_synthetics.sh
+    deps:
+    - ../antinoise/bin/linux/mix0.exe
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/consolidation.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/consolidation.fa
+    - src/make_synthetics.sh
+    outs:
+    - data/processed/consolidation/GRCh38/chromosomes/chrom1/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom10/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom11/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom12/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom13/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom14/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom15/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom16/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom17/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom18/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom19/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom2/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom20/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom21/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom22/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom3/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom4/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom5/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom6/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom7/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom8/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chrom9/synthetic_antinoise_candidates_2x.fa
+    - data/processed/consolidation/GRCh38/chromosomes/chromX/synthetic_antinoise_candidates_2x.fa
+  select_backgrounds_GRCh38_antinoise_synthetic:
+    cmd: python3 src/select_GRCh38_antinoise_synthetic_backgrounds.py --seed 42
+      --overwrite
+    deps:
+    - data/processed/consolidation/GRCh38/chromosomes
+    - src/select_GRCh38_antinoise_synthetic_backgrounds.py
+    outs:
+    - data/processed/consolidation/GRCh38/antinoise_synthetic_selection
+    - data/processed/evn/GRCh38/synthetic
+    - data/processed/svn/GRCh38/synthetic
+
+  train_ls_gkm_GRCh38_evn_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real --array=1-13%5
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
+      --export=ALL,DATASET=evn,TYPE=real --array=14-21%5 --mem=200G
+      slurm/train_ls_gkm.sh
     deps:
     - slurm/train_ls_gkm.sh
-    - data/processed/evn/GRCh38/training
+    - data/processed/evn/GRCh38/real
     - ../lsgkm/bin/gkmtrain
     outs:
-    - models/evn/GRCh38/ls-gkm/chromosome_learning_curves:
-        persist: true
-  train_alphagenome_GRCh38_evn:
-    cmd: sbatch --wait --export=ALL,DATASET=evn slurm/train_alphagenome.sh
+    - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
+  train_ls_gkm_GRCh38_evn_synthetic:
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=synthetic --array=1-13%5
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
+      --export=ALL,DATASET=evn,TYPE=synthetic --array=14-21%5 --mem=200G
+      slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - data/processed/evn/GRCh38/synthetic
+    - ../lsgkm/bin/gkmtrain
+    outs:
+    - models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+  train_alphagenome_GRCh38_evn_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real
+      slurm/train_alphagenome.sh
     deps:
     - slurm/train_alphagenome.sh
     - src/train_alphagenome.py
     - src/predict_alphagenome.py
     - weights/fold_0_weights.safetensors
-    - data/processed/evn/GRCh38/training
+    - data/processed/evn/GRCh38/real
     outs:
-    - models/evn/GRCh38/alphagenome/chromosome_learning_curves:
-        persist: true
-  test_ls_gkm_GRCh38_evn:
-    cmd: sbatch --wait --export=ALL,DATASET=evn slurm/predict_ls_gkm.sh
-    deps:
-    - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
-    - data/processed/evn/GRCh38/training
-    - models/evn/GRCh38/ls-gkm/chromosome_learning_curves
-    outs:
-    - predictions/evn/GRCh38/ls-gkm/chromosome_learning_curves:
-        persist: true
-  render_lsgkm_report_GRCh38_evn:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn --model lsgkm --output results/evn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_lsgkm_report.sh evn
-    deps:
-    - src/prepare_GRCh38_chromosome_learning_results.py
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
-    - data/processed/evn/GRCh38/training
-    - predictions/evn/GRCh38/ls-gkm/chromosome_learning_curves
-    outs:
-    - results/evn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/evn/lsgkm_GRCh38_chromosome_learning.html
-  render_alphagenome_report_GRCh38_evn:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn --model alphagenome --output results/evn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_alphagenome_report.sh evn
-    deps:
-    - src/prepare_GRCh38_chromosome_learning_results.py
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
-    - data/processed/evn/GRCh38/training
-    - models/evn/GRCh38/alphagenome/chromosome_learning_curves
-    outs:
-    - results/evn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/evn/alphagenome_GRCh38_chromosome_learning.html
-  train_ls_gkm_GRCh38_svn:
-    cmd: sbatch --wait --export=ALL,DATASET=svn --array=1-12%5 --mem=100G slurm/train_ls_gkm.sh && sbatch --wait --export=ALL,DATASET=svn
-      --array=13-21%5 --mem=200G slurm/train_ls_gkm.sh
-    deps:
-    - slurm/train_ls_gkm.sh
-    - data/processed/svn/GRCh38/training
-    - ../lsgkm/bin/gkmtrain
-    outs:
-    - models/svn/GRCh38/ls-gkm/chromosome_learning_curves:
-        persist: true
-  train_alphagenome_GRCh38_svn:
-    cmd: sbatch --wait --export=ALL,DATASET=svn slurm/train_alphagenome.sh
+    - models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
+  train_alphagenome_GRCh38_evn_synthetic:
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=synthetic
+      slurm/train_alphagenome.sh
     deps:
     - slurm/train_alphagenome.sh
     - src/train_alphagenome.py
     - src/predict_alphagenome.py
     - weights/fold_0_weights.safetensors
-    - data/processed/svn/GRCh38/training
+    - data/processed/evn/GRCh38/synthetic
     outs:
-    - models/svn/GRCh38/alphagenome/chromosome_learning_curves:
-        persist: true
-  test_ls_gkm_GRCh38_svn:
-    cmd: sbatch --wait --export=ALL,DATASET=svn slurm/predict_ls_gkm.sh
+    - models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+  test_ls_gkm_GRCh38_evn_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real
+      slurm/predict_ls_gkm.sh
     deps:
     - slurm/predict_ls_gkm.sh
     - ../lsgkm/bin/gkmpredict
-    - data/processed/svn/GRCh38/training
-    - models/svn/GRCh38/ls-gkm/chromosome_learning_curves
+    - data/processed/evn/GRCh38/real
+    - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
-    - predictions/svn/GRCh38/ls-gkm/chromosome_learning_curves:
-        persist: true
-  render_lsgkm_report_GRCh38_svn:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn --model lsgkm --output results/svn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_lsgkm_report.sh svn
+    - predictions/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
+  test_ls_gkm_GRCh38_evn_synthetic:
+    cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=synthetic
+      slurm/predict_ls_gkm.sh
+    deps:
+    - slurm/predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/evn/GRCh38/synthetic
+    - models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+    outs:
+    - predictions/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+  prepare_lsgkm_results_GRCh38_evn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model lsgkm --background-type real
     deps:
     - src/prepare_GRCh38_chromosome_learning_results.py
+    - data/processed/evn/GRCh38/real
+    - predictions/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
+    outs:
+    - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+  render_lsgkm_report_GRCh38_evn_real:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh evn real
+    deps:
     - src/render_GRCh38_lsgkm_report.sh
     - reports/chromosome_learning_GRCh38_results.Rmd
-    - data/processed/svn/GRCh38/training
-    - predictions/svn/GRCh38/ls-gkm/chromosome_learning_curves
+    - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
     outs:
-    - results/svn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/svn/lsgkm_GRCh38_chromosome_learning.html
-  render_alphagenome_report_GRCh38_svn:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn --model alphagenome --output results/svn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
-      && bash src/render_GRCh38_alphagenome_report.sh svn
+    - reports/rendered/evn/real/lsgkm_GRCh38_chromosome_learning.html
+  prepare_lsgkm_results_GRCh38_evn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model lsgkm --background-type synthetic
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - data/processed/evn/GRCh38/synthetic
+    - predictions/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+    outs:
+    - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+  render_lsgkm_report_GRCh38_evn_synthetic:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh evn synthetic
+    deps:
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+    outs:
+    - reports/rendered/evn/synthetic/lsgkm_GRCh38_chromosome_learning.html
+  render_alphagenome_report_GRCh38_evn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model alphagenome --background-type real && bash
+      src/render_GRCh38_alphagenome_report.sh evn real
     deps:
     - src/prepare_GRCh38_chromosome_learning_results.py
     - src/render_GRCh38_alphagenome_report.sh
     - reports/chromosome_learning_GRCh38_results.Rmd
-    - data/processed/svn/GRCh38/training
-    - models/svn/GRCh38/alphagenome/chromosome_learning_curves
+    - data/processed/evn/GRCh38/real
+    - models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
     outs:
-    - results/svn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/svn/alphagenome_GRCh38_chromosome_learning.html
-  cross_predict_ls_gkm_GRCh38:
-    cmd: sbatch --wait --export=ALL slurm/cross_predict_ls_gkm.sh
+    - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/evn/real/alphagenome_GRCh38_chromosome_learning.html
+  render_alphagenome_report_GRCh38_evn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model alphagenome --background-type synthetic && bash
+      src/render_GRCh38_alphagenome_report.sh evn synthetic
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/evn/GRCh38/synthetic
+    - models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+    outs:
+    - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/evn/synthetic/alphagenome_GRCh38_chromosome_learning.html
+  train_ls_gkm_GRCh38_svn_real:
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real --array=1-13%5
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
+      --export=ALL,DATASET=svn,TYPE=real --array=14-21%5 --mem=200G
+      slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - data/processed/svn/GRCh38/real
+    - ../lsgkm/bin/gkmtrain
+    outs:
+    - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
+  train_ls_gkm_GRCh38_svn_synthetic:
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=synthetic --array=1-12%5
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
+      --export=ALL,DATASET=svn,TYPE=synthetic --array=13-21%5 --mem=200G
+      slurm/train_ls_gkm.sh
+    deps:
+    - slurm/train_ls_gkm.sh
+    - data/processed/svn/GRCh38/synthetic
+    - ../lsgkm/bin/gkmtrain
+    outs:
+    - models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+  train_alphagenome_GRCh38_svn_real:
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real
+      slurm/train_alphagenome.sh
+    deps:
+    - slurm/train_alphagenome.sh
+    - src/train_alphagenome.py
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    - data/processed/svn/GRCh38/real
+    outs:
+    - models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
+  train_alphagenome_GRCh38_svn_synthetic:
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=synthetic
+      slurm/train_alphagenome.sh
+    deps:
+    - slurm/train_alphagenome.sh
+    - src/train_alphagenome.py
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    - data/processed/svn/GRCh38/synthetic
+    outs:
+    - models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+  test_ls_gkm_GRCh38_svn_real:
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real
+      slurm/predict_ls_gkm.sh
+    deps:
+    - slurm/predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/svn/GRCh38/real
+    - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
+    outs:
+    - predictions/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
+  test_ls_gkm_GRCh38_svn_synthetic:
+    cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=synthetic
+      slurm/predict_ls_gkm.sh
+    deps:
+    - slurm/predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/svn/GRCh38/synthetic
+    - models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+    outs:
+    - predictions/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+  prepare_lsgkm_results_GRCh38_svn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model lsgkm --background-type real
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - data/processed/svn/GRCh38/real
+    - predictions/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
+    outs:
+    - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+  render_lsgkm_report_GRCh38_svn_real:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh svn real
+    deps:
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    outs:
+    - reports/rendered/svn/real/lsgkm_GRCh38_chromosome_learning.html
+  prepare_lsgkm_results_GRCh38_svn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model lsgkm --background-type synthetic
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - data/processed/svn/GRCh38/synthetic
+    - predictions/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+    outs:
+    - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+  render_lsgkm_report_GRCh38_svn_synthetic:
+    cmd: bash src/render_GRCh38_lsgkm_report.sh svn synthetic
+    deps:
+    - src/render_GRCh38_lsgkm_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+    outs:
+    - reports/rendered/svn/synthetic/lsgkm_GRCh38_chromosome_learning.html
+  render_alphagenome_report_GRCh38_svn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model alphagenome --background-type real && bash
+      src/render_GRCh38_alphagenome_report.sh svn real
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/svn/GRCh38/real
+    - models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
+    outs:
+    - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/svn/real/alphagenome_GRCh38_chromosome_learning.html
+  render_alphagenome_report_GRCh38_svn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model alphagenome --background-type synthetic && bash
+      src/render_GRCh38_alphagenome_report.sh svn synthetic
+    deps:
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    - src/render_GRCh38_alphagenome_report.sh
+    - reports/chromosome_learning_GRCh38_results.Rmd
+    - data/processed/svn/GRCh38/synthetic
+    - models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+    outs:
+    - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - reports/rendered/svn/synthetic/alphagenome_GRCh38_chromosome_learning.html
+  render_alphagenome_background_comparison_report_GRCh38_evn:
+    cmd: bash src/render_alphagenome_background_comparison_report.sh evn
+    deps:
+    - src/render_alphagenome_background_comparison_report.sh
+    - reports/alphagenome_background_comparison_GRCh38_results.Rmd
+    - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    outs:
+    - reports/rendered/evn/real_vs_synthetic/alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html
+  render_alphagenome_background_comparison_report_GRCh38_svn:
+    cmd: bash src/render_alphagenome_background_comparison_report.sh svn
+    deps:
+    - src/render_alphagenome_background_comparison_report.sh
+    - reports/alphagenome_background_comparison_GRCh38_results.Rmd
+    - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    outs:
+    - reports/rendered/svn/real_vs_synthetic/alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html
+  cross_predict_ls_gkm_GRCh38_real:
+    cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_ls_gkm.sh
     deps:
     - slurm/cross_predict_ls_gkm.sh
     - ../lsgkm/bin/gkmpredict
-    - data/processed/evn/GRCh38/training
-    - data/processed/svn/GRCh38/training
-    - models/evn/GRCh38/ls-gkm/chromosome_learning_curves
-    - models/svn/GRCh38/ls-gkm/chromosome_learning_curves
+    - data/processed/evn/GRCh38/real/train_100_pos.fa
+    - data/processed/evn/GRCh38/real/train_100_neg.fa
+    - data/processed/evn/GRCh38/real/validation_pos.fa
+    - data/processed/evn/GRCh38/real/validation_neg.fa
+    - data/processed/evn/GRCh38/real/test_pos.fa
+    - data/processed/evn/GRCh38/real/test_neg.fa
+    - data/processed/svn/GRCh38/real/train_100_pos.fa
+    - data/processed/svn/GRCh38/real/train_100_neg.fa
+    - data/processed/svn/GRCh38/real/validation_pos.fa
+    - data/processed/svn/GRCh38/real/validation_neg.fa
+    - data/processed/svn/GRCh38/real/test_pos.fa
+    - data/processed/svn/GRCh38/real/test_neg.fa
+    - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
+    - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
-    - predictions/cross_task/GRCh38/ls-gkm:
-        persist: true
-  cross_predict_alphagenome_GRCh38:
-    cmd: sbatch --wait --export=ALL slurm/cross_predict_alphagenome.sh
+    - predictions/cross_task/GRCh38/ls-gkm/real
+  cross_predict_ls_gkm_GRCh38_synthetic:
+    cmd: sbatch --wait --export=ALL,TYPE=synthetic slurm/cross_predict_ls_gkm.sh
+    deps:
+    - slurm/cross_predict_ls_gkm.sh
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/evn/GRCh38/synthetic/train_100_pos.fa
+    - data/processed/evn/GRCh38/synthetic/train_100_neg.fa
+    - data/processed/evn/GRCh38/synthetic/validation_pos.fa
+    - data/processed/evn/GRCh38/synthetic/validation_neg.fa
+    - data/processed/evn/GRCh38/synthetic/test_pos.fa
+    - data/processed/evn/GRCh38/synthetic/test_neg.fa
+    - data/processed/svn/GRCh38/synthetic/train_100_pos.fa
+    - data/processed/svn/GRCh38/synthetic/train_100_neg.fa
+    - data/processed/svn/GRCh38/synthetic/validation_pos.fa
+    - data/processed/svn/GRCh38/synthetic/validation_neg.fa
+    - data/processed/svn/GRCh38/synthetic/test_pos.fa
+    - data/processed/svn/GRCh38/synthetic/test_neg.fa
+    - models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+    - models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
+    outs:
+    - predictions/cross_task/GRCh38/ls-gkm/synthetic
+  cross_predict_alphagenome_GRCh38_real:
+    cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_alphagenome.sh
     deps:
     - slurm/cross_predict_alphagenome.sh
     - src/predict_alphagenome.py
     - weights/fold_0_weights.safetensors
-    - data/processed/evn/GRCh38/training
-    - data/processed/svn/GRCh38/training
-    - models/evn/GRCh38/alphagenome/chromosome_learning_curves
-    - models/svn/GRCh38/alphagenome/chromosome_learning_curves
+    - data/processed/evn/GRCh38/real/train_100_pos.fa
+    - data/processed/evn/GRCh38/real/train_100_neg.fa
+    - data/processed/evn/GRCh38/real/validation_pos.fa
+    - data/processed/evn/GRCh38/real/validation_neg.fa
+    - data/processed/evn/GRCh38/real/test_pos.fa
+    - data/processed/evn/GRCh38/real/test_neg.fa
+    - data/processed/svn/GRCh38/real/train_100_pos.fa
+    - data/processed/svn/GRCh38/real/train_100_neg.fa
+    - data/processed/svn/GRCh38/real/validation_pos.fa
+    - data/processed/svn/GRCh38/real/validation_neg.fa
+    - data/processed/svn/GRCh38/real/test_pos.fa
+    - data/processed/svn/GRCh38/real/test_neg.fa
+    - models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
+    - models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
     outs:
-    - predictions/cross_task/GRCh38/alphagenome:
-        persist: true
-  render_cross_task_reports_GRCh38:
-    cmd: bash src/render_cross_task_reports.sh && bash src/render_native_comparison_report.sh
+    - predictions/cross_task/GRCh38/alphagenome/real
+  cross_predict_alphagenome_GRCh38_synthetic:
+    cmd: sbatch --wait --export=ALL,TYPE=synthetic
+      slurm/cross_predict_alphagenome.sh
+    deps:
+    - slurm/cross_predict_alphagenome.sh
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    - data/processed/evn/GRCh38/synthetic/train_100_pos.fa
+    - data/processed/evn/GRCh38/synthetic/train_100_neg.fa
+    - data/processed/evn/GRCh38/synthetic/validation_pos.fa
+    - data/processed/evn/GRCh38/synthetic/validation_neg.fa
+    - data/processed/evn/GRCh38/synthetic/test_pos.fa
+    - data/processed/evn/GRCh38/synthetic/test_neg.fa
+    - data/processed/svn/GRCh38/synthetic/train_100_pos.fa
+    - data/processed/svn/GRCh38/synthetic/train_100_neg.fa
+    - data/processed/svn/GRCh38/synthetic/validation_pos.fa
+    - data/processed/svn/GRCh38/synthetic/validation_neg.fa
+    - data/processed/svn/GRCh38/synthetic/test_pos.fa
+    - data/processed/svn/GRCh38/synthetic/test_neg.fa
+    - models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+    - models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+    outs:
+    - predictions/cross_task/GRCh38/alphagenome/synthetic
+  render_alphagenome_native_comparison_report_GRCh38_real:
+    cmd: bash src/render_alphagenome_native_comparison_report.sh real
+    deps:
+    - src/render_alphagenome_native_comparison_report.sh
+    - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+    - results/cross_task/GRCh38/real/alphagenome_native_vs_cross_metrics.tsv
+    outs:
+    - reports/rendered/comparison/real/alphagenome_native_evn_vs_svn_GRCh38_chromosome_learning.html
+  render_cross_task_reports_GRCh38_real:
+    cmd: bash src/render_cross_task_reports.sh real && bash
+      src/render_native_comparison_report.sh real
     deps:
     - src/render_cross_task_reports.sh
     - src/render_native_comparison_report.sh
     - src/prepare_cross_task_metrics.py
     - reports/cross_task_chromosome_learning_GRCh38_results.Rmd
     - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
-    - predictions/cross_task/GRCh38/ls-gkm
-    - predictions/cross_task/GRCh38/alphagenome
-    - results/evn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
-    - results/evn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
-    - results/svn/GRCh38/ls-gkm/chromosome_learning_curves/metrics.tsv
-    - results/svn/GRCh38/alphagenome/chromosome_learning_curves/metrics.tsv
+    - predictions/cross_task/GRCh38/ls-gkm/real
+    - predictions/cross_task/GRCh38/alphagenome/real
+    - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     outs:
-    - results/cross_task/GRCh38/native_vs_cross_metrics.tsv
-    - reports/rendered/comparison/native_vs_cross_GRCh38_chromosome_learning.html
-    - reports/rendered/comparison/native_evn_vs_svn_GRCh38_chromosome_learning.html
+    - results/cross_task/GRCh38/real/native_vs_cross_metrics.tsv
+    - reports/rendered/cross-task/real/native_vs_cross_GRCh38_chromosome_learning.html
+    - reports/rendered/comparison/real/native_evn_vs_svn_GRCh38_chromosome_learning.html
+  render_comparison_reports_GRCh38_synthetic:
+    cmd: bash src/render_native_comparison_report.sh synthetic
+    deps:
+    - src/render_cross_task_reports.sh
+    - src/render_native_comparison_report.sh
+    - src/prepare_cross_task_metrics.py
+    - reports/cross_task_chromosome_learning_GRCh38_results.Rmd
+    - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+    - predictions/cross_task/GRCh38/ls-gkm/synthetic
+    - predictions/cross_task/GRCh38/alphagenome/synthetic
+    - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    outs:
+    - results/cross_task/GRCh38/synthetic/native_vs_cross_metrics.tsv
+    - reports/rendered/comparison/synthetic/native_evn_vs_svn_GRCh38_chromosome_learning.html
+  prepare_GRCh38_evs:
+    cmd: python3 src/make_GRCh38_evs_training.py --seed 42 --overwrite
+    deps:
+    - data/processed/evn/GRCh38/chroms/chrom1/chrom1_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom10/chrom10_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom11/chrom11_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom12/chrom12_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom13/chrom13_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom14/chrom14_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom15/chrom15_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom16/chrom16_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom17/chrom17_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom18/chrom18_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom19/chrom19_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom2/chrom2_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom20/chrom20_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom21/chrom21_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom22/chrom22_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom3/chrom3_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom4/chrom4_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom5/chrom5_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom6/chrom6_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom7/chrom7_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom8/chrom8_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chrom9/chrom9_GRCh38_ELS.bed
+    - data/processed/evn/GRCh38/chroms/chromX/chromX_GRCh38_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom1/chrom1_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom10/chrom10_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom11/chrom11_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom12/chrom12_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom13/chrom13_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom14/chrom14_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom15/chrom15_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom16/chrom16_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom17/chrom17_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom18/chrom18_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom19/chrom19_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom2/chrom2_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom20/chrom20_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom21/chrom21_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom22/chrom22_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom3/chrom3_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom4/chrom4_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom5/chrom5_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom6/chrom6_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom7/chrom7_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom8/chrom8_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chrom9/chrom9_GRCh38_Silencer_ELS.bed
+    - data/processed/svn/GRCh38/chroms/chromX/chromX_GRCh38_Silencer_ELS.bed
+    - data/reference/hg38.fa
+    - src/make_GRCh38_evs_training.py
+    outs:
+    - data/processed/evs/GRCh38/chroms/chrom1
+    - data/processed/evs/GRCh38/chroms/chrom10
+    - data/processed/evs/GRCh38/chroms/chrom11
+    - data/processed/evs/GRCh38/chroms/chrom12
+    - data/processed/evs/GRCh38/chroms/chrom13
+    - data/processed/evs/GRCh38/chroms/chrom14
+    - data/processed/evs/GRCh38/chroms/chrom15
+    - data/processed/evs/GRCh38/chroms/chrom16
+    - data/processed/evs/GRCh38/chroms/chrom17
+    - data/processed/evs/GRCh38/chroms/chrom18
+    - data/processed/evs/GRCh38/chroms/chrom19
+    - data/processed/evs/GRCh38/chroms/chrom2
+    - data/processed/evs/GRCh38/chroms/chrom20
+    - data/processed/evs/GRCh38/chroms/chrom21
+    - data/processed/evs/GRCh38/chroms/chrom22
+    - data/processed/evs/GRCh38/chroms/chrom3
+    - data/processed/evs/GRCh38/chroms/chrom4
+    - data/processed/evs/GRCh38/chroms/chrom5
+    - data/processed/evs/GRCh38/chroms/chrom6
+    - data/processed/evs/GRCh38/chroms/chrom7
+    - data/processed/evs/GRCh38/chroms/chrom8
+    - data/processed/evs/GRCh38/chroms/chrom9
+    - data/processed/evs/GRCh38/chroms/chromX
+    - data/processed/evs/GRCh38/chroms/chromosome_counts.csv
+    - data/processed/evs/GRCh38/evs_manifest.tsv
+    - data/processed/evs/GRCh38/evs_summary.json
+    - data/processed/evs/GRCh38/real
+  train_ls_gkm_GRCh38_evs_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real --array=1-12%5
+      --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
+      --export=ALL,DATASET=evs,TYPE=real --array=13-21%5 --mem=200G
+      slurm/train_ls_gkm.sh
+    deps:
+    - ../lsgkm/bin/gkmtrain
+    - data/processed/evs/GRCh38/real
+    - slurm/train_ls_gkm.sh
+    outs:
+    - models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+  train_alphagenome_GRCh38_evs_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real
+      slurm/train_alphagenome.sh
+    deps:
+    - data/processed/evs/GRCh38/real
+    - slurm/train_alphagenome.sh
+    - src/train_alphagenome.py
+    - src/predict_alphagenome.py
+    - weights/fold_0_weights.safetensors
+    outs:
+    - models/evs/GRCh38/alphagenome/real/chromosome_learning_curves
+  test_ls_gkm_GRCh38_evs_real:
+    cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real
+      slurm/predict_ls_gkm.sh
+    deps:
+    - ../lsgkm/bin/gkmpredict
+    - data/processed/evs/GRCh38/real
+    - models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+    - slurm/predict_ls_gkm.sh
+    outs:
+    - predictions/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+  prepare_lsgkm_results_GRCh38_evs_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evs
+      --model lsgkm --background-type real
+    deps:
+    - data/processed/evs/GRCh38/real
+    - predictions/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    outs:
+    - results/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+  prepare_alphagenome_results_GRCh38_evs_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evs
+      --model alphagenome --background-type real
+    deps:
+    - data/processed/evs/GRCh38/real
+    - models/evs/GRCh38/alphagenome/real/chromosome_learning_curves
+    - src/prepare_GRCh38_chromosome_learning_results.py
+    outs:
+    - results/evs/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+  render_native_report_GRCh38_evs_real:
+    cmd: bash src/render_native_evs_report.sh
+    deps:
+    - reports/native_evs_chromosome_learning_GRCh38_results.Rmd
+    - results/evs/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - src/render_native_evs_report.sh
+    outs:
+    - reports/rendered/evs/native_evs_GRCh38_chromosome_learning.html

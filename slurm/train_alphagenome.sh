@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-## Independent EVN/SVN frozen-encoder AlphaGenome cumulative chromosome learning curves.
-## Select DATASET=evn|svn at submission.
+## Independent EVN/SVN/EVS frozen-encoder AlphaGenome cumulative chromosome learning curves.
+## Select DATASET=evn|svn|evs at submission.
 #SBATCH --job-name=train_alphagenome
 #SBATCH --chdir=/work/zarazuanav/workspace/repos/ccre-classification
 #SBATCH --output=/work/zarazuanav/workspace/repos/ccre-classification/slurmlogs/train_alphagenome.%A_%a.out
@@ -25,8 +25,17 @@ python_bin="${CONDA_PREFIX}/bin/python"
 "${python_bin}" -c 'import numpy, torch, sklearn, alphagenome_pytorch; assert torch.cuda.is_available(), "CUDA unavailable"; print(torch.cuda.get_device_name(0))'
 
 dataset="${DATASET:-evn}"
-if [[ "${dataset}" != "evn" && "${dataset}" != "svn" ]]; then
-  echo "ERROR: DATASET must be evn or svn; received: ${dataset}" >&2
+type="${TYPE:-real}"
+if [[ "${dataset}" != "evn" && "${dataset}" != "svn" && "${dataset}" != "evs" ]]; then
+  echo "ERROR: DATASET must be evn, svn, or evs; received: ${dataset}" >&2
+  exit 1
+fi
+if [[ "${type}" != "real" && "${type}" != "synthetic" ]]; then
+  echo "ERROR: TYPE must be real or synthetic; received: ${type}" >&2
+  exit 1
+fi
+if [[ "${dataset}" == "evs" && "${type}" != "real" ]]; then
+  echo "ERROR: EVS is available only under TYPE=real" >&2
   exit 1
 fi
 
@@ -35,12 +44,12 @@ task_id="${SLURM_ARRAY_TASK_ID}"
 chromosomes=(3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 X)
 (( task_id >= 1 && task_id <= ${#chromosomes[@]} )) || { echo "ERROR: task must be 1-${#chromosomes[@]}" >&2; exit 1; }
 endpoint="${chromosomes[task_id-1]}"; name="through_chr${endpoint}"
-root="data/processed/${dataset}/GRCh38/training"
+root="data/processed/${dataset}/GRCh38/${type}"
 train_100_pos="${root}/train_100_pos.fa"; train_100_neg="${root}/train_100_neg.fa"
 validation_pos="${root}/validation_pos.fa"; validation_neg="${root}/validation_neg.fa"
 test_pos="${root}/test_pos.fa"; test_neg="${root}/test_neg.fa"
 weights="weights/fold_0_weights.safetensors"
-out_dir="models/${dataset}/GRCh38/alphagenome/chromosome_learning_curves/${name}"
+out_dir="models/${dataset}/GRCh38/alphagenome/${type}/chromosome_learning_curves/${name}"
 prefix="${out_dir}/${name}"
 for f in "${train_100_pos}" "${train_100_neg}" "${validation_pos}" "${validation_neg}" "${test_pos}" "${test_neg}" "${weights}"; do
   [[ -s "${f}" ]] || { echo "ERROR: missing/empty ${f}" >&2; exit 1; }
@@ -63,12 +72,12 @@ done
 n_pos="$(grep -c '^>' "${pos}")"; n_neg="$(grep -c '^>' "${neg}")"
 (( n_pos > 0 && n_pos == n_neg )) || { echo "ERROR: unbalanced cumulative input" >&2; exit 1; }
 mkdir -p "${out_dir}"
-echo "Task dataset: ${dataset}; checkpoint: ${name}; chromosomes: ${included[*]}; observations: $((n_pos+n_neg))"
+echo "Task dataset: ${dataset}; background: ${type}; checkpoint: ${name}; chromosomes: ${included[*]}; observations: $((n_pos+n_neg))"
 echo "Validation chr1; test chr2; output ${prefix}"
 "${python_bin}" src/train_alphagenome.py "${pos}" "${neg}" "${validation_pos}" "${validation_neg}" "${test_pos}" "${test_neg}" "${prefix}" \
   --weights "${weights}" --sequence-length 256 --hidden-size 1024 --dropout 0.1 \
   --batch-size 32 --num-workers "${SLURM_CPUS_PER_TASK}" --epochs 10 \
-  --dataset-name "${dataset}" --checkpoint-name "${name}" \
+  --dataset-name "${dataset}" --background-type "${type}" --checkpoint-name "${name}" \
   --training-chromosomes "$(IFS=,; echo "${included[*]}")" \
   --learning-rate 0.001 --weight-decay 0.0 --patience 5 --seed 42 \
   --threshold 0.5 --max-shift 15 --rc-prob 0.5 --shift-prob 0.5

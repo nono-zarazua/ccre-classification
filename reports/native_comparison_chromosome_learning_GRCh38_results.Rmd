@@ -28,7 +28,10 @@ if (is.null(params$metrics_path) || is.null(params$negative_kind))
 metrics_path <- normalizePath(params$metrics_path, mustWork=TRUE)
 all_metrics <- read.delim(metrics_path, sep="\t", stringsAsFactors=FALSE,
                           check.names=FALSE)
-if (nrow(all_metrics) != 504) stop("Expected 504 source rows; found ", nrow(all_metrics))
+model_count <- dplyr::n_distinct(all_metrics$model)
+expected_source_rows <- 126 * model_count
+if (nrow(all_metrics) != expected_source_rows)
+  stop("Expected ", expected_source_rows, " source rows; found ", nrow(all_metrics))
 x <- all_metrics |>
   filter(evaluation_mode == "native") |>
   mutate(Model=recode(model, lsgkm="LS-GKM", alphagenome="AlphaGenome"),
@@ -37,7 +40,10 @@ x <- all_metrics |>
                              validation="Validation", test="Test"),
                       levels=c("Full training pool", "Validation", "Test")),
          ranking_error=1-auroc)
-if (nrow(x) != 252) stop("Expected 252 native rows; found ", nrow(x))
+expected_native_rows <- 126 * model_count
+if (nrow(x) != expected_native_rows)
+  stop("Expected ", expected_native_rows, " native rows; found ", nrow(x))
+model_scope <- paste(sort(unique(x$Model)), collapse=" and ")
 has_full_model <- !is.null(params$full_model_prefix) && nzchar(params$full_model_prefix)
 full_metrics <- NULL
 if (has_full_model) {
@@ -84,8 +90,8 @@ native_plot <- function(metric, title, label) {
 # Scope and interpretation
 
 This report compares native enhancer-versus-negative (EVN) and
-silencer-versus-negative (SVN) performance for LS-GKM and AlphaGenome using
-`r params$negative_kind` genomic backgrounds. Chr1 is validation, chr2 is held-out
+silencer-versus-negative (SVN) performance for `r model_scope` using
+`r params$negative_kind` negative backgrounds. Chr1 is validation, chr2 is held-out
 test, and training checkpoints cumulatively add chr3 through chrX.
 
 EVN and SVN are different biological classification tasks, so vertical differences
@@ -127,7 +133,7 @@ x |> filter(checkpoint_index == max(checkpoint_index)) |>
 
 # Reproducibility notes
 
-- The report uses only native evaluations from the shared native-versus-cross metric table.
-- Both methods and all three evaluation splits use common metric-axis ranges.
+- The report uses a native-only comparison table built directly from the EVN and SVN metric tables.
+- All displayed models and all three evaluation splits use common metric-axis ranges.
 - Test data are used only for final evaluation.
 - The obsolete outer-fold stability analysis is intentionally omitted.

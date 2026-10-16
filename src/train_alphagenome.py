@@ -99,7 +99,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--patience", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
-    parser.add_argument("--dataset-name", choices=("evn", "svn"), required=True)
+    parser.add_argument("--dataset-name", choices=("evn", "svn", "evs"), required=True)
+    parser.add_argument(
+        "--background-type",
+        choices=("real", "synthetic"),
+        required=True,
+        help="Negative-background construction used for this model.",
+    )
     parser.add_argument("--checkpoint-name", required=True)
     parser.add_argument(
         "--training-chromosomes",
