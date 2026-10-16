@@ -1,5 +1,5 @@
 ---
-title: "AlphaGenome Real-versus-Synthetic Background Comparison"
+title: "Real-versus-Synthetic Background Comparison"
 subtitle: "`r params$analysis_name` | GRCh38 chromosome learning curves"
 output:
   html_document:
@@ -8,8 +8,10 @@ output:
     number_sections: true
     theme: cosmo
 params:
-  real_metrics_path: null
-  synthetic_metrics_path: null
+  alphagenome_real_metrics_path: null
+  alphagenome_synthetic_metrics_path: null
+  lsgkm_real_metrics_path: null
+  lsgkm_synthetic_metrics_path: null
   analysis_name: null
   positive_class: null
 ---
@@ -21,17 +23,20 @@ suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); l
 theme_set(theme_minimal(base_size=12) +
           theme(panel.grid.minor=element_blank(), legend.position="bottom"))
 background_colors <- c(Real="#0072B2", Synthetic="#D55E00")
-background_shapes <- c(Real=16, Synthetic=17)
+background_shapes <- c(Real=16, Synthetic=16)
+background_lines <- c(Real="solid", Synthetic="dashed")
 ```
 
 ```{r inputs, include=FALSE}
-required_params <- c("real_metrics_path", "synthetic_metrics_path",
+required_params <- c("alphagenome_real_metrics_path",
+                     "alphagenome_synthetic_metrics_path",
+                     "lsgkm_real_metrics_path", "lsgkm_synthetic_metrics_path",
                      "analysis_name", "positive_class")
 for (name in required_params)
   if (is.null(params[[name]]) || !nzchar(params[[name]]))
     stop("Missing parameter: ", name)
 
-read_metrics <- function(path, expected_kind) {
+read_metrics <- function(path, expected_kind, expected_model) {
   path <- normalizePath(path, mustWork=TRUE)
   x <- read.delim(path, sep="\t", stringsAsFactors=FALSE, check.names=FALSE)
   required <- c("model", "dataset", "negative_kind", "checkpoint_index",
@@ -40,18 +45,20 @@ read_metrics <- function(path, expected_kind) {
   missing <- setdiff(required, names(x))
   if (length(missing)) stop("Missing columns in ", path, ": ", paste(missing, collapse=", "))
   if (nrow(x) != 63) stop("Expected 63 rows in ", path, "; found ", nrow(x))
-  if (!all(x$model == "alphagenome")) stop("Non-AlphaGenome rows in ", path)
+  if (!all(x$model == expected_model)) stop("Model mismatch in ", path)
   if (!all(x$negative_kind == expected_kind)) stop("Background-type mismatch in ", path)
   x
 }
 
-real <- read_metrics(params$real_metrics_path, "real")
-synthetic <- read_metrics(params$synthetic_metrics_path, "synthetic")
-if (!identical(unique(real$dataset), unique(synthetic$dataset)))
-  stop("Dataset mismatch between real and synthetic inputs")
-
-metrics <- bind_rows(real, synthetic) |>
+metrics <- bind_rows(
+  read_metrics(params$alphagenome_real_metrics_path, "real", "alphagenome"),
+  read_metrics(params$alphagenome_synthetic_metrics_path, "synthetic", "alphagenome"),
+  read_metrics(params$lsgkm_real_metrics_path, "real", "lsgkm"),
+  read_metrics(params$lsgkm_synthetic_metrics_path, "synthetic", "lsgkm")
+) |>
   mutate(
+    Model=factor(recode(model, alphagenome="AlphaGenome", lsgkm="LS-GKM"),
+                 levels=c("AlphaGenome", "LS-GKM")),
     Background=factor(recode(negative_kind, real="Real", synthetic="Synthetic"),
                       levels=c("Real", "Synthetic")),
     Split=factor(recode(split, train_100="Full training pool",
@@ -59,7 +66,10 @@ metrics <- bind_rows(real, synthetic) |>
                  levels=c("Full training pool", "Validation", "Test")),
     ranking_error=1-auroc
   ) |>
-  arrange(Background, Split, checkpoint_index)
+  arrange(Model, Background, Split, checkpoint_index)
+
+if (nrow(metrics) != 252) stop("Expected 252 metric rows; found ", nrow(metrics))
+if (n_distinct(metrics$dataset) != 1) stop("Dataset mismatch among metric inputs")
 
 metric_limits <- function(v) {
   span <- diff(range(v, na.rm=TRUE)); pad <- max(span*.08, .002)
@@ -68,21 +78,23 @@ metric_limits <- function(v) {
 
 curve_plot <- function(metric, title, label) {
   ggplot(metrics, aes(n_training_total, .data[[metric]], color=Background,
-                      shape=Background, group=Background)) +
+                      shape=Background, linetype=Background, group=Background)) +
     geom_line(linewidth=.9) + geom_point(size=2.1) +
-    facet_grid(Split ~ ., scales="free_x") +
+    facet_grid(Split ~ Model, scales="free_x") +
     scale_color_manual(values=background_colors) +
     scale_shape_manual(values=background_shapes) +
+    scale_linetype_manual(values=background_lines) +
     scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.03))) +
     coord_cartesian(ylim=metric_limits(metrics[[metric]])) +
     labs(title=title, x="Cumulative training observations", y=label,
-         color="Negative background", shape="Negative background")
+         color="Negative background", shape="Negative background",
+         linetype="Negative background")
 }
 ```
 
 # Scope and interpretation
 
-This report compares AlphaGenome performance for the GRCh38
+This report compares AlphaGenome and LS-GKM performance for the GRCh38
 `r params$analysis_name` task when trained and evaluated with real genomic versus
 synthetic shuffled negative backgrounds. `r params$positive_class` sequences are
 label 1 and the corresponding background sequences are label 0.
@@ -98,12 +110,12 @@ cumulatively add chr3 through chrX.
 
 ```{r dataset-summary}
 metrics |>
-  distinct(Background, Split, n_evaluation_positive,
+  distinct(Model, Background, Split, n_evaluation_positive,
            n_evaluation_negative, n_evaluation_total) |>
   rename(Positives=n_evaluation_positive, Negatives=n_evaluation_negative,
          `Total observations`=n_evaluation_total) |>
-  arrange(Background, Split) |>
-  gt(groupname_col="Background") |>
+  arrange(Model, Background, Split) |>
+  gt(groupname_col="Model") |>
   tab_header(title="Evaluation datasets") |>
   fmt_integer(columns=c(Positives, Negatives, `Total observations`))
 ```
@@ -111,20 +123,20 @@ metrics |>
 # AUROC learning curves
 
 ```{r auroc}
-curve_plot("auroc", "AlphaGenome AUROC by negative-background type", "AUROC")
+curve_plot("auroc", "AUROC by negative-background type", "AUROC")
 ```
 
 # Average-precision learning curves
 
 ```{r auprc}
-curve_plot("auprc", "AlphaGenome average precision by negative-background type",
+curve_plot("auprc", "Average precision by negative-background type",
            "Average Precision")
 ```
 
 # AUROC ranking-error curves
 
 ```{r ranking}
-curve_plot("ranking_error", "AlphaGenome AUROC ranking error by negative-background type",
+curve_plot("ranking_error", "AUROC ranking error by negative-background type",
            "1 - AUROC")
 ```
 
@@ -133,13 +145,13 @@ curve_plot("ranking_error", "AlphaGenome AUROC ranking error by negative-backgro
 ```{r final-model}
 metrics |>
   filter(checkpoint_index == max(checkpoint_index)) |>
-  select(Background, Split, n_training_total, n_evaluation_total, auroc, auprc) |>
+  select(Model, Background, Split, n_training_total, n_evaluation_total, auroc, auprc) |>
   rename(`Training observations`=n_training_total,
          `Evaluation observations`=n_evaluation_total,
          AUROC=auroc, `Average Precision`=auprc) |>
-  arrange(Background, Split) |>
-  gt(groupname_col="Background") |>
-  tab_header(title="Final chr3-through-chrX AlphaGenome models") |>
+  arrange(Model, Background, Split) |>
+  gt(groupname_col="Model") |>
+  tab_header(title="Final chr3-through-chrX models") |>
   fmt_integer(columns=c(`Training observations`, `Evaluation observations`)) |>
   fmt_number(columns=c(AUROC, `Average Precision`), decimals=3)
 ```
@@ -147,7 +159,7 @@ metrics |>
 # Reproducibility notes
 
 - Every learning-curve checkpoint was trained independently.
-- Real and synthetic runs used the same AlphaGenome architecture and fixed training hyperparameters.
+- Within each method, real and synthetic runs used the same architecture and fixed training hyperparameters.
 - Metric axes are shared across background types within each figure.
 - Test data were used only for final evaluation.
 - Differences cannot be attributed solely to the background generator because retained foreground loci are not perfectly paired.

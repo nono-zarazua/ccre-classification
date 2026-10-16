@@ -9,13 +9,16 @@ case "${analysis}" in
   *) echo "ERROR: analysis must be evn or svn" >&2; exit 2 ;;
 esac
 
-real_metrics="results/${analysis}/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv"
-synthetic_metrics="results/${analysis}/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv"
+alphagenome_real_metrics="results/${analysis}/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv"
+alphagenome_synthetic_metrics="results/${analysis}/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv"
+lsgkm_real_metrics="results/${analysis}/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv"
+lsgkm_synthetic_metrics="results/${analysis}/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv"
 outdir="reports/rendered/${analysis}/real_vs_synthetic"
 
-for file in "${real_metrics}" "${synthetic_metrics}"; do
+for file in "${alphagenome_real_metrics}" "${alphagenome_synthetic_metrics}" \
+            "${lsgkm_real_metrics}" "${lsgkm_synthetic_metrics}"; do
   [[ -s "${file}" ]] || { echo "ERROR: missing/empty metrics table: ${file}" >&2; exit 1; }
 done
 
 mkdir -p "${outdir}"
-Rscript -e 'a<-commandArgs(TRUE); rmarkdown::render("reports/alphagenome_background_comparison_GRCh38_results.Rmd",params=list(real_metrics_path=a[1],synthetic_metrics_path=a[2],analysis_name=a[3],positive_class=a[4]),output_file="alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html",output_dir=a[5],knit_root_dir=getwd(),envir=new.env(parent=globalenv()))' "${real_metrics}" "${synthetic_metrics}" "${analysis_name}" "${positive_class}" "${outdir}"
+Rscript -e 'a<-commandArgs(TRUE); rmarkdown::render("reports/alphagenome_background_comparison_GRCh38_results.Rmd",params=list(alphagenome_real_metrics_path=a[1],alphagenome_synthetic_metrics_path=a[2],lsgkm_real_metrics_path=a[3],lsgkm_synthetic_metrics_path=a[4],analysis_name=a[5],positive_class=a[6]),output_file="real_vs_synthetic_GRCh38_chromosome_learning.html",output_dir=a[7],knit_root_dir=getwd(),envir=new.env(parent=globalenv()))' "${alphagenome_real_metrics}" "${alphagenome_synthetic_metrics}" "${lsgkm_real_metrics}" "${lsgkm_synthetic_metrics}" "${analysis_name}" "${positive_class}" "${outdir}"

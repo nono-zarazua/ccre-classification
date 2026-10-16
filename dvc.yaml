@@ -961,24 +961,28 @@ stages:
     outs:
     - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
     - reports/rendered/svn/synthetic/alphagenome_GRCh38_chromosome_learning.html
-  render_alphagenome_background_comparison_report_GRCh38_evn:
+  render_background_comparison_report_GRCh38_evn:
     cmd: bash src/render_alphagenome_background_comparison_report.sh evn
     deps:
     - src/render_alphagenome_background_comparison_report.sh
     - reports/alphagenome_background_comparison_GRCh38_results.Rmd
     - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
     outs:
-    - reports/rendered/evn/real_vs_synthetic/alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html
-  render_alphagenome_background_comparison_report_GRCh38_svn:
+    - reports/rendered/evn/real_vs_synthetic/real_vs_synthetic_GRCh38_chromosome_learning.html
+  render_background_comparison_report_GRCh38_svn:
     cmd: bash src/render_alphagenome_background_comparison_report.sh svn
     deps:
     - src/render_alphagenome_background_comparison_report.sh
     - reports/alphagenome_background_comparison_GRCh38_results.Rmd
     - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
     outs:
-    - reports/rendered/svn/real_vs_synthetic/alphagenome_real_vs_synthetic_GRCh38_chromosome_learning.html
+    - reports/rendered/svn/real_vs_synthetic/real_vs_synthetic_GRCh38_chromosome_learning.html
   cross_predict_ls_gkm_GRCh38_real:
     cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_ls_gkm.sh
     deps:
