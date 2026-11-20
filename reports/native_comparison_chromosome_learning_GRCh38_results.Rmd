@@ -17,6 +17,7 @@ params:
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
                       fig.width=10, fig.height=7, dpi=120)
 suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+source("reports/chromosome_learning_helpers.R")
 theme_set(theme_minimal(base_size=11) +
           theme(panel.grid.minor=element_blank(), legend.position="bottom"))
 task_colors <- c(EVN="#0072B2", SVN="#D55E00")
@@ -69,13 +70,14 @@ metric_limits <- function(v) {
 native_plot <- function(metric, title, label) {
   limits_data <- x[[metric]]
   if (has_full_model) limits_data <- c(limits_data, full_metrics[[metric]])
-  p <- ggplot(x, aes(n_training_total, .data[[metric]], color=Task, group=Task)) +
+  p <- ggplot(x, aes(checkpoint_index, .data[[metric]], color=Task, group=Task)) +
     geom_line(linewidth=.85) + geom_point(size=1.8) +
     facet_grid(Split ~ Model, scales="free_x") +
     scale_color_manual(values=task_colors) +
-    scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.03))) +
+    chromosome_x_scale(x) +
+    chromosome_x_theme() +
     coord_cartesian(ylim=metric_limits(limits_data)) +
-    labs(title=title, x="Cumulative training observations", y=label,
+    labs(title=title, x="Training endpoint chromosome", y=label,
          color="Native task",
          caption=if (has_full_model) "Star: full cleaned-EVN AlphaGenome model" else NULL)
   if (has_full_model) {
@@ -114,6 +116,15 @@ native_plot("auprc", "Native EVN and SVN average precision", "Average Precision"
 
 ```{r ranking}
 native_plot("ranking_error", "Native EVN and SVN AUROC ranking error", "1 - AUROC")
+```
+
+# Chromosome composition
+
+```{r chromosome-composition, fig.width=10, fig.height=12}
+composition <- chromosome_composition(x |>
+  transmute(Group=Task, Split, checkpoint_index, endpoint_chromosome,
+            n_training_total, n_evaluation_total))
+chromosome_composition_plot(composition, palette=task_colors)
 ```
 
 # Full-training comparison

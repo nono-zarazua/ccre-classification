@@ -48,7 +48,7 @@ for split in train_100 validation test; do
     output="${output_dir}/${split}_${class_name}_scores.txt"
     [[ ! -s "${output}" ]] || { echo "SKIP: ${output}"; continue; }
     [[ ! -e "${output}" ]] || { echo "ERROR: empty output exists: ${output}" >&2; exit 1; }
-    /work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict -T "${SLURM_CPUS_PER_TASK}" "${input}" "${model}" "${output}"
+    /work/zarazuanav/workspace/repos/ccre-classification/repos/lsgkm/bin/gkmpredict -T "${SLURM_CPUS_PER_TASK}" "${input}" "${model}" "${output}"
     [[ -s "${output}" ]] || { echo "ERROR: prediction missing: ${output}" >&2; exit 1; }
   done
 done

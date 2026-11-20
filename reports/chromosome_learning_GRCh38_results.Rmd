@@ -20,6 +20,7 @@ params:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE, fig.width=8.8, fig.height=5.5, dpi=120)
 suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+source("reports/chromosome_learning_helpers.R")
 theme_set(theme_minimal(base_size=12) + theme(panel.grid.minor=element_blank(), legend.position="bottom"))
 split_colors <- c("Full training pool"="#009E73", Validation="#D55E00", Test="#0072B2")
 split_shapes <- c("Full training pool"=15, Validation=16, Test=17)
@@ -74,12 +75,13 @@ metric_limits <- function(x) {
 curve_plot <- function(y, title, label) {
   limits_data <- metrics[[y]]
   if (has_full_model) limits_data <- c(limits_data, full_metrics[[y]])
-  p <- ggplot(metrics, aes(x=n_training_total, y=.data[[y]], color=Split, shape=Split, group=Split)) +
+  p <- ggplot(metrics, aes(x=checkpoint_index, y=.data[[y]], color=Split, shape=Split, group=Split)) +
     geom_line(linewidth=.9) + geom_point(size=2.5) +
     scale_color_manual(values=split_colors) + scale_shape_manual(values=split_shapes) +
-    scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.04))) +
+    chromosome_x_scale(metrics) +
+    chromosome_x_theme() +
     coord_cartesian(ylim=metric_limits(limits_data)) +
-    labs(title=title, x="Cumulative training observations", y=label,
+    labs(title=title, x="Training endpoint chromosome", y=label,
          color="Evaluation data", shape="Evaluation data",
          caption=if (has_full_model) "Star: full cleaned-EVN AlphaGenome model" else NULL)
   if (has_full_model) {
@@ -137,6 +139,15 @@ curve_plot("auprc", paste(params$model_name, "average-precision learning curves"
 
 ```{r ranking-error}
 curve_plot("ranking_error", paste(params$model_name, "AUROC ranking-error curves"), "1 - AUROC")
+```
+
+# Chromosome composition
+
+```{r chromosome-composition, fig.width=10, fig.height=8}
+composition <- chromosome_composition(metrics |>
+  transmute(Group=params$analysis_name, Split, checkpoint_index,
+            endpoint_chromosome, n_training_total, n_evaluation_total))
+chromosome_composition_plot(composition)
 ```
 
 # Full-training comparison

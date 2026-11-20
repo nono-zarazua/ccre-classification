@@ -16,6 +16,7 @@ params:
 knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
                       fig.width=10, fig.height=7, dpi=120)
 suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+source("reports/chromosome_learning_helpers.R")
 theme_set(theme_minimal(base_size=11) +
           theme(panel.grid.minor=element_blank(), legend.position="bottom"))
 model_colors <- c(AlphaGenome="#0072B2", `LS-GKM`="#D55E00")
@@ -50,13 +51,14 @@ metric_limits <- function(v) {
 }
 
 learning_plot <- function(metric, title, label) {
-  ggplot(x, aes(n_training_total, .data[[metric]], color=Model, group=Model)) +
+  ggplot(x, aes(checkpoint_index, .data[[metric]], color=Model, group=Model)) +
     geom_line(linewidth=.85) + geom_point(size=1.8) +
     facet_grid(Split ~ Model, scales="free_x") +
     scale_color_manual(values=model_colors) +
-    scale_x_continuous(labels=comma, expand=expansion(mult=c(.02,.03))) +
+    chromosome_x_scale(x) +
+    chromosome_x_theme() +
     coord_cartesian(ylim=metric_limits(x[[metric]])) +
-    labs(title=title, x="Cumulative training observations", y=label, color="Model") +
+    labs(title=title, x="Training endpoint chromosome", y=label, color="Model") +
     guides(color="none")
 }
 ```
@@ -88,6 +90,15 @@ learning_plot("auprc", "Native EVS average precision", "Average Precision")
 
 ```{r ranking}
 learning_plot("ranking_error", "Native EVS AUROC ranking error", "1 - AUROC")
+```
+
+# Chromosome composition
+
+```{r chromosome-composition, fig.width=10, fig.height=8}
+composition <- chromosome_composition(x |>
+  transmute(Group="EVS", Split, checkpoint_index, endpoint_chromosome,
+            n_training_total, n_evaluation_total))
+chromosome_composition_plot(composition)
 ```
 
 # Full-training comparison

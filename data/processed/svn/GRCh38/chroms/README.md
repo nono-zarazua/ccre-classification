@@ -30,3 +30,7 @@ These are the complete deduplicated silencer-positive source pools. All 196,083 
 | **Total** | **196,083** | **193,941** | **2,142** | **196,081** | **2** |
 
 Source BEDs are `chrom<chrom>/chrom<chrom>_GRCh38_Silencer_ELS.bed`; chrY is an empty placeholder. Final pairs are under `../real/` and `../synthetic/`. Real negatives have BED and FASTA records; synthetic negatives have no genomic coordinates and therefore only FASTA records.
+
+The same current counts are available as a machine-readable table in
+`chromosome_counts.csv`; it is generated from the consolidation manifest and
+the real and synthetic selection provenance tables.

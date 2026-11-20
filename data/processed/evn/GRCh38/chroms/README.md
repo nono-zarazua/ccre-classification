@@ -31,3 +31,7 @@ These are the complete cleaned enhancer-positive source pools. They are inputs t
 | chrY | 1,837 | excluded | — | — | — | — |
 
 Source BEDs are `chrom<chrom>/chrom<chrom>_GRCh38_ELS.bed`. Quotas are recorded in `data/processed/consolidation/GRCh38/manifest.tsv`. Final pairs are under `../real/` and `../synthetic/`. Real negatives have BED and FASTA records; synthetic negatives have no genomic locus and therefore only FASTA records.
+
+The same current counts are available as a machine-readable table in
+`chromosome_counts.csv`; it is generated from the consolidation manifest and
+the real and synthetic selection provenance tables.

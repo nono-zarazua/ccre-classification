@@ -1,0 +1,487 @@
+---
+title: "AlphaGenome motif-importance analysis"
+subtitle: "EVN, SVN, and EVS | held-out chr2 | real genomic backgrounds"
+params:
+  result_branch: "tangermeme_clustered"
+  analysis_label: "Fixed-window seqlet selection"
+  include_logos: false
+  motif_logo_manifest: ""
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
+                      fig.width=9.5, fig.height=6, dpi=130)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(ggplot2)
+  library(gt)
+  library(jsonlite)
+  library(scales)
+  library(tidyr)
+})
+theme_set(theme_minimal(base_size=12) +
+            theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+
+task_labels <- c(evn="EVN", svn="SVN", evs="EVS")
+task_definitions <- c(
+  EVN="Enhancer versus genomic background",
+  SVN="Silencer versus genomic background",
+  EVS="Enhancer versus silencer"
+)
+task_colors <- c(EVN="#0072B2", SVN="#D55E00", EVS="#009E73")
+sign_colors <- c(negative="#7B3294", positive="#008837")
+
+read_task <- function(task) {
+  root <- file.path("results", task, "GRCh38", "alphagenome", "real",
+                    params$result_branch, "through_chrX")
+  required <- c("metadata.json", "audit.json", "candidate_region_tests.tsv",
+                "motif_cluster_summary.tsv", "motif_annotation_summary.tsv",
+                "ism_validation.tsv")
+  missing <- required[!file.exists(file.path(root, required))]
+  if (length(missing)) stop(task, " is missing: ", paste(missing, collapse=", "))
+  label <- unname(task_labels[[task]])
+  logo_manifest_path <- file.path(root, "attribution_logo_manifest.tsv")
+  logo_manifest <- if (file.exists(logo_manifest_path)) {
+    read.delim(logo_manifest_path, check.names=FALSE, stringsAsFactors=FALSE) |>
+      mutate(Task=.env$label,
+             image_path=file.path(.env$root, svg))
+  } else {
+    tibble()
+  }
+  list(
+    root=root,
+    metadata=read_json(file.path(root, "metadata.json"), simplifyVector=TRUE),
+    audit=read_json(file.path(root, "audit.json"), simplifyVector=TRUE),
+    candidates=read.delim(file.path(root, "candidate_region_tests.tsv"),
+                          check.names=FALSE, stringsAsFactors=FALSE) |>
+      mutate(Task=.env$label,
+             important_region=important_region %in% c(TRUE, "True", "TRUE", 1)),
+    motifs=read.delim(file.path(root, "motif_cluster_summary.tsv"),
+                     check.names=FALSE, stringsAsFactors=FALSE) |>
+      mutate(Task=.env$label,
+             enriched_cluster=enriched_cluster %in% c(TRUE, "True", "TRUE", 1)),
+    annotation_summary=read.delim(
+      file.path(root, "motif_annotation_summary.tsv"),
+      check.names=FALSE, stringsAsFactors=FALSE
+    ) |>
+      mutate(Task=.env$label),
+    ism=read.delim(file.path(root, "ism_validation.tsv"),
+                   check.names=FALSE, stringsAsFactors=FALSE) |>
+      mutate(Task=.env$label),
+    logos=logo_manifest
+  )
+}
+
+analyses <- setNames(lapply(names(task_labels), read_task), unname(task_labels))
+candidates <- bind_rows(lapply(analyses, `[[`, "candidates"))
+motifs <- bind_rows(lapply(analyses, `[[`, "motifs"))
+annotation_summary <- bind_rows(lapply(analyses, `[[`, "annotation_summary"))
+for (column in c("all_signs_n_sequences", "all_signs_median_attribution",
+                 "all_signs_attribution_q25", "all_signs_attribution_q75")) {
+  if (!column %in% names(annotation_summary)) annotation_summary[[column]] <- NA_real_
+}
+ism <- bind_rows(lapply(analyses, `[[`, "ism"))
+attribution_logos <- bind_rows(lapply(analyses, `[[`, "logos"))
+motif_logos <- if (isTRUE(params$include_logos) &&
+                   nzchar(params$motif_logo_manifest) &&
+                   file.exists(params$motif_logo_manifest)) {
+  read.delim(params$motif_logo_manifest, check.names=FALSE,
+             stringsAsFactors=FALSE)
+} else {
+  tibble()
+}
+
+logo_gallery <- function(data, image_column, caption_function, card_width="47%") {
+  cards <- lapply(seq_len(nrow(data)), function(i) {
+    row <- data[i, , drop=FALSE]
+    htmltools::tags$figure(
+      style=paste0("display:inline-block; width:", card_width,
+                   "; vertical-align:top; margin:1%;"),
+      htmltools::tags$img(
+        src=knitr::image_uri(row[[image_column]][[1]]),
+        style="width:100%; height:auto;"
+      ),
+      htmltools::tags$figcaption(
+        style="font-size:0.9em; text-align:center;",
+        caption_function(row)
+      )
+    )
+  })
+  htmltools::tagList(cards)
+}
+
+selection_methods <- unique(vapply(analyses, function(x) {
+  value <- x$metadata$parameters$seqlet_selection
+  if (is.null(value)) "fixed" else value
+}, character(1)))
+if (length(selection_methods) != 1) stop("Tasks use different seqlet-selection methods")
+selection_method <- selection_methods[[1]]
+selection_description <- if (selection_method == "modisco") {
+  "TF-MoDISco seqlet calling with a 21-bp attribution window and 10-bp flanks on each side (41-bp returned seqlets)"
+} else if (selection_method == "recursive") {
+  "Tangermeme recursive variable-length seqlet calling"
+} else {
+  "Fixed 21-bp non-overlapping attribution windows"
+}
+candidate_caps <- unique(vapply(analyses, function(x) {
+  as.integer(x$metadata$parameters$max_candidate_sites)
+}, integer(1)))
+if (length(candidate_caps) != 1) stop("Tasks use different candidate caps")
+candidate_cap <- candidate_caps[[1]]
+candidate_quota <- candidate_cap %/% 4
+
+qc <- bind_rows(lapply(names(analyses), function(task) {
+  x <- analyses[[task]]
+  tibble(
+    Task=task,
+    Classification=task_definitions[[task]],
+    `Test sequences`=x$metadata$dataset$n_sequences,
+    AUROC=x$metadata$performance_on_sample$auroc,
+    `Average precision`=x$metadata$performance_on_sample$average_precision,
+    `Attribution method`=x$metadata$selected_attribution_method,
+    `DeepLIFT relative error`=x$audit$deeplift$relative_error,
+    `Candidates tested`=x$metadata$counts$tested_candidate_windows,
+    `Important regions`=x$metadata$counts$important_regions,
+    `ISM median correlation`=median(x$ism$pearson_position_correlation),
+    `ISM correlations below 0.5`=sum(x$ism$pearson_position_correlation < .5)
+  )
+}))
+
+top_motif_plot <- function(task, n=10) {
+  d <- motifs |>
+    filter(Task == task, n_sites >= 2) |>
+    arrange(desc(n_important_regions), desc(abs(mean_ablation_delta))) |>
+    slice_head(n=n) |>
+    mutate(label=paste0(representative_gene, " (", sign, ")"),
+           label=factor(label, levels=rev(unique(label))))
+  ggplot(d, aes(mean_ablation_delta, label, color=sign, size=n_sites)) +
+    geom_errorbarh(aes(xmin=bootstrap_ci_low, xmax=bootstrap_ci_high),
+                   height=.16, linewidth=.7) +
+    geom_point(alpha=.9) +
+    geom_vline(xintercept=0, color="grey35", linewidth=.5) +
+    scale_color_manual(values=sign_colors) +
+    scale_size_continuous(range=c(2.5, 7), breaks=pretty_breaks(4)) +
+    labs(title=paste(task, "leading annotated motif clusters"),
+         subtitle="Ranked by significant regions and effect magnitude; intervals are bootstrap CIs",
+         x="Mean native minus ablated logit", y=NULL,
+         color="Attribution sign", size="Sites")
+}
+```
+
+# Scope
+
+This report summarizes motif-level interpretation of the final AlphaGenome
+models trained through chrX. Attribution is calculated across every held-out
+chr2 test sequence. Region selection uses `r selection_description`. The
+`r comma(candidate_cap)` strongest regions are selected with equal
+representation from the four combinations of class label and attribution sign
+(`r comma(candidate_quota)` regions per stratum).
+Each selected region is compared with four class- and length-matched control
+windows and evaluated with 20 dinucleotide-shuffle ablations.
+
+HOCOMOCO v14 CORE clustered motifs provide non-redundant labels. Motif labels
+are the closest TOMTOM matches to attributed regions; they are model-based
+annotations and do not establish transcription-factor occupancy in vivo.
+
+# Quality control
+
+```{r qc-table}
+qc |>
+  gt() |>
+  tab_header(title="Analysis and attribution quality control") |>
+  fmt_integer(columns=c(`Test sequences`, `Candidates tested`, `Important regions`,
+                        `ISM correlations below 0.5`)) |>
+  fmt_number(columns=c(AUROC, `Average precision`, `DeepLIFT relative error`,
+                       `ISM median correlation`), decimals=3)
+```
+
+DeepLIFT failed its summation-to-delta audit for all three AlphaGenome
+classifiers because the backbone contains operations without valid DeepLIFT
+rules. The workflow therefore selected saliency automatically. Prediction
+parity between the wrapped and native model was exact for every task.
+
+```{r ism, fig.height=4.8}
+ggplot(ism, aes(Task, pearson_position_correlation, color=Task)) +
+  geom_boxplot(width=.45, outlier.shape=NA, alpha=.12) +
+  geom_jitter(width=.12, height=0, alpha=.65, size=1.8) +
+  geom_hline(yintercept=.5, linetype="dashed", color="grey35") +
+  scale_color_manual(values=task_colors, guide="none") +
+  coord_cartesian(ylim=c(0, 1)) +
+  labs(title="Saliency agreement with in-silico mutagenesis",
+       subtitle="Pearson correlation across positions for 40 selected sequences per task",
+       x=NULL, y="Position-level correlation")
+```
+
+# Candidate design
+
+```{r candidate-balance}
+candidates |>
+  count(Task, label, sign, name="Regions") |>
+  mutate(Class=if_else(label == 1, "Positive class", "Negative class"),
+         Task=factor(Task, levels=c("EVN", "SVN", "EVS"))) |>
+  select(Task, Class, `Attribution sign`=sign, Regions) |>
+  gt(groupname_col="Task") |>
+  tab_header(title="Balanced candidate panel") |>
+  fmt_integer(columns=Regions)
+```
+
+All test sequences contribute to the attribution screen. The candidate cap
+restricts only the expensive perturbation analysis. Consequently, absence from
+the following tables means “not detected among the strongest tested regions,”
+not that a model never uses the motif.
+
+# Motif prevalence across all attributed regions
+
+```{r all-region-top-motifs}
+top_annotation_clusters <- annotation_summary |>
+  group_by(Task, representative_motif, representative_gene) |>
+  summarise(
+    Regions=first(all_signs_n_sites),
+    Sequences=first(all_signs_n_sequences),
+    `Median attribution`=first(all_signs_median_attribution),
+    `Attribution Q25`=first(all_signs_attribution_q25),
+    `Attribution Q75`=first(all_signs_attribution_q75),
+    .groups="drop"
+  ) |>
+  group_by(Task) |>
+  slice_max(Regions, n=20, with_ties=FALSE) |>
+  arrange(Task, desc(Regions)) |>
+  ungroup() |>
+  mutate(Motif=if_else(is.na(representative_gene) |
+                         representative_gene == "",
+                       representative_motif, representative_gene))
+
+top_annotation_clusters |>
+  select(Task, Motif, Regions, Sequences, `Median attribution`,
+         `Attribution Q25`, `Attribution Q75`) |>
+  gt(groupname_col="Task") |>
+  tab_header(
+    title="Twenty most frequently matched HOCOMOCO clusters per task",
+    subtitle="Counts use every annotated recursive seqlet, before ablation selection"
+  ) |>
+  fmt_integer(columns=c(Regions, Sequences)) |>
+  fmt_number(columns=c(`Median attribution`, `Attribution Q25`,
+                       `Attribution Q75`), decimals=2)
+```
+
+This descriptive inventory is independent of the strongest-region ablation
+panel. A frequent cluster can therefore remain biologically interesting even
+when its individual regions have moderate attribution or are not represented
+among the strongest ablated sites.
+
+# Task-specific causal motif signals
+
+## EVN: enhancer versus genomic background
+
+```{r evn-plot}
+top_motif_plot("EVN")
+```
+
+## SVN: silencer versus genomic background
+
+```{r svn-plot}
+top_motif_plot("SVN")
+```
+
+## EVS: enhancer versus silencer
+
+```{r evs-plot}
+top_motif_plot("EVS")
+```
+
+```{r top-table}
+top_table <- motifs |>
+  filter(n_sites >= 2) |>
+  group_by(Task) |>
+  arrange(desc(n_important_regions), desc(abs(mean_ablation_delta)), .by_group=TRUE) |>
+  slice_head(n=10) |>
+  ungroup() |>
+  transmute(Task, Motif=representative_gene, Sign=sign,
+            Sites=n_sites, `Important regions`=n_important_regions,
+            `Mean ablation effect`=mean_ablation_delta,
+            `Bootstrap CI`=sprintf("[%.2f, %.2f]", bootstrap_ci_low, bootstrap_ci_high),
+            `Positive-class sequences`=n_positive_sequences,
+            `Negative-class sequences`=n_negative_sequences)
+
+top_table |>
+  gt(groupname_col="Task") |>
+  tab_header(title="Leading motif clusters by causal-region support") |>
+  fmt_integer(columns=c(Sites, `Important regions`, `Positive-class sequences`,
+                        `Negative-class sequences`)) |>
+  fmt_number(columns=`Mean ablation effect`, decimals=2)
+```
+
+```{r logos, results='asis'}
+if (isTRUE(params$include_logos)) {
+  cat("# Model-derived and reference motif logos\n\n")
+  cat("Each panel aligns the tested regions assigned to a motif and averages their signed nucleotide contributions after correcting for motif orientation. The paired HOCOMOCO PWM is the reference motif used for annotation. Individual sequence-level attribution logos remain available as quality-control artifacts but are omitted here.\n\n")
+  for (task in c("EVN", "SVN", "EVS")) {
+    cat("## ", task, " leading motif logos\n\n", sep="")
+    task_motifs <- motif_logos |>
+      filter(.data$task == .env$task) |>
+      arrange(rank)
+    if (nrow(task_motifs)) {
+      print(logo_gallery(
+        task_motifs, "png",
+        function(row) paste0(
+          row$representative_gene, " (", row$sign, "); ",
+          row$n_sites, " tested sites, ", row$n_important_regions,
+          " important regions",
+          if (isTRUE(row$enriched_cluster[[1]])) "; class-enriched" else ""
+        ),
+        card_width="98%"
+      ))
+    }
+  }
+}
+```
+
+# Descriptive comparison across tasks
+
+The models were trained for different classification problems and are explained
+on their native held-out data. The comparison below is therefore descriptive:
+it highlights recurring motif clusters, while effect magnitudes should not be
+treated as directly calibrated between models.
+
+The bars summarize only the selected ablation panel, not every seqlet called
+across the test set. When a task contains both positive- and
+negative-attribution occurrences of the same motif, the plot retains the sign
+with more significant regions (then more sampled sites as a tie-breaker) so
+that each task contributes at most one bar per motif.
+
+```{r recurring-sites-plot, fig.width=12, fig.height=7}
+recurring_genes <- motifs |>
+  filter(n_sites >= 2) |>
+  distinct(Task, representative_gene) |>
+  count(representative_gene, name="Tasks") |>
+  filter(Tasks >= 2) |>
+  pull(representative_gene)
+
+recurring_all <- motifs |>
+  filter(representative_gene %in% recurring_genes,
+         n_sites >= 2) |>
+  mutate(Motif=representative_gene)
+
+top_recurring_genes <- recurring_all |>
+  group_by(Motif) |>
+  summarise(total_sites=sum(n_sites), .groups="drop") |>
+  arrange(desc(total_sites), Motif) |>
+  slice_head(n=20) |>
+  pull(Motif)
+
+recurring_plot <- recurring_all |>
+  filter(Motif %in% top_recurring_genes) |>
+  group_by(Task, Motif) |>
+  arrange(desc(n_important_regions), desc(n_sites),
+          desc(abs(mean_ablation_delta)), .by_group=TRUE) |>
+  slice_head(n=1) |>
+  ungroup() |>
+  mutate(
+    Task=factor(Task, levels=names(task_colors)),
+    Motif=factor(Motif, levels=rev(top_recurring_genes)),
+    signed_sites=if_else(sign == "negative", -n_sites, n_sites)
+  )
+
+if (nrow(recurring_plot)) {
+  label_offset <- max(abs(recurring_plot$signed_sites), na.rm=TRUE) * .035
+  recurring_plot <- recurring_plot |>
+    mutate(label_y=signed_sites + if_else(signed_sites >= 0,
+                                          label_offset, -label_offset))
+  ggplot(recurring_plot,
+         aes(Motif, signed_sites, fill=Task, group=Task)) +
+    geom_hline(yintercept=0, color="grey30", linewidth=.55) +
+    geom_col(position=position_dodge(width=.82), width=.74) +
+    geom_text(aes(y=label_y, label=n_important_regions),
+              position=position_dodge(width=.82), size=3.1, color="grey15",
+              vjust=.5) +
+    scale_fill_manual(values=task_colors, drop=FALSE) +
+    scale_y_continuous(labels=function(x) comma(abs(x)),
+                       expand=expansion(mult=c(.12, .12))) +
+    coord_cartesian(clip="off") +
+    labs(
+      title="Most frequently sampled recurring motif clusters",
+      subtitle=paste0(
+        "Top 20 by combined sampled sites across tasks.\n",
+        "Negative-attribution sites extend below zero; labels count significant ablation-supported regions."
+      ),
+      x="Motif cluster", y="Number of sites", fill="Task"
+    ) +
+    theme(
+      axis.text.x=element_text(angle=45, hjust=1),
+      plot.margin=margin(10, 14, 10, 10)
+    )
+} else {
+  cat("No motif cluster met the reporting criteria in more than one task.")
+}
+```
+
+# Class-enriched motif clusters
+
+Class enrichment is calculated only within the balanced, selected candidate
+panel. It is not a genome-wide motif-enrichment test and is kept separate from
+the causal ablation result.
+
+```{r enrichment-table}
+enriched <- motifs |>
+  filter(enriched_cluster) |>
+  transmute(Task, Motif=representative_gene, Sign=sign, Sites=n_sites,
+            `Important regions`=n_important_regions,
+            `Positive-class sequences`=n_positive_sequences,
+            `Negative-class sequences`=n_negative_sequences,
+            `Adjusted enrichment p-value`=enrichment_adjusted_pvalue,
+            `Mean ablation effect`=mean_ablation_delta)
+
+if (nrow(enriched)) {
+  enriched |>
+    gt(groupname_col="Task") |>
+    tab_header(title="Class-enriched clusters within the selected panel") |>
+    fmt_integer(columns=c(Sites, `Important regions`, `Positive-class sequences`,
+                          `Negative-class sequences`)) |>
+    fmt_scientific(columns=`Adjusted enrichment p-value`, decimals=2) |>
+    fmt_number(columns=`Mean ablation effect`, decimals=2)
+} else {
+  cat("No motif cluster was class-enriched after multiple-testing correction.")
+}
+```
+
+# Interpretation
+
+EVN and SVN provide the strongest basis for biological hypothesis generation
+because their held-out classification performance and saliency–ISM agreement
+are high. EVS can still reveal potentially interesting sequence features, but
+its more modest predictive performance makes those findings exploratory.
+
+Repeated motif families across tasks are candidates for shared regulatory
+grammar. Task-restricted clusters are candidates for task-specific mechanisms,
+but their apparent absence elsewhere is conditional on the strongest-region candidate
+design. Ablation estimates how editing a selected region changes the model
+prediction; the `important region` label additionally requires that effect to
+exceed matched controls after multiple-testing correction. Neither result
+establishes TF binding or causal regulation in cells.
+
+# Reproducibility
+
+```{r provenance}
+tibble(
+  Item=c("Models", "Evaluation chromosome", "Attribution screen",
+         "Candidate panel", "Perturbation", "Motif database",
+         "Motif annotation", "Random seed"),
+  Value=c("Final through-chrX AlphaGenome heads for EVN, SVN, and EVS",
+          "chr2 held-out test sets",
+          "Saliency over every test sequence",
+          paste0(params$analysis_label, "; top ", comma(candidate_quota),
+                 " regions per label × attribution-sign stratum (",
+                 comma(candidate_cap), "/task)"),
+          "20 dinucleotide-shuffle ablations plus four matched controls per candidate",
+          "HOCOMOCO v14 CORE clustered (648 representative motifs)",
+          "Nearest TOMTOM match", "42")
+) |>
+  gt() |>
+  tab_header(title="Analysis provenance")
+```

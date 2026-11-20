@@ -34,7 +34,7 @@ chroms=data/reference/antinoise/hg38-chroms
 
 mkdir -p "${merged}" "${masked}" "${canonical}" "${chroms}"
 
-run_return_one ../antinoise/bin/linux/fasta_muliplefiles.exe \
+run_return_one repos/antinoise/bin/linux/fasta_muliplefiles.exe \
     data/reference/hg38.fa \
     "${chroms}/" \
     0
@@ -44,7 +44,7 @@ for chr in {1..22} X Y; do
     mv "${chroms}/${chr}.fa" "${canonical}/chr${chr}.fa"
 done
 
-run_return_one ../antinoise/bin/linux/fasta_to_plain0.exe \
+run_return_one repos/antinoise/bin/linux/fasta_to_plain0.exe \
     "${canonical}/" \
     hg38
 
@@ -53,26 +53,26 @@ for chr in {1..22} X Y; do
 done
 
 # 1. Sort all cCRE annotations.
-../antinoise/bin/linux/bed_sort.exe \
+repos/antinoise/bin/linux/bed_sort.exe \
     data/raw/GRCh38-cCREs.bed \
     data/processed/GRCh38-cCREs_sorted.bed \
     hg38
 [[ -s data/processed/GRCh38-cCREs_sorted.bed ]] || fail "sorted cCRE BED was not created"
 
 # 2. Split the sorted BED into chromosome-specific BED files.
-../antinoise/bin/linux/bed_chr_separation.exe \
+repos/antinoise/bin/linux/bed_chr_separation.exe \
     data/processed/GRCh38-cCREs_sorted.bed \
     "${merged}/GRCh38-cCREs" \
     hg38
 
 # 3. Merge overlapping regions.
-../antinoise/bin/linux/area_self_overlap.exe \
+repos/antinoise/bin/linux/area_self_overlap.exe \
     "${merged}/GRCh38-cCREs" \
     "${merged}/GRCh38-cCREs_merged" \
     hg38 \
     "${merged}/overlap_stats.txt"
 
-../antinoise/bin/linux/bed_chr_mask.exe \
+repos/antinoise/bin/linux/bed_chr_mask.exe \
     "${canonical}/" \
     "${merged}/" \
     GRCh38-cCREs_merged \

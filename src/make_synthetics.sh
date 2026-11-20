@@ -3,7 +3,7 @@
 set -euo pipefail
 
 consolidation="data/processed/consolidation/GRCh38/chromosomes"
-executable="../antinoise/bin/linux/mix0.exe"
+executable="repos/antinoise/bin/linux/mix0.exe"
 
 [[ -x "${executable}" ]] || {
     echo "ERROR: executable not found: ${executable}" >&2

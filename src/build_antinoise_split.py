@@ -19,7 +19,7 @@ from pathlib import Path
 def parse_args() -> argparse.Namespace:
     repo = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--source-dir", type=Path, default=repo.parent / "antinoise" / "src")
+    parser.add_argument("--source-dir", type=Path, default=repo / "repos" / "antinoise" / "src")
     parser.add_argument("--output", type=Path, default=repo / "bin" / "background_genome_mono_split.exe")
     parser.add_argument("--compiler", default="g++")
     return parser.parse_args()

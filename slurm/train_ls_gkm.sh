@@ -80,7 +80,7 @@ n_pos="$(grep -c '^>' "${pos}")"; n_neg="$(grep -c '^>' "${neg}")"
 mkdir -p "${model_dir}"
 echo "Task dataset: ${dataset}; checkpoint: ${name}; chromosomes: ${included[*]}"
 echo "Observations: $((n_pos+n_neg)); per class: ${n_pos}; gkm -m ${gkm_mem}; Slurm ${allocated_mb} MB"
-/work/zarazuanav/workspace/repos/lsgkm/bin/gkmtrain -T "${SLURM_CPUS_PER_TASK}" -m "${gkm_mem}" "${pos}" "${neg}" "${prefix}"
+/work/zarazuanav/workspace/repos/ccre-classification/repos/lsgkm/bin/gkmtrain -T "${SLURM_CPUS_PER_TASK}" -m "${gkm_mem}" "${pos}" "${neg}" "${prefix}"
 [[ -s "${model}" ]] || { echo "ERROR: model was not created" >&2; exit 1; }
 elapsed="$(($(date -u +%s)-start_time))"
 echo "End $(date); elapsed $((elapsed/3600))h $(((elapsed%3600)/60))m $((elapsed%60))s"

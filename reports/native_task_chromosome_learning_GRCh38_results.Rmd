@@ -1,0 +1,143 @@
+---
+title: "GRCh38 Native Chromosome Learning Curves"
+subtitle: "`r params$analysis_name` | `r params$negative_kind` negative backgrounds"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+params:
+  alphagenome_metrics_path: null
+  lsgkm_metrics_path: null
+  analysis_name: null
+  positive_class: null
+  negative_kind: null
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
+                      fig.width=10, fig.height=7, dpi=120)
+suppressPackageStartupMessages({library(dplyr); library(ggplot2); library(gt); library(scales)})
+source("reports/chromosome_learning_helpers.R")
+theme_set(theme_minimal(base_size=11) +
+          theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+model_colors <- c(AlphaGenome="#0072B2", `LS-GKM`="#D55E00")
+```
+
+```{r inputs, include=FALSE}
+required_params <- c("alphagenome_metrics_path", "lsgkm_metrics_path",
+                     "analysis_name", "positive_class", "negative_kind")
+for (name in required_params)
+  if (is.null(params[[name]]) || !nzchar(params[[name]]))
+    stop("Missing parameter: ", name)
+
+read_metrics <- function(path, expected_model) {
+  x <- read.delim(normalizePath(path, mustWork=TRUE), sep="\t",
+                  stringsAsFactors=FALSE, check.names=FALSE)
+  if (nrow(x) != 63) stop("Expected 63 rows in ", path, "; found ", nrow(x))
+  if (!all(x$model == expected_model)) stop("Model mismatch in ", path)
+  if (!all(x$negative_kind == params$negative_kind))
+    stop("Background-type mismatch in ", path)
+  x
+}
+
+x <- bind_rows(
+  read_metrics(params$alphagenome_metrics_path, "alphagenome"),
+  read_metrics(params$lsgkm_metrics_path, "lsgkm")
+) |>
+  mutate(
+    Model=factor(recode(model, alphagenome="AlphaGenome", lsgkm="LS-GKM"),
+                 levels=c("AlphaGenome", "LS-GKM")),
+    Split=factor(recode(split, train_100="Full training pool",
+                        validation="Validation", test="Test"),
+                 levels=c("Full training pool", "Validation", "Test")),
+    ranking_error=1-auroc
+  ) |>
+  arrange(Model, Split, checkpoint_index)
+
+if (nrow(x) != 126) stop("Expected 126 combined metric rows; found ", nrow(x))
+if (n_distinct(x$dataset) != 1) stop("Dataset mismatch between model inputs")
+
+metric_limits <- function(v) {
+  span <- diff(range(v, na.rm=TRUE)); pad <- max(span*.08, .002)
+  range(v, na.rm=TRUE) + c(-pad, pad)
+}
+
+learning_plot <- function(metric, title, label) {
+  ggplot(x, aes(checkpoint_index, .data[[metric]], color=Model, group=Model)) +
+    geom_line(linewidth=.85) + geom_point(size=1.8) +
+    facet_grid(Split ~ Model, scales="free_x") +
+    scale_color_manual(values=model_colors) +
+    chromosome_x_scale(x) + chromosome_x_theme() +
+    coord_cartesian(ylim=metric_limits(x[[metric]])) +
+    labs(title=title, x="Training endpoint chromosome", y=label, color="Model") +
+    guides(color="none")
+}
+```
+
+# Scope and interpretation
+
+This report compares native `r params$analysis_name` performance for AlphaGenome
+and LS-GKM using `r params$negative_kind` negative backgrounds.
+`r params$positive_class` sequences have label 1 and matched negative-background
+sequences have label 0. Chr1 is validation, chr2 is held-out test, and training
+checkpoints cumulatively add chr3 through chrX.
+
+Each panel contains one task trajectory. Columns place the two model families
+side by side, while rows show the full training pool, validation, and test on
+common metric-axis ranges.
+
+# AUROC learning curves
+
+```{r auroc}
+learning_plot("auroc", paste(params$analysis_name, "AUROC"), "AUROC")
+```
+
+# Average-precision learning curves
+
+```{r auprc}
+learning_plot("auprc", paste(params$analysis_name, "average precision"),
+              "Average Precision")
+```
+
+# AUROC ranking-error curves
+
+```{r ranking}
+learning_plot("ranking_error", paste(params$analysis_name, "AUROC ranking error"),
+              "1 - AUROC")
+```
+
+# Chromosome composition
+
+```{r chromosome-composition, fig.width=10, fig.height=8}
+composition <- chromosome_composition(x |>
+  transmute(Group=params$analysis_name, Split, checkpoint_index,
+            endpoint_chromosome, n_training_total, n_evaluation_total))
+chromosome_composition_plot(composition)
+```
+
+# Full-training comparison
+
+```{r full}
+x |> filter(checkpoint_index == max(checkpoint_index)) |>
+  select(Model, Split, n_training_total, n_evaluation_total, auroc, auprc) |>
+  rename(`Training observations`=n_training_total,
+         `Evaluation observations`=n_evaluation_total,
+         AUROC=auroc, `Average Precision`=auprc) |>
+  arrange(Model, Split) |>
+  gt(groupname_col="Model") |>
+  tab_header(title="Final chr3-through-chrX models") |>
+  fmt_integer(columns=c(`Training observations`, `Evaluation observations`)) |>
+  fmt_number(columns=c(AUROC, `Average Precision`), decimals=3)
+```
+
+# Reproducibility notes
+
+- Both methods use the same chromosome-defined task datasets.
+- Every checkpoint is independently trained.
+- Metric y-axis ranges are shared across methods and evaluation splits.
+- Test data are used only for final evaluation.
+- AlphaGenome uses logits from validation-selected frozen-encoder heads; LS-GKM uses continuous gkm-SVM decision scores.
+
+Rendered at `r format(Sys.time(), "%Y-%m-%d %H:%M:%S %Z")`.

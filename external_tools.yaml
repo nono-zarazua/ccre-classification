@@ -1,0 +1,30 @@
+external_tools:
+  alphagenome_pytorch:
+    repository: https://github.com/genomicsxai/alphagenome-pytorch
+    installation: pip
+    package: alphagenome-pytorch
+    version: 0.3.1
+
+  gkmSVM:
+    repository: https://github.com/mghandi/gkmSVM.git
+    installation: git
+    commit: 222cc50ebccb6e44c93bef8f1d49a702b490dff7
+    tag: v0.55-35-g222cc50
+
+  lsgkm:
+    repository: https://github.com/kundajelab/lsgkm.git
+    installation: git
+    commit: 5ec09a90914fe5efb47a985c6631ca25cad60a95
+    tag: v1.0-4-g5ec09a9
+
+  antinoise:
+    repository: https://github.com/parthian-sterlet/antinoise
+    installation: git
+    commit: 011a7fa88d56de3b41b113267230b3b70c0091e1
+    tag: v1.0-7-g011a7fa-dirty
+
+  tangermeme:
+    repository: https://github.com/jmschrei/tangermeme.git
+    installation: git
+    commit: 863bb4112895c70aeed836068b44e10ae731c748
+    tag: v1.6.0

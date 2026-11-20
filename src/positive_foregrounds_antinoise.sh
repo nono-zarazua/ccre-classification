@@ -7,7 +7,7 @@ set -euo pipefail
 repo_root=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 cd "${repo_root}"
 
-extractor="../antinoise/bin/linux/longext_many.exe"
+extractor="repos/antinoise/bin/linux/longext_many.exe"
 reference_dir="data/reference/antinoise/hg38-PLAIN-canonical/"
 chromosomes_dir="data/processed/evn/GRCh38/chroms"
 

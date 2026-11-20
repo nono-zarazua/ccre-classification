@@ -11846,130 +11846,6 @@ stages:
       md5: ed2682e23b591fe1d2311a956e122782.dir
       size: 114650647
       nfiles: 126
-  render_lsgkm_report_GRCh38_evn_synthetic:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh evn synthetic
-    deps:
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: 
-        results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 0afb78583ca7781effb1f65cbb589693
-      size: 18240
-    - path: src/render_GRCh38_lsgkm_report.sh
-      hash: md5
-      md5: 8b97d33ef4c82370f92ead5286c5f9b1
-      size: 1557
-      isexec: true
-    outs:
-    - path: reports/rendered/evn/synthetic/lsgkm_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: 84d6b51ded798419b0fca747825789c2
-      size: 1464223
-  render_lsgkm_report_GRCh38_svn_synthetic:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh svn synthetic
-    deps:
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: 
-        results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 8b0c5a9276269d42593871c7c8cb92b0
-      size: 18233
-    - path: src/render_GRCh38_lsgkm_report.sh
-      hash: md5
-      md5: 8b97d33ef4c82370f92ead5286c5f9b1
-      size: 1557
-      isexec: true
-    outs:
-    - path: reports/rendered/svn/synthetic/lsgkm_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: f46d3490bc4cfe80d34dce281cdf84da
-      size: 1458911
-  render_alphagenome_report_GRCh38_evn_synthetic:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
-      --model alphagenome --background-type synthetic && bash 
-      src/render_GRCh38_alphagenome_report.sh evn synthetic
-    deps:
-    - path: data/processed/evn/GRCh38/synthetic
-      hash: md5
-      md5: da2154d88a7a1b78a1553617bda7d947.dir
-      size: 228677817
-      nfiles: 72
-    - path: models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
-      hash: md5
-      md5: 557a881a47dbf7f5c0aedebf81a5c47c.dir
-      size: 264914556
-      nfiles: 126
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: src/prepare_GRCh38_chromosome_learning_results.py
-      hash: md5
-      md5: e6e91825ca42337474b01295b5ca3ef3
-      size: 8302
-      isexec: true
-    - path: src/render_GRCh38_alphagenome_report.sh
-      hash: md5
-      md5: 6310cf5db84112b7efd78c19354a1ac6
-      size: 1573
-      isexec: true
-    outs:
-    - path: 
-        reports/rendered/evn/synthetic/alphagenome_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: e3d6c78b26cf61db36d24167b58eb783
-      size: 1492430
-    - path: 
-        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
-      size: 23236
-  render_alphagenome_report_GRCh38_svn_synthetic:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
-      --model alphagenome --background-type synthetic && bash 
-      src/render_GRCh38_alphagenome_report.sh svn synthetic
-    deps:
-    - path: data/processed/svn/GRCh38/synthetic
-      hash: md5
-      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
-      size: 221136619
-      nfiles: 72
-    - path: models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
-      hash: md5
-      md5: 830ed24a01b9167f988e8666095a0ec5.dir
-      size: 264914895
-      nfiles: 126
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: src/prepare_GRCh38_chromosome_learning_results.py
-      hash: md5
-      md5: e6e91825ca42337474b01295b5ca3ef3
-      size: 8302
-      isexec: true
-    - path: src/render_GRCh38_alphagenome_report.sh
-      hash: md5
-      md5: 6310cf5db84112b7efd78c19354a1ac6
-      size: 1573
-      isexec: true
-    outs:
-    - path: 
-        reports/rendered/svn/synthetic/alphagenome_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: 44b35d4fb6ad3fd1f638e41721125e03
-      size: 1474638
-    - path: 
-        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 2768b5860388b295b402a0370f9666de
-      size: 23246
   cross_predict_alphagenome_GRCh38_synthetic:
     cmd: sbatch --wait --export=ALL,TYPE=synthetic 
       slurm/cross_predict_alphagenome.sh
@@ -13333,86 +13209,6 @@ stages:
       md5: 28ca22583df9bc6d6005b56522a1eebc.dir
       size: 221136619
       nfiles: 72
-  render_alphagenome_report_GRCh38_evn_real:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
-      --model alphagenome --background-type real && bash 
-      src/render_GRCh38_alphagenome_report.sh evn real
-    deps:
-    - path: data/processed/evn/GRCh38/real
-      hash: md5
-      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
-      size: 238987778
-      nfiles: 96
-    - path: models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
-      hash: md5
-      md5: e5bfba8d26747671ce02c9c50f38cb5b.dir
-      size: 264910188
-      nfiles: 126
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: src/prepare_GRCh38_chromosome_learning_results.py
-      hash: md5
-      md5: e6e91825ca42337474b01295b5ca3ef3
-      size: 8302
-      isexec: true
-    - path: src/render_GRCh38_alphagenome_report.sh
-      hash: md5
-      md5: 6310cf5db84112b7efd78c19354a1ac6
-      size: 1573
-      isexec: true
-    outs:
-    - path: 
-        reports/rendered/evn/real/alphagenome_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: 405eb35135097c3d9bd5e56ac2dad5c5
-      size: 1606066
-    - path: 
-        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 915f7cfd7ca86fd547c744658d71b4f2
-      size: 22866
-  render_alphagenome_report_GRCh38_svn_real:
-    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
-      --model alphagenome --background-type real && bash 
-      src/render_GRCh38_alphagenome_report.sh svn real
-    deps:
-    - path: data/processed/svn/GRCh38/real
-      hash: md5
-      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
-      size: 230168152
-      nfiles: 96
-    - path: models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
-      hash: md5
-      md5: 61129865a98613fcb33852fe151de153.dir
-      size: 264908315
-      nfiles: 126
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: src/prepare_GRCh38_chromosome_learning_results.py
-      hash: md5
-      md5: e6e91825ca42337474b01295b5ca3ef3
-      size: 8302
-      isexec: true
-    - path: src/render_GRCh38_alphagenome_report.sh
-      hash: md5
-      md5: 6310cf5db84112b7efd78c19354a1ac6
-      size: 1573
-      isexec: true
-    outs:
-    - path: 
-        reports/rendered/svn/real/alphagenome_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: 8a7058cf2af1fa18a799447558b0a7a9
-      size: 1632258
-    - path: 
-        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 8c8e3206fef260b5c8da89ca40df0508
-      size: 22853
   cross_predict_alphagenome_GRCh38_real:
     cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_alphagenome.sh
     deps:
@@ -13540,10 +13336,14 @@ stages:
   render_alphagenome_native_comparison_report_GRCh38_real:
     cmd: bash src/render_alphagenome_native_comparison_report.sh real
     deps:
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
     - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 6a9a6bff9e08e7bd6db50425b7d58c48
-      size: 5894
+      md5: 4f9a1d1452e3958e65caca9faebf7a5f
+      size: 6235
     - path: 
         results/cross_task/GRCh38/real/alphagenome_native_vs_cross_metrics.tsv
       hash: md5
@@ -13558,52 +13358,8 @@ stages:
     - path: 
         reports/rendered/comparison/real/alphagenome_native_evn_vs_svn_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 5bebbd4d1bea5a291d64491c57fa48f9
-      size: 1899096
-  render_lsgkm_report_GRCh38_evn_real:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh evn real
-    deps:
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: 
-        results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 0db06ac1a871c5be48d0a0b7e863654d
-      size: 17907
-    - path: src/render_GRCh38_lsgkm_report.sh
-      hash: md5
-      md5: 8b97d33ef4c82370f92ead5286c5f9b1
-      size: 1557
-      isexec: true
-    outs:
-    - path: reports/rendered/evn/real/lsgkm_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: 803a4e69318160ab93e6971a2d463975
-      size: 1515803
-  render_lsgkm_report_GRCh38_svn_real:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh svn real
-    deps:
-    - path: reports/chromosome_learning_GRCh38_results.Rmd
-      hash: md5
-      md5: 5d02a1f7439c89391562f47c497d6cd1
-      size: 8158
-    - path: 
-        results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
-      hash: md5
-      md5: 646747385471590d2434a2f58fd412ae
-      size: 17922
-    - path: src/render_GRCh38_lsgkm_report.sh
-      hash: md5
-      md5: 8b97d33ef4c82370f92ead5286c5f9b1
-      size: 1557
-      isexec: true
-    outs:
-    - path: reports/rendered/svn/real/lsgkm_GRCh38_chromosome_learning.html
-      hash: md5
-      md5: 1a5ff1b83129428c29e44dd789f22be9
-      size: 1509611
+      md5: 9667bfba32bce41e033bf5cc73f20abc
+      size: 2454047
   prepare_lsgkm_results_GRCh38_evn_real:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
       --model lsgkm --background-type real
@@ -13718,14 +13474,18 @@ stages:
       md5: 0e79f749341fbf128841f0531bdf739e.dir
       size: 236309819
       nfiles: 252
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
     - path: reports/cross_task_chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 674c4a759c504994b9ce7d62320dda8d
-      size: 4573
+      md5: 99792f231a2789283847d684ea2f33f5
+      size: 4953
     - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 6a9a6bff9e08e7bd6db50425b7d58c48
-      size: 5894
+      md5: 4f9a1d1452e3958e65caca9faebf7a5f
+      size: 6235
     - path: 
         results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
       hash: md5
@@ -13765,13 +13525,13 @@ stages:
     - path: 
         reports/rendered/comparison/real/native_evn_vs_svn_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 05aa75c661f2cbee862857ce8d47d4c7
-      size: 1944912
+      md5: ea27e9a3d2fba1dbaf0cca47405c8cd8
+      size: 2498415
     - path: 
         reports/rendered/cross-task/real/native_vs_cross_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 556cfd016dcbf1074acdeb612177f8a0
-      size: 2257617
+      md5: f91c4e6843415a886436d18a408d8121
+      size: 2766396
     - path: results/cross_task/GRCh38/real/native_vs_cross_metrics.tsv
       hash: md5
       md5: 381e9067168784246c6004b466f8fbb0
@@ -13861,14 +13621,18 @@ stages:
       md5: 85f97ef136703893cd07328c0843e70c.dir
       size: 230240559
       nfiles: 252
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
     - path: reports/cross_task_chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 674c4a759c504994b9ce7d62320dda8d
-      size: 4573
+      md5: 99792f231a2789283847d684ea2f33f5
+      size: 4953
     - path: reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: 6a9a6bff9e08e7bd6db50425b7d58c48
-      size: 5894
+      md5: 4f9a1d1452e3958e65caca9faebf7a5f
+      size: 6235
     - path: 
         results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
       hash: md5
@@ -13908,8 +13672,8 @@ stages:
     - path: 
         reports/rendered/comparison/synthetic/native_evn_vs_svn_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 5111fd4a4349c48e882f36d6a651944b
-      size: 1893086
+      md5: 3e0cde09c738c322ac4683fb5ae64762
+      size: 2423037
     - path: results/cross_task/GRCh38/synthetic/native_vs_cross_metrics.tsv
       hash: md5
       md5: c9b93b74624b66f6da3631b1e5cd588c
@@ -16352,10 +16116,14 @@ stages:
   render_native_report_GRCh38_evs_real:
     cmd: bash src/render_native_evs_report.sh
     deps:
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
     - path: reports/native_evs_chromosome_learning_GRCh38_results.Rmd
       hash: md5
-      md5: caacb1eb72741e624781ae8299fbfba2
-      size: 4551
+      md5: 4eeba3dd31167741e80758aabaa4215d
+      size: 4871
     - path: 
         results/evs/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
       hash: md5
@@ -16368,14 +16136,14 @@ stages:
       size: 17921
     - path: src/render_native_evs_report.sh
       hash: md5
-      md5: 18de1185257a22746dd895d43c9250f3
-      size: 721
+      md5: ee59170a729854cbf5e009d3e94abe6c
+      size: 783
       isexec: true
     outs:
     - path: reports/rendered/evs/native_evs_GRCh38_chromosome_learning.html
       hash: md5
-      md5: e50a46a602b629e3bac7c8abac35e54a
-      size: 1676822
+      md5: cb0f441109c18531d9c6c3b349e13e55
+      size: 2042049
   train_ls_gkm_GRCh38_evs_real:
     cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real --array=1-12%5 
       --mem=100G slurm/train_ls_gkm.sh && sbatch --wait 
@@ -16472,8 +16240,12 @@ stages:
     deps:
     - path: reports/alphagenome_background_comparison_GRCh38_results.Rmd
       hash: md5
-      md5: a20fe2c458cb80a7b963e6817274ccc3
-      size: 6922
+      md5: 9d90cf1a6c852d3a44527e3ed0964566
+      size: 7301
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
     - path: 
         results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
       hash: md5
@@ -16503,15 +16275,19 @@ stages:
     - path: 
         reports/rendered/evn/real_vs_synthetic/real_vs_synthetic_GRCh38_chromosome_learning.html
       hash: md5
-      md5: 7c1fa97312079464aef63f191bc4f535
-      size: 1699664
+      md5: 35acc90db83e70bc68f9309332776f6e
+      size: 2273543
   render_background_comparison_report_GRCh38_svn:
     cmd: bash src/render_alphagenome_background_comparison_report.sh svn
     deps:
     - path: reports/alphagenome_background_comparison_GRCh38_results.Rmd
       hash: md5
-      md5: a20fe2c458cb80a7b963e6817274ccc3
-      size: 6922
+      md5: 9d90cf1a6c852d3a44527e3ed0964566
+      size: 7301
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
     - path: 
         results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
       hash: md5
@@ -16541,5 +16317,706 @@ stages:
     - path: 
         reports/rendered/svn/real_vs_synthetic/real_vs_synthetic_GRCh38_chromosome_learning.html
       hash: md5
-      md5: b2f9573413f45ae8aca07c89dfdb34ed
-      size: 1708708
+      md5: ca488fe408179d5faf09d05e6bd5aa5c
+      size: 2279419
+  prepare_alphagenome_results_GRCh38_evn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model alphagenome --background-type real
+    deps:
+    - path: data/processed/evn/GRCh38/real
+      hash: md5
+      md5: b0e8e3fa26ebf89047db03f6d7fac641.dir
+      size: 238987778
+      nfiles: 96
+    - path: models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: e5bfba8d26747671ce02c9c50f38cb5b.dir
+      size: 264910188
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 915f7cfd7ca86fd547c744658d71b4f2
+      size: 22866
+  prepare_alphagenome_results_GRCh38_evn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
+      --model alphagenome --background-type synthetic
+    deps:
+    - path: data/processed/evn/GRCh38/synthetic
+      hash: md5
+      md5: da2154d88a7a1b78a1553617bda7d947.dir
+      size: 228677817
+      nfiles: 72
+    - path: models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 557a881a47dbf7f5c0aedebf81a5c47c.dir
+      size: 264914556
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
+      size: 23236
+  prepare_alphagenome_results_GRCh38_svn_real:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model alphagenome --background-type real
+    deps:
+    - path: data/processed/svn/GRCh38/real
+      hash: md5
+      md5: 5c4e9e5a60eac1a0cbb3c5f82e6c5187.dir
+      size: 230168152
+      nfiles: 96
+    - path: models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
+      hash: md5
+      md5: 61129865a98613fcb33852fe151de153.dir
+      size: 264908315
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8c8e3206fef260b5c8da89ca40df0508
+      size: 22853
+  prepare_alphagenome_results_GRCh38_svn_synthetic:
+    cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
+      --model alphagenome --background-type synthetic
+    deps:
+    - path: data/processed/svn/GRCh38/synthetic
+      hash: md5
+      md5: 28ca22583df9bc6d6005b56522a1eebc.dir
+      size: 221136619
+      nfiles: 72
+    - path: models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
+      hash: md5
+      md5: 830ed24a01b9167f988e8666095a0ec5.dir
+      size: 264914895
+      nfiles: 126
+    - path: src/prepare_GRCh38_chromosome_learning_results.py
+      hash: md5
+      md5: e6e91825ca42337474b01295b5ca3ef3
+      size: 8302
+      isexec: true
+    outs:
+    - path: 
+        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 2768b5860388b295b402a0370f9666de
+      size: 23246
+  render_native_report_GRCh38_evn_real:
+    cmd: bash src/render_native_task_report.sh evn real
+    deps:
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
+    - path: reports/native_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 8cc8c9ab08f97d935cc409e45b0524e1
+      size: 5276
+    - path: 
+        results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 915f7cfd7ca86fd547c744658d71b4f2
+      size: 22866
+    - path: 
+        results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0db06ac1a871c5be48d0a0b7e863654d
+      size: 17907
+    - path: src/render_native_task_report.sh
+      hash: md5
+      md5: 2e9cd5a0bba5d229606aa5f23616fc10
+      size: 1461
+      isexec: true
+    outs:
+    - path: reports/rendered/evn/real/native_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 984dbdd65fbce88571ae365e4ed01a79
+      size: 2077566
+  render_native_report_GRCh38_evn_synthetic:
+    cmd: bash src/render_native_task_report.sh evn synthetic
+    deps:
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
+    - path: reports/native_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 8cc8c9ab08f97d935cc409e45b0524e1
+      size: 5276
+    - path: 
+        results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: ccf78f7a9721bdb6acc37e0a45a8e10b
+      size: 23236
+    - path: 
+        results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 0afb78583ca7781effb1f65cbb589693
+      size: 18240
+    - path: src/render_native_task_report.sh
+      hash: md5
+      md5: 2e9cd5a0bba5d229606aa5f23616fc10
+      size: 1461
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/evn/synthetic/native_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: df88ff4d176c5a28bb0c4c2f976ce744
+      size: 2033632
+  render_native_report_GRCh38_svn_real:
+    cmd: bash src/render_native_task_report.sh svn real
+    deps:
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
+    - path: reports/native_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 8cc8c9ab08f97d935cc409e45b0524e1
+      size: 5276
+    - path: 
+        results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8c8e3206fef260b5c8da89ca40df0508
+      size: 22853
+    - path: 
+        results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 646747385471590d2434a2f58fd412ae
+      size: 17922
+    - path: src/render_native_task_report.sh
+      hash: md5
+      md5: 2e9cd5a0bba5d229606aa5f23616fc10
+      size: 1461
+      isexec: true
+    outs:
+    - path: reports/rendered/svn/real/native_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 3150ff0e21f8f7ba6964af6feb5e37b0
+      size: 2085958
+  render_native_report_GRCh38_svn_synthetic:
+    cmd: bash src/render_native_task_report.sh svn synthetic
+    deps:
+    - path: reports/chromosome_learning_helpers.R
+      hash: md5
+      md5: a69811d983a43c3a01561d52de9ba266
+      size: 3342
+    - path: reports/native_task_chromosome_learning_GRCh38_results.Rmd
+      hash: md5
+      md5: 8cc8c9ab08f97d935cc409e45b0524e1
+      size: 5276
+    - path: 
+        results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 2768b5860388b295b402a0370f9666de
+      size: 23246
+    - path: 
+        results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+      hash: md5
+      md5: 8b0c5a9276269d42593871c7c8cb92b0
+      size: 18233
+    - path: src/render_native_task_report.sh
+      hash: md5
+      md5: 2e9cd5a0bba5d229606aa5f23616fc10
+      size: 1461
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/svn/synthetic/native_GRCh38_chromosome_learning.html
+      hash: md5
+      md5: 952986c63faad581fb8e887a4f022a93
+      size: 2031952
+  summarize_task_chromosome_counts_GRCh38:
+    cmd: python3 src/build_GRCh38_task_chromosome_counts.py
+    deps:
+    - path: 
+        data/processed/consolidation/GRCh38/antinoise_selection/provenance.tsv
+      hash: md5
+      md5: 5a3046fcb8e6df6cef0e6a793741429d
+      size: 40953422
+    - path: 
+        data/processed/consolidation/GRCh38/antinoise_synthetic_selection/provenance.tsv
+      hash: md5
+      md5: 9b19f4960537c1ed924aa68c30185fb9
+      size: 20660593
+    - path: data/processed/consolidation/GRCh38/manifest.tsv
+      hash: md5
+      md5: 77cd911c9466f57be4896ac993ac1bf5
+      size: 3851
+    - path: src/build_GRCh38_task_chromosome_counts.py
+      hash: md5
+      md5: 29b42f4101480426c818a8d234f6f41c
+      size: 4739
+    outs:
+    - path: data/processed/evn/GRCh38/chroms/chromosome_counts.csv
+      hash: md5
+      md5: 72df7ff147c71c426b8ff33814cf8ab1
+      size: 1023
+    - path: data/processed/svn/GRCh38/chroms/chromosome_counts.csv
+      hash: md5
+      md5: 3b73b73fa37975158f670a7ebf77afba
+      size: 1010
+  render_tangermeme_report_GRCh38:
+    cmd: bash src/render_tangermeme_report.sh
+    deps:
+    - path: reports/tangermeme_GRCh38_results.Rmd
+      hash: md5
+      md5: 2ae4ac9f32c923b3d8eaaf02122ca21e
+      size: 12751
+    - path: 
+        results/evn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/audit.json
+      hash: md5
+      md5: 6057c46b50445e79dcf5f725b5089077
+      size: 6803
+    - path: 
+        results/evn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/candidate_region_tests.tsv
+      hash: md5
+      md5: 8834730421e710772c2452e24d2ccaf6
+      size: 66439
+    - path: 
+        results/evn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/ism_validation.tsv
+      hash: md5
+      md5: 9975dd348c0219eda005c17db0ca9375
+      size: 4938
+    - path: 
+        results/evn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/metadata.json
+      hash: md5
+      md5: a0434cfbc28449c573cb42ce8ff41b72
+      size: 3100
+    - path: 
+        results/evn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/motif_cluster_summary.tsv
+      hash: md5
+      md5: ab690f171dac29c11599d8c1a10bc143
+      size: 37328
+    - path: 
+        results/evs/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/audit.json
+      hash: md5
+      md5: 980ec2825fdef6edaf991d361d59c9cc
+      size: 6790
+    - path: 
+        results/evs/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/candidate_region_tests.tsv
+      hash: md5
+      md5: 34d9977db5599c13640d41499ae1086c
+      size: 67795
+    - path: 
+        results/evs/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/ism_validation.tsv
+      hash: md5
+      md5: d65d5196cec95a19927225ae4fc714ba
+      size: 5060
+    - path: 
+        results/evs/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/metadata.json
+      hash: md5
+      md5: 2126c97d924dc40aa36b9c8e802f841d
+      size: 3090
+    - path: 
+        results/evs/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/motif_cluster_summary.tsv
+      hash: md5
+      md5: affaee7c2d55d849c7b306b653fccfab
+      size: 46996
+    - path: 
+        results/svn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/audit.json
+      hash: md5
+      md5: df9d3c65ae656fab9d0b9cf84c2fd25c
+      size: 6798
+    - path: 
+        results/svn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/candidate_region_tests.tsv
+      hash: md5
+      md5: 8ce22d868fcdd54e8167822d4dd46c95
+      size: 66498
+    - path: 
+        results/svn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/ism_validation.tsv
+      hash: md5
+      md5: 9139daa6d1bf1143cce558b9c783744c
+      size: 4956
+    - path: 
+        results/svn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/metadata.json
+      hash: md5
+      md5: 26d96b4c374c8aa4a4016a2946a013b2
+      size: 3101
+    - path: 
+        results/svn/GRCh38/alphagenome/real/tangermeme_clustered/through_chrX/motif_cluster_summary.tsv
+      hash: md5
+      md5: 1456ae649ad429929fb00f8ac51c459e
+      size: 45896
+    - path: src/render_tangermeme_report.sh
+      hash: md5
+      md5: 53a1e766e4ab907b64cfa5dc48e470ea
+      size: 492
+      isexec: true
+    outs:
+    - path: 
+        reports/rendered/feature-importance/alphagenome_tangermeme_GRCh38.html
+      hash: md5
+      md5: c6c65d7ec836f5cde2dd21ddc7b813f7
+      size: 2201382
+  build_JASPAR2026_human_motifs:
+    cmd: python3 src/build_JASPAR2026_human_motifs.py
+    deps:
+    - path: src/build_JASPAR2026_human_motifs.py
+      hash: md5
+      md5: 16d8ef19c95bd02a729478227a0238dd
+      size: 10842
+      isexec: true
+    outs:
+    - path: 
+        data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_audit.tsv
+      hash: md5
+      md5: 6dee0bdb906b32ab24e4d312d49b0360
+      size: 114039
+    - path: data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_meme.txt
+      hash: md5
+      md5: 852c7ec0b5864387c9de3b4d70dd97fa
+      size: 488878
+    - path: 
+        data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_summary.json
+      hash: md5
+      md5: 764005bf31c4fc6404afb7b9e31d5c89
+      size: 743
+    - path: data/motifs/JASPAR2026_CORE_non-redundant_pfms_meme.txt
+      hash: md5
+      md5: 9100585942474c7be3a03d06e7cf19bb
+      size: 1351973
+    - path: data/motifs/checksums.sha256
+      hash: md5
+      md5: f0ed11caeb82a1e32720dcd7e57a7e5b
+      size: 583
+    - path: data/motifs/ultimate_metadata_table_CORE.tsv
+      hash: md5
+      md5: 2134a3aa5b9274143fad80419ea6562f
+      size: 658854
+  build_HOCOMOCO14_clustered_motifs:
+    cmd: python3 src/build_HOCOMOCO14_clustered_motifs.py
+    deps:
+    - path: src/build_HOCOMOCO14_clustered_motifs.py
+      hash: md5
+      md5: b2ba2198f525af7891240c68961b9868
+      size: 8009
+    outs:
+    - path: data/motifs/hocomoco14/H14CORE-CLUSTERED.meme
+      hash: md5
+      md5: 39d96683d7b2ffaa8867aaa18abde19d
+      size: 799654
+    - path: data/motifs/hocomoco14/H14CORE-CLUSTERED_annotation.jsonl
+      hash: md5
+      md5: 57942752e59a030da3e2146ffb6e4403
+      size: 5009849
+    - path: data/motifs/hocomoco14/H14CORE-CLUSTERED_checksums.sha256
+      hash: md5
+      md5: 97e73d26e6cf863b8c20548a825048d7
+      size: 465
+    - path: data/motifs/hocomoco14/H14CORE-CLUSTERED_pfm.tar.gz
+      hash: md5
+      md5: ad698518648d1f16e270105b2fcf170a
+      size: 283806
+    - path: data/motifs/hocomoco14/H14CORE-CLUSTERED_summary.json
+      hash: md5
+      md5: ede22c2ce161ce804fef93db09c7d3fb
+      size: 748
+    - path: data/motifs/hocomoco14/cluster_list.tsv
+      hash: md5
+      md5: ffa96d254237c7edb65db5ca5b99511a
+      size: 132479
+  gkmexplain_scores:
+    cmd: sbatch --wait slurm/gkmexplain_scores.sh
+    deps:
+    - path: data/processed/evn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: b1c43ccbb0f161fcae77e3c47653178e
+      size: 5267163
+    - path: data/processed/evn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 1b39293d0ba6538add143a4f7baf6ae8
+      size: 4912105
+    - path: data/processed/evs/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: 72ab834bce8cf3affb1d2389ddc89c1d
+      size: 4375580
+    - path: data/processed/evs/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: b6e221a25239888cc3da7a54d4eaafd6
+      size: 4399222
+    - path: data/processed/svn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: 0e37d76e08ccb19df2cb5e049dc8679e
+      size: 4456042
+    - path: data/processed/svn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 8a70c991e2a6c294923236fc5d3a7615
+      size: 4145864
+    - path: ls-gkm.yaml
+      hash: md5
+      md5: 16b5ab619f3e0d5dcf5eb279564a7658
+      size: 7981
+    - path: 
+        models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+      hash: md5
+      md5: 6d1a8c6e8c758d6a14aedc491a4fcc22
+      size: 55354968
+    - path: 
+        models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+      hash: md5
+      md5: 8c869a79bc6d198171ecc8438d220830
+      size: 73169437
+    - path: 
+        models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+      hash: md5
+      md5: 9342005e3df1021a5981aaaf398d7206
+      size: 50120087
+    - path: repos/lsgkm/bin/gkmexplain
+      hash: md5
+      md5: 21368671e5c88fef6f230ad6eb3f26fc
+      size: 160368
+      isexec: true
+    - path: slurm/gkmexplain_scores.sh
+      hash: md5
+      md5: cec028558bb8560c3e33fc5725b7355b
+      size: 1988
+      isexec: true
+    - path: src/gkmexplain_analysis.py
+      hash: md5
+      md5: de2952ad18aa86fd30762ad032d229dc
+      size: 26495
+      isexec: true
+    - path: src/run_gkmexplain_parallel.sh
+      hash: md5
+      md5: cb8c1f2a41705164170044c30d9ce457
+      size: 2711
+      isexec: true
+    outs:
+    - path: predictions/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: ac49987b9dc831e9a54876c533bf613c.dir
+      size: 553556602
+      nfiles: 8
+    - path: predictions/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 952563766cb95bc448d5078730702a38.dir
+      size: 481140103
+      nfiles: 8
+    - path: predictions/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 8013428e34e638a9420eba4d76e089c4.dir
+      size: 469033307
+      nfiles: 8
+  gkmexplain_analysis:
+    cmd: sbatch --wait slurm/summarize_gkmexplain.sh
+    deps:
+    - path: data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_meme.txt
+      hash: md5
+      md5: 852c7ec0b5864387c9de3b4d70dd97fa
+      size: 488878
+    - path: data/processed/evn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: b1c43ccbb0f161fcae77e3c47653178e
+      size: 5267163
+    - path: data/processed/evn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 1b39293d0ba6538add143a4f7baf6ae8
+      size: 4912105
+    - path: data/processed/evs/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: 72ab834bce8cf3affb1d2389ddc89c1d
+      size: 4375580
+    - path: data/processed/evs/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: b6e221a25239888cc3da7a54d4eaafd6
+      size: 4399222
+    - path: data/processed/svn/GRCh38/real/test_neg.fa
+      hash: md5
+      md5: 0e37d76e08ccb19df2cb5e049dc8679e
+      size: 4456042
+    - path: data/processed/svn/GRCh38/real/test_pos.fa
+      hash: md5
+      md5: 8a70c991e2a6c294923236fc5d3a7615
+      size: 4145864
+    - path: ls-gkm.yaml
+      hash: md5
+      md5: 16b5ab619f3e0d5dcf5eb279564a7658
+      size: 7981
+    - path: 
+        models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+      hash: md5
+      md5: 6d1a8c6e8c758d6a14aedc491a4fcc22
+      size: 55354968
+    - path: 
+        models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+      hash: md5
+      md5: 8c869a79bc6d198171ecc8438d220830
+      size: 73169437
+    - path: 
+        models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+      hash: md5
+      md5: 9342005e3df1021a5981aaaf398d7206
+      size: 50120087
+    - path: predictions/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: ac49987b9dc831e9a54876c533bf613c.dir
+      size: 553556602
+      nfiles: 8
+    - path: predictions/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 952563766cb95bc448d5078730702a38.dir
+      size: 481140103
+      nfiles: 8
+    - path: predictions/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 8013428e34e638a9420eba4d76e089c4.dir
+      size: 469033307
+      nfiles: 8
+    - path: slurm/summarize_gkmexplain.sh
+      hash: md5
+      md5: 7088d5cdb9c43a8bb295074479a4fc90
+      size: 1581
+      isexec: true
+    - path: src/gkmexplain_analysis.py
+      hash: md5
+      md5: de2952ad18aa86fd30762ad032d229dc
+      size: 26495
+      isexec: true
+    outs:
+    - path: results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 7580c951be3def1f42e86e0d9f3702fb.dir
+      size: 543197235
+      nfiles: 8
+    - path: results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 2a5f1fc59f8fa9f8bfdd2c72a914ed94.dir
+      size: 554658128
+      nfiles: 8
+    - path: results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: b9e4cd4c4c4751ad27664c205ec91106.dir
+      size: 417815176
+      nfiles: 7
+  annotate_gkmexplain_patterns:
+    cmd: sbatch --wait slurm/annotate_gkmexplain.sh
+    deps:
+    - path: data/motifs/hocomoco14/H14CORE-CLUSTERED.meme
+      hash: md5
+      md5: 39d96683d7b2ffaa8867aaa18abde19d
+      size: 799654
+    - path: data/motifs/hocomoco14/cluster_list.tsv
+      hash: md5
+      md5: ffa96d254237c7edb65db5ca5b99511a
+      size: 132479
+    - path: 
+        results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/negative_modisco.h5
+      hash: md5
+      md5: aaf5d1e0149cf12e0e036eb9d4c0a21c
+      size: 111691252
+    - path: 
+        results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/positive_modisco.h5
+      hash: md5
+      md5: bb803a390e22b417f6c6290ffe5a4e99
+      size: 108108469
+    - path: 
+        results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX/negative_modisco.h5
+      hash: md5
+      md5: cc48b65f7aa5453b5c98294575f72ce4
+      size: 111343191
+    - path: 
+        results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX/positive_modisco.h5
+      hash: md5
+      md5: 07ecc53df8821f099d016fe5db2a6d7c
+      size: 112174963
+    - path: 
+        results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/negative_modisco.h5
+      hash: md5
+      md5: 749963f950df94b5110f60697c14bbba
+      size: 99528065
+    - path: 
+        results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/positive_modisco.h5
+      hash: md5
+      md5: 10d9eba927fd2d779eca64d680e32725
+      size: 111812722
+    - path: slurm/annotate_gkmexplain.sh
+      hash: md5
+      md5: 355d05b23d86897b1d6ed4e16f45e7af
+      size: 1494
+    - path: src/annotate_gkmexplain_patterns.py
+      hash: md5
+      md5: ef6aa83b9607849ed7246699d8b213a2
+      size: 17449
+    outs:
+    - path: results/evn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+      hash: md5
+      md5: 9d29127e73f3d9c499bb04c675901b91.dir
+      size: 97372004
+      nfiles: 285
+    - path: results/evs/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+      hash: md5
+      md5: a61f06554d6d69394e51b7f49a03d73f.dir
+      size: 44826575
+      nfiles: 141
+    - path: results/svn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+      hash: md5
+      md5: 87d5403e4c395ceae24acc42caafeaa0.dir
+      size: 92081650
+      nfiles: 269
+  render_gkmexplain_report_GRCh38:
+    cmd: bash src/render_gkmexplain_report.sh
+    deps:
+    - path: reports/gkmexplain_GRCh38_results.Rmd
+      hash: md5
+      md5: ef4fde2fefa334404dae551dbd56bd5d
+      size: 12606
+    - path: results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 7580c951be3def1f42e86e0d9f3702fb.dir
+      size: 543197235
+      nfiles: 8
+    - path: results/evn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+      hash: md5
+      md5: 9d29127e73f3d9c499bb04c675901b91.dir
+      size: 97372004
+      nfiles: 285
+    - path: results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: 2a5f1fc59f8fa9f8bfdd2c72a914ed94.dir
+      size: 554658128
+      nfiles: 8
+    - path: results/evs/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+      hash: md5
+      md5: a61f06554d6d69394e51b7f49a03d73f.dir
+      size: 44826575
+      nfiles: 141
+    - path: results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+      hash: md5
+      md5: b9e4cd4c4c4751ad27664c205ec91106.dir
+      size: 417815176
+      nfiles: 7
+    - path: results/svn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+      hash: md5
+      md5: 87d5403e4c395ceae24acc42caafeaa0.dir
+      size: 92081650
+      nfiles: 269
+    - path: src/render_gkmexplain_report.sh
+      hash: md5
+      md5: 899ad974f1f0d0f82c5fb6c23a1f9643
+      size: 485
+      isexec: true
+    outs:
+    - path: reports/rendered/feature-importance/lsgkm_gkmexplain_GRCh38.html
+      hash: md5
+      md5: 9de32018bd62078c37dbec33df0f0172
+      size: 7655036

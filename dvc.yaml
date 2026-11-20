@@ -72,7 +72,7 @@ stages:
     cmd: bash ../lsgkm/bin/gkmtrain -T 4 -m 16000 '<pos_fa>' '<neg_fa>'
       'output_prefix'
     deps:
-    - ../lsgkm/bin/gkmtrain
+    - repos/lsgkm/bin/gkmtrain
     - data/processed/evn/hepg2/ls-gkm/training/outer1/train_neg.fa
     - data/processed/evn/hepg2/ls-gkm/training/outer1/train_pos.fa
     - data/processed/evn/hepg2/ls-gkm/training/outer2/train_neg.fa
@@ -92,7 +92,7 @@ stages:
   test_ls_gkm_hepg2:
     cmd: bash ../lsgkm/bin/gkmpredict -T 4 '<fasta>' '<model>' 'output'
     deps:
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - models/evn/hepg2/ls-gkm/outer1.model.txt
     - models/evn/hepg2/ls-gkm/outer2.model.txt
     - models/evn/hepg2/ls-gkm/outer3.model.txt
@@ -347,12 +347,12 @@ stages:
   prepare_masked_reference_GRCh38_antinoise:
     cmd: bash src/prepare_masked_reference.sh
     deps:
-    - ../antinoise/bin/linux/area_self_overlap.exe
-    - ../antinoise/bin/linux/bed_chr_mask.exe
-    - ../antinoise/bin/linux/bed_chr_separation.exe
-    - ../antinoise/bin/linux/bed_sort.exe
-    - ../antinoise/bin/linux/fasta_muliplefiles.exe
-    - ../antinoise/bin/linux/fasta_to_plain0.exe
+    - repos/antinoise/bin/linux/area_self_overlap.exe
+    - repos/antinoise/bin/linux/bed_chr_mask.exe
+    - repos/antinoise/bin/linux/bed_chr_separation.exe
+    - repos/antinoise/bin/linux/bed_sort.exe
+    - repos/antinoise/bin/linux/fasta_muliplefiles.exe
+    - repos/antinoise/bin/linux/fasta_to_plain0.exe
     - src/prepare_masked_reference.sh
     outs:
     - data/processed/GRCh38-cCREs_sorted.bed
@@ -365,7 +365,7 @@ stages:
   positive_foregrounds_GRCh38_antinoise:
     cmd: bash src/positive_foregrounds_antinoise.sh
     deps:
-    - ../antinoise/bin/linux/longext_many.exe
+    - repos/antinoise/bin/linux/longext_many.exe
     - src/positive_foregrounds_antinoise.sh
     - data/reference/antinoise/hg38-PLAIN-canonical
     - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.bed
@@ -442,9 +442,9 @@ stages:
     cmd: python3 src/build_antinoise_split.py
     deps:
     - src/build_antinoise_split.py
-    - ../antinoise/src/background_genome_mono.cpp
-    - ../antinoise/src/chromosome_name.h
-    - ../antinoise/src/chromosome_len.h
+    - repos/antinoise/src/background_genome_mono.cpp
+    - repos/antinoise/src/chromosome_name.h
+    - repos/antinoise/src/chromosome_len.h
     outs:
     - bin/background_genome_mono_split.exe
   generate_background_candidates_GRCh38_antinoise_real:
@@ -653,7 +653,7 @@ stages:
   generate_background_candidates_GRCh38_antinoise_synthetic:
     cmd: bash src/make_synthetics.sh
     deps:
-    - ../antinoise/bin/linux/mix0.exe
+    - repos/antinoise/bin/linux/mix0.exe
     - data/processed/consolidation/GRCh38/chromosomes/chrom1/consolidation.fa
     - data/processed/consolidation/GRCh38/chromosomes/chrom10/consolidation.fa
     - data/processed/consolidation/GRCh38/chromosomes/chrom11/consolidation.fa
@@ -713,6 +713,17 @@ stages:
     - data/processed/evn/GRCh38/synthetic
     - data/processed/svn/GRCh38/synthetic
 
+  summarize_task_chromosome_counts_GRCh38:
+    cmd: python3 src/build_GRCh38_task_chromosome_counts.py
+    deps:
+    - data/processed/consolidation/GRCh38/manifest.tsv
+    - data/processed/consolidation/GRCh38/antinoise_selection/provenance.tsv
+    - data/processed/consolidation/GRCh38/antinoise_synthetic_selection/provenance.tsv
+    - src/build_GRCh38_task_chromosome_counts.py
+    outs:
+    - data/processed/evn/GRCh38/chroms/chromosome_counts.csv
+    - data/processed/svn/GRCh38/chroms/chromosome_counts.csv
+
   train_ls_gkm_GRCh38_evn_real:
     cmd: sbatch --wait --export=ALL,DATASET=evn,TYPE=real --array=1-13%5
       --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
@@ -721,7 +732,7 @@ stages:
     deps:
     - slurm/train_ls_gkm.sh
     - data/processed/evn/GRCh38/real
-    - ../lsgkm/bin/gkmtrain
+    - repos/lsgkm/bin/gkmtrain
     outs:
     - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
   train_ls_gkm_GRCh38_evn_synthetic:
@@ -732,7 +743,7 @@ stages:
     deps:
     - slurm/train_ls_gkm.sh
     - data/processed/evn/GRCh38/synthetic
-    - ../lsgkm/bin/gkmtrain
+    - repos/lsgkm/bin/gkmtrain
     outs:
     - models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
   train_alphagenome_GRCh38_evn_real:
@@ -762,7 +773,7 @@ stages:
       slurm/predict_ls_gkm.sh
     deps:
     - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - data/processed/evn/GRCh38/real
     - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
@@ -772,7 +783,7 @@ stages:
       slurm/predict_ls_gkm.sh
     deps:
     - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - data/processed/evn/GRCh38/synthetic
     - models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
     outs:
@@ -786,14 +797,6 @@ stages:
     - predictions/evn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
     - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
-  render_lsgkm_report_GRCh38_evn_real:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh evn real
-    deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
-    - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
-    outs:
-    - reports/rendered/evn/real/lsgkm_GRCh38_chromosome_learning.html
   prepare_lsgkm_results_GRCh38_evn_synthetic:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
       --model lsgkm --background-type synthetic
@@ -803,40 +806,44 @@ stages:
     - predictions/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
     outs:
     - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
-  render_lsgkm_report_GRCh38_evn_synthetic:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh evn synthetic
-    deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
-    - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
-    outs:
-    - reports/rendered/evn/synthetic/lsgkm_GRCh38_chromosome_learning.html
-  render_alphagenome_report_GRCh38_evn_real:
+  prepare_alphagenome_results_GRCh38_evn_real:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
-      --model alphagenome --background-type real && bash
-      src/render_GRCh38_alphagenome_report.sh evn real
+      --model alphagenome --background-type real
     deps:
     - src/prepare_GRCh38_chromosome_learning_results.py
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
     - data/processed/evn/GRCh38/real
     - models/evn/GRCh38/alphagenome/real/chromosome_learning_curves
     outs:
     - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/evn/real/alphagenome_GRCh38_chromosome_learning.html
-  render_alphagenome_report_GRCh38_evn_synthetic:
+  prepare_alphagenome_results_GRCh38_evn_synthetic:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset evn
-      --model alphagenome --background-type synthetic && bash
-      src/render_GRCh38_alphagenome_report.sh evn synthetic
+      --model alphagenome --background-type synthetic
     deps:
     - src/prepare_GRCh38_chromosome_learning_results.py
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
     - data/processed/evn/GRCh38/synthetic
     - models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
     outs:
     - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/evn/synthetic/alphagenome_GRCh38_chromosome_learning.html
+  render_native_report_GRCh38_evn_real:
+    cmd: bash src/render_native_task_report.sh evn real
+    deps:
+    - reports/chromosome_learning_helpers.R
+    - reports/native_task_chromosome_learning_GRCh38_results.Rmd
+    - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - src/render_native_task_report.sh
+    outs:
+    - reports/rendered/evn/real/native_GRCh38_chromosome_learning.html
+  render_native_report_GRCh38_evn_synthetic:
+    cmd: bash src/render_native_task_report.sh evn synthetic
+    deps:
+    - reports/chromosome_learning_helpers.R
+    - reports/native_task_chromosome_learning_GRCh38_results.Rmd
+    - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+    - src/render_native_task_report.sh
+    outs:
+    - reports/rendered/evn/synthetic/native_GRCh38_chromosome_learning.html
   train_ls_gkm_GRCh38_svn_real:
     cmd: sbatch --wait --export=ALL,DATASET=svn,TYPE=real --array=1-13%5
       --mem=100G slurm/train_ls_gkm.sh && sbatch --wait
@@ -845,7 +852,7 @@ stages:
     deps:
     - slurm/train_ls_gkm.sh
     - data/processed/svn/GRCh38/real
-    - ../lsgkm/bin/gkmtrain
+    - repos/lsgkm/bin/gkmtrain
     outs:
     - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
   train_ls_gkm_GRCh38_svn_synthetic:
@@ -856,7 +863,7 @@ stages:
     deps:
     - slurm/train_ls_gkm.sh
     - data/processed/svn/GRCh38/synthetic
-    - ../lsgkm/bin/gkmtrain
+    - repos/lsgkm/bin/gkmtrain
     outs:
     - models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
   train_alphagenome_GRCh38_svn_real:
@@ -886,7 +893,7 @@ stages:
       slurm/predict_ls_gkm.sh
     deps:
     - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - data/processed/svn/GRCh38/real
     - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
@@ -896,7 +903,7 @@ stages:
       slurm/predict_ls_gkm.sh
     deps:
     - slurm/predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - data/processed/svn/GRCh38/synthetic
     - models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
     outs:
@@ -910,14 +917,6 @@ stages:
     - predictions/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
     - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
-  render_lsgkm_report_GRCh38_svn_real:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh svn real
-    deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
-    - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
-    outs:
-    - reports/rendered/svn/real/lsgkm_GRCh38_chromosome_learning.html
   prepare_lsgkm_results_GRCh38_svn_synthetic:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
       --model lsgkm --background-type synthetic
@@ -927,45 +926,50 @@ stages:
     - predictions/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
     outs:
     - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
-  render_lsgkm_report_GRCh38_svn_synthetic:
-    cmd: bash src/render_GRCh38_lsgkm_report.sh svn synthetic
-    deps:
-    - src/render_GRCh38_lsgkm_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
-    - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
-    outs:
-    - reports/rendered/svn/synthetic/lsgkm_GRCh38_chromosome_learning.html
-  render_alphagenome_report_GRCh38_svn_real:
+  prepare_alphagenome_results_GRCh38_svn_real:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
-      --model alphagenome --background-type real && bash
-      src/render_GRCh38_alphagenome_report.sh svn real
+      --model alphagenome --background-type real
     deps:
     - src/prepare_GRCh38_chromosome_learning_results.py
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
     - data/processed/svn/GRCh38/real
     - models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
     outs:
     - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/svn/real/alphagenome_GRCh38_chromosome_learning.html
-  render_alphagenome_report_GRCh38_svn_synthetic:
+  prepare_alphagenome_results_GRCh38_svn_synthetic:
     cmd: python3 src/prepare_GRCh38_chromosome_learning_results.py --dataset svn
-      --model alphagenome --background-type synthetic && bash
-      src/render_GRCh38_alphagenome_report.sh svn synthetic
+      --model alphagenome --background-type synthetic
     deps:
     - src/prepare_GRCh38_chromosome_learning_results.py
-    - src/render_GRCh38_alphagenome_report.sh
-    - reports/chromosome_learning_GRCh38_results.Rmd
     - data/processed/svn/GRCh38/synthetic
     - models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
     outs:
     - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
-    - reports/rendered/svn/synthetic/alphagenome_GRCh38_chromosome_learning.html
+  render_native_report_GRCh38_svn_real:
+    cmd: bash src/render_native_task_report.sh svn real
+    deps:
+    - reports/chromosome_learning_helpers.R
+    - reports/native_task_chromosome_learning_GRCh38_results.Rmd
+    - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
+    - src/render_native_task_report.sh
+    outs:
+    - reports/rendered/svn/real/native_GRCh38_chromosome_learning.html
+  render_native_report_GRCh38_svn_synthetic:
+    cmd: bash src/render_native_task_report.sh svn synthetic
+    deps:
+    - reports/chromosome_learning_helpers.R
+    - reports/native_task_chromosome_learning_GRCh38_results.Rmd
+    - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
+    - src/render_native_task_report.sh
+    outs:
+    - reports/rendered/svn/synthetic/native_GRCh38_chromosome_learning.html
   render_background_comparison_report_GRCh38_evn:
     cmd: bash src/render_alphagenome_background_comparison_report.sh evn
     deps:
     - src/render_alphagenome_background_comparison_report.sh
     - reports/alphagenome_background_comparison_GRCh38_results.Rmd
+    - reports/chromosome_learning_helpers.R
     - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
     - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
@@ -977,6 +981,7 @@ stages:
     deps:
     - src/render_alphagenome_background_comparison_report.sh
     - reports/alphagenome_background_comparison_GRCh38_results.Rmd
+    - reports/chromosome_learning_helpers.R
     - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
     - results/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
@@ -987,7 +992,7 @@ stages:
     cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_ls_gkm.sh
     deps:
     - slurm/cross_predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - data/processed/evn/GRCh38/real/train_100_pos.fa
     - data/processed/evn/GRCh38/real/train_100_neg.fa
     - data/processed/evn/GRCh38/real/validation_pos.fa
@@ -1004,27 +1009,6 @@ stages:
     - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves
     outs:
     - predictions/cross_task/GRCh38/ls-gkm/real
-  cross_predict_ls_gkm_GRCh38_synthetic:
-    cmd: sbatch --wait --export=ALL,TYPE=synthetic slurm/cross_predict_ls_gkm.sh
-    deps:
-    - slurm/cross_predict_ls_gkm.sh
-    - ../lsgkm/bin/gkmpredict
-    - data/processed/evn/GRCh38/synthetic/train_100_pos.fa
-    - data/processed/evn/GRCh38/synthetic/train_100_neg.fa
-    - data/processed/evn/GRCh38/synthetic/validation_pos.fa
-    - data/processed/evn/GRCh38/synthetic/validation_neg.fa
-    - data/processed/evn/GRCh38/synthetic/test_pos.fa
-    - data/processed/evn/GRCh38/synthetic/test_neg.fa
-    - data/processed/svn/GRCh38/synthetic/train_100_pos.fa
-    - data/processed/svn/GRCh38/synthetic/train_100_neg.fa
-    - data/processed/svn/GRCh38/synthetic/validation_pos.fa
-    - data/processed/svn/GRCh38/synthetic/validation_neg.fa
-    - data/processed/svn/GRCh38/synthetic/test_pos.fa
-    - data/processed/svn/GRCh38/synthetic/test_neg.fa
-    - models/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
-    - models/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves
-    outs:
-    - predictions/cross_task/GRCh38/ls-gkm/synthetic
   cross_predict_alphagenome_GRCh38_real:
     cmd: sbatch --wait --export=ALL,TYPE=real slurm/cross_predict_alphagenome.sh
     deps:
@@ -1047,36 +1031,17 @@ stages:
     - models/svn/GRCh38/alphagenome/real/chromosome_learning_curves
     outs:
     - predictions/cross_task/GRCh38/alphagenome/real
-  cross_predict_alphagenome_GRCh38_synthetic:
-    cmd: sbatch --wait --export=ALL,TYPE=synthetic
-      slurm/cross_predict_alphagenome.sh
-    deps:
-    - slurm/cross_predict_alphagenome.sh
-    - src/predict_alphagenome.py
-    - weights/fold_0_weights.safetensors
-    - data/processed/evn/GRCh38/synthetic/train_100_pos.fa
-    - data/processed/evn/GRCh38/synthetic/train_100_neg.fa
-    - data/processed/evn/GRCh38/synthetic/validation_pos.fa
-    - data/processed/evn/GRCh38/synthetic/validation_neg.fa
-    - data/processed/evn/GRCh38/synthetic/test_pos.fa
-    - data/processed/evn/GRCh38/synthetic/test_neg.fa
-    - data/processed/svn/GRCh38/synthetic/train_100_pos.fa
-    - data/processed/svn/GRCh38/synthetic/train_100_neg.fa
-    - data/processed/svn/GRCh38/synthetic/validation_pos.fa
-    - data/processed/svn/GRCh38/synthetic/validation_neg.fa
-    - data/processed/svn/GRCh38/synthetic/test_pos.fa
-    - data/processed/svn/GRCh38/synthetic/test_neg.fa
-    - models/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
-    - models/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves
-    outs:
-    - predictions/cross_task/GRCh38/alphagenome/synthetic
   render_alphagenome_native_comparison_report_GRCh38_real:
     cmd: bash src/render_alphagenome_native_comparison_report.sh real
     deps:
     - src/render_alphagenome_native_comparison_report.sh
     - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
-    - results/cross_task/GRCh38/real/alphagenome_native_vs_cross_metrics.tsv
+    - reports/chromosome_learning_helpers.R
+    - src/prepare_cross_task_metrics.py
+    - results/evn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
+    - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     outs:
+    - results/comparison/GRCh38/real/alphagenome_native_metrics.tsv
     - reports/rendered/comparison/real/alphagenome_native_evn_vs_svn_GRCh38_chromosome_learning.html
   render_cross_task_reports_GRCh38_real:
     cmd: bash src/render_cross_task_reports.sh real && bash
@@ -1087,6 +1052,7 @@ stages:
     - src/prepare_cross_task_metrics.py
     - reports/cross_task_chromosome_learning_GRCh38_results.Rmd
     - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
+    - reports/chromosome_learning_helpers.R
     - predictions/cross_task/GRCh38/ls-gkm/real
     - predictions/cross_task/GRCh38/alphagenome/real
     - results/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
@@ -1095,24 +1061,22 @@ stages:
     - results/svn/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     outs:
     - results/cross_task/GRCh38/real/native_vs_cross_metrics.tsv
+    - results/comparison/GRCh38/real/native_metrics.tsv
     - reports/rendered/cross-task/real/native_vs_cross_GRCh38_chromosome_learning.html
     - reports/rendered/comparison/real/native_evn_vs_svn_GRCh38_chromosome_learning.html
-  render_comparison_reports_GRCh38_synthetic:
+  render_native_comparison_report_GRCh38_synthetic:
     cmd: bash src/render_native_comparison_report.sh synthetic
     deps:
-    - src/render_cross_task_reports.sh
     - src/render_native_comparison_report.sh
     - src/prepare_cross_task_metrics.py
-    - reports/cross_task_chromosome_learning_GRCh38_results.Rmd
     - reports/native_comparison_chromosome_learning_GRCh38_results.Rmd
-    - predictions/cross_task/GRCh38/ls-gkm/synthetic
-    - predictions/cross_task/GRCh38/alphagenome/synthetic
+    - reports/chromosome_learning_helpers.R
     - results/evn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
     - results/evn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
     - results/svn/GRCh38/ls-gkm/synthetic/chromosome_learning_curves/metrics.tsv
     - results/svn/GRCh38/alphagenome/synthetic/chromosome_learning_curves/metrics.tsv
     outs:
-    - results/cross_task/GRCh38/synthetic/native_vs_cross_metrics.tsv
+    - results/comparison/GRCh38/synthetic/native_metrics.tsv
     - reports/rendered/comparison/synthetic/native_evn_vs_svn_GRCh38_chromosome_learning.html
   prepare_GRCh38_evs:
     cmd: python3 src/make_GRCh38_evs_training.py --seed 42 --overwrite
@@ -1199,7 +1163,7 @@ stages:
       --export=ALL,DATASET=evs,TYPE=real --array=13-21%5 --mem=200G
       slurm/train_ls_gkm.sh
     deps:
-    - ../lsgkm/bin/gkmtrain
+    - repos/lsgkm/bin/gkmtrain
     - data/processed/evs/GRCh38/real
     - slurm/train_ls_gkm.sh
     outs:
@@ -1219,7 +1183,7 @@ stages:
     cmd: sbatch --wait --export=ALL,DATASET=evs,TYPE=real
       slurm/predict_ls_gkm.sh
     deps:
-    - ../lsgkm/bin/gkmpredict
+    - repos/lsgkm/bin/gkmpredict
     - data/processed/evs/GRCh38/real
     - models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves
     - slurm/predict_ls_gkm.sh
@@ -1247,8 +1211,153 @@ stages:
     cmd: bash src/render_native_evs_report.sh
     deps:
     - reports/native_evs_chromosome_learning_GRCh38_results.Rmd
+    - reports/chromosome_learning_helpers.R
     - results/evs/GRCh38/alphagenome/real/chromosome_learning_curves/metrics.tsv
     - results/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/metrics.tsv
     - src/render_native_evs_report.sh
     outs:
     - reports/rendered/evs/native_evs_GRCh38_chromosome_learning.html
+  build_JASPAR2026_human_motifs:
+    cmd: python3 src/build_JASPAR2026_human_motifs.py
+    deps:
+    - src/build_JASPAR2026_human_motifs.py
+    outs:
+    - data/motifs/JASPAR2026_CORE_non-redundant_pfms_meme.txt
+    - data/motifs/ultimate_metadata_table_CORE.tsv
+    - data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_meme.txt
+    - data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_audit.tsv
+    - data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_summary.json
+    - data/motifs/checksums.sha256
+  build_HOCOMOCO14_clustered_motifs:
+    cmd: python3 src/build_HOCOMOCO14_clustered_motifs.py
+    deps:
+    - src/build_HOCOMOCO14_clustered_motifs.py
+    outs:
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED.meme
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED_annotation.jsonl
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED_checksums.sha256
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED_pfm.tar.gz
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED_summary.json
+    - data/motifs/hocomoco14/cluster_list.tsv
+  tangermeme_analysis:
+    cmd: sbatch --wait --export=ALL,SEQLET_SELECTION=recursive slurm/tangermeme_analysis.sh
+    deps:
+    - data/processed/evn/GRCh38/real/test_neg.fa
+    - data/processed/evn/GRCh38/real/test_pos.fa
+    - data/processed/evs/GRCh38/real/test_neg.fa
+    - data/processed/evs/GRCh38/real/test_pos.fa
+    - data/processed/svn/GRCh38/real/test_neg.fa
+    - data/processed/svn/GRCh38/real/test_pos.fa
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED.meme
+    - data/motifs/hocomoco14/cluster_list.tsv
+    - models/evn/GRCh38/alphagenome/real/chromosome_learning_curves/through_chrX/through_chrX.best_head.pt
+    - models/evs/GRCh38/alphagenome/real/chromosome_learning_curves/through_chrX/through_chrX.best_head.pt
+    - models/svn/GRCh38/alphagenome/real/chromosome_learning_curves/through_chrX/through_chrX.best_head.pt
+    - slurm/tangermeme_analysis.sh
+    - src/tangermeme_analysis.py
+    - weights/fold_0_weights.safetensors
+    outs:
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX
+  render_tangermeme_report_GRCh38:
+    cmd: bash src/render_tangermeme_report.sh
+    deps:
+    - reports/tangermeme_GRCh38_results.Rmd
+    - src/render_tangermeme_report.sh
+    - src/render_tangermeme_motif_logos.py
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED.meme
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/audit.json
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/candidate_region_tests.tsv
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/ism_validation.tsv
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/metadata.json
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/motif_annotation_summary.tsv
+    - results/evn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/motif_cluster_summary.tsv
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/audit.json
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/candidate_region_tests.tsv
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/ism_validation.tsv
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/metadata.json
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/motif_annotation_summary.tsv
+    - results/evs/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/motif_cluster_summary.tsv
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/audit.json
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/candidate_region_tests.tsv
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/ism_validation.tsv
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/metadata.json
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/motif_annotation_summary.tsv
+    - results/svn/GRCh38/alphagenome/real/tangermeme_clustered_recursive/through_chrX/motif_cluster_summary.tsv
+    outs:
+    - reports/rendered/feature-importance/alphagenome_tangermeme_recursive_GRCh38.html
+  gkmexplain_scores:
+    cmd: sbatch --wait slurm/gkmexplain_scores.sh
+    deps:
+    - data/processed/evn/GRCh38/real/test_neg.fa
+    - data/processed/evn/GRCh38/real/test_pos.fa
+    - data/processed/evs/GRCh38/real/test_neg.fa
+    - data/processed/evs/GRCh38/real/test_pos.fa
+    - data/processed/svn/GRCh38/real/test_neg.fa
+    - data/processed/svn/GRCh38/real/test_pos.fa
+    - ls-gkm.yaml
+    - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+    - models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+    - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+    - repos/lsgkm/bin/gkmexplain
+    - slurm/gkmexplain_scores.sh
+    - src/gkmexplain_analysis.py
+    - src/run_gkmexplain_parallel.sh
+    outs:
+    - predictions/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - predictions/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - predictions/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+  gkmexplain_analysis:
+    cmd: sbatch --wait slurm/summarize_gkmexplain.sh
+    deps:
+    - data/processed/evn/GRCh38/real/test_neg.fa
+    - data/processed/evn/GRCh38/real/test_pos.fa
+    - data/processed/evs/GRCh38/real/test_neg.fa
+    - data/processed/evs/GRCh38/real/test_pos.fa
+    - data/processed/svn/GRCh38/real/test_neg.fa
+    - data/processed/svn/GRCh38/real/test_pos.fa
+    - data/motifs/JASPAR2026_CORE_non-redundant_pfms_homo_sapiens_meme.txt
+    - ls-gkm.yaml
+    - models/evn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+    - models/evs/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+    - models/svn/GRCh38/ls-gkm/real/chromosome_learning_curves/through_chrX/through_chrX.model.txt
+    - predictions/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - predictions/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - predictions/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - slurm/summarize_gkmexplain.sh
+    - src/gkmexplain_analysis.py
+    outs:
+    - results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+  annotate_gkmexplain_patterns:
+    cmd: sbatch --wait slurm/annotate_gkmexplain.sh
+    deps:
+    - data/motifs/hocomoco14/H14CORE-CLUSTERED.meme
+    - data/motifs/hocomoco14/cluster_list.tsv
+    - results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/negative_modisco.h5
+    - results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/positive_modisco.h5
+    - results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX/negative_modisco.h5
+    - results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX/positive_modisco.h5
+    - results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/negative_modisco.h5
+    - results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX/positive_modisco.h5
+    - slurm/annotate_gkmexplain.sh
+    - src/annotate_gkmexplain_patterns.py
+    outs:
+    - results/evn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+    - results/evs/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+    - results/svn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+  render_gkmexplain_report_GRCh38:
+    cmd: bash src/render_gkmexplain_report.sh
+    deps:
+    - reports/gkmexplain_GRCh38_results.Rmd
+    - src/render_gkmexplain_report.sh
+    - results/evn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - results/evn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+    - results/evs/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - results/evs/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+    - results/svn/GRCh38/ls-gkm/real/gkmexplain/through_chrX
+    - results/svn/GRCh38/ls-gkm/real/gkmexplain_hocomoco14/through_chrX
+    outs:
+    - reports/rendered/feature-importance/lsgkm_gkmexplain_GRCh38.html

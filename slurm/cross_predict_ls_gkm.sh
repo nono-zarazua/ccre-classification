@@ -56,7 +56,7 @@ checkpoint="through_chr${endpoint}"
 model="models/${model_task}/GRCh38/ls-gkm/${background_type}/chromosome_learning_curves/${checkpoint}/${checkpoint}.model.txt"
 evaluation_root="data/processed/${evaluation_task}/GRCh38/${background_type}"
 output_dir="predictions/cross_task/GRCh38/ls-gkm/${background_type}/${model_task}_model_on_${evaluation_task}/chromosome_learning_curves/${checkpoint}"
-gkmpredict="/work/zarazuanav/workspace/repos/lsgkm/bin/gkmpredict"
+gkmpredict="/work/zarazuanav/workspace/repos/ccre-classification/repos/lsgkm/bin/gkmpredict"
 
 [[ -x "${gkmpredict}" ]] || { echo "ERROR: executable not found: ${gkmpredict}" >&2; exit 1; }
 [[ -s "${model}" ]] || { echo "ERROR: model missing or empty: ${model}" >&2; exit 1; }

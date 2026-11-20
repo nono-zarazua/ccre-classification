@@ -1,0 +1,335 @@
+---
+title: "LS-GKM motif-importance analysis"
+subtitle: "GkmExplain, TF-MoDISco, and HOCOMOCO14 | held-out chr2 | real genomic backgrounds"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE,
+                      fig.width=10, fig.height=6, dpi=130)
+suppressPackageStartupMessages({
+  library(dplyr)
+  library(ggplot2)
+  library(gt)
+  library(jsonlite)
+  library(scales)
+  library(tidyr)
+})
+theme_set(theme_minimal(base_size=12) +
+            theme(panel.grid.minor=element_blank(), legend.position="bottom"))
+
+task_labels <- c(evn="EVN", svn="SVN", evs="EVS")
+task_definitions <- c(
+  EVN="Enhancer versus genomic background",
+  SVN="Silencer versus genomic background",
+  EVS="Enhancer versus silencer"
+)
+task_colors <- c(EVN="#0072B2", SVN="#D55E00", EVS="#009E73")
+sign_colors <- c(negative="#7B3294", positive="#008837")
+class_labels <- c(negative="Negative-class sequence", positive="Positive-class sequence")
+
+read_task <- function(task) {
+  discovery <- file.path("results", task, "GRCh38", "ls-gkm", "real",
+                         "gkmexplain", "through_chrX")
+  annotation <- file.path("results", task, "GRCh38", "ls-gkm", "real",
+                          "gkmexplain_hocomoco14", "through_chrX")
+  discovery_required <- c("metadata.json", "manifest.tsv", "motif_patterns.tsv")
+  annotation_required <- c("metadata.json", "pattern_annotations.tsv",
+                           "motif_summary.tsv", "logo_manifest.tsv")
+  missing <- c(
+    file.path(discovery, discovery_required)[
+      !file.exists(file.path(discovery, discovery_required))],
+    file.path(annotation, annotation_required)[
+      !file.exists(file.path(annotation, annotation_required))]
+  )
+  if (length(missing)) stop(task, " is missing: ", paste(missing, collapse=", "))
+
+  label <- unname(task_labels[[task]])
+  manifest <- read.delim(file.path(discovery, "manifest.tsv"),
+                         check.names=FALSE, stringsAsFactors=FALSE)
+  discovered <- read.delim(file.path(discovery, "motif_patterns.tsv"),
+                           check.names=FALSE, stringsAsFactors=FALSE) |>
+    mutate(pattern_name=paste0("pattern_", pattern_index),
+           pattern_id=paste(class_name, sign, pattern_name, sep=":"))
+  patterns <- read.delim(file.path(annotation, "pattern_annotations.tsv"),
+                         check.names=FALSE, stringsAsFactors=FALSE) |>
+    left_join(
+      discovered |>
+        select(pattern_id, total_contribution),
+      by="pattern_id"
+    ) |>
+    mutate(Task=.env$label,
+           best_match_significant=best_match_significant %in%
+             c(TRUE, "True", "TRUE", 1))
+  motifs <- read.delim(file.path(annotation, "motif_summary.tsv"),
+                       check.names=FALSE, stringsAsFactors=FALSE) |>
+    mutate(Task=.env$label)
+  logos <- read.delim(file.path(annotation, "logo_manifest.tsv"),
+                      check.names=FALSE, stringsAsFactors=FALSE) |>
+    mutate(Task=.env$label,
+           image_path=file.path(annotation, png)) |>
+    left_join(
+      patterns |>
+        select(pattern_id, class_name, sign, n_seqlets, representative_gene,
+               best_motif, best_tomtom_global_qvalue,
+               best_match_significant, total_contribution),
+      by="pattern_id"
+    )
+  list(
+    discovery=discovery,
+    annotation=annotation,
+    discovery_metadata=read_json(file.path(discovery, "metadata.json"),
+                                 simplifyVector=TRUE),
+    annotation_metadata=read_json(file.path(annotation, "metadata.json"),
+                                  simplifyVector=TRUE),
+    manifest=manifest,
+    patterns=patterns,
+    motifs=motifs,
+    logos=logos
+  )
+}
+
+analyses <- setNames(lapply(names(task_labels), read_task), unname(task_labels))
+patterns <- bind_rows(lapply(analyses, `[[`, "patterns"))
+motifs <- bind_rows(lapply(analyses, `[[`, "motifs"))
+logos <- bind_rows(lapply(analyses, `[[`, "logos"))
+
+qc <- bind_rows(lapply(names(analyses), function(task) {
+  x <- analyses[[task]]
+  manifest <- x$manifest
+  tibble(
+    Task=task,
+    Classification=task_definitions[[task]],
+    `Test sequences`=nrow(manifest),
+    `Positive sequences`=sum(manifest$class_name == "positive"),
+    `Negative sequences`=sum(manifest$class_name == "negative"),
+    Patterns=x$annotation_metadata$counts$patterns,
+    `Significantly annotated patterns`=
+      x$annotation_metadata$counts$significant_patterns,
+    Seqlets=sum(x$patterns$n_seqlets),
+    `Support vectors`=x$discovery_metadata$model_header$total_sv
+  )
+}))
+
+logo_gallery <- function(data, n=6) {
+  data <- data |>
+    filter(best_match_significant) |>
+    arrange(desc(n_seqlets), desc(abs(total_contribution))) |>
+    slice_head(n=n)
+  cards <- lapply(seq_len(nrow(data)), function(i) {
+    row <- data[i, , drop=FALSE]
+    motif <- ifelse(is.na(row$representative_gene[[1]]) ||
+                      row$representative_gene[[1]] == "",
+                    row$best_motif[[1]], row$representative_gene[[1]])
+    htmltools::tags$figure(
+      style="display:block; width:94%; vertical-align:top; margin:1.5% auto 3% auto;",
+      htmltools::tags$img(
+        src=knitr::image_uri(row$image_path[[1]]),
+        style="width:100%; height:auto;"
+      ),
+      htmltools::tags$figcaption(
+        style="font-size:1em; line-height:1.35; text-align:center; margin-top:0.6em;",
+        paste0(row$class_name[[1]], " sequence; ", row$sign[[1]],
+               " contribution; ", motif, "; ",
+               comma(row$n_seqlets[[1]]), " seqlets; global q=",
+               scientific(row$best_tomtom_global_qvalue[[1]], digits=2))
+      )
+    )
+  })
+  htmltools::tagList(cards)
+}
+
+top_motif_plot <- function(task, n=12) {
+  data <- motifs |>
+    filter(Task == task) |>
+    arrange(desc(total_seqlets), minimum_global_qvalue) |>
+    slice_head(n=n) |>
+    mutate(label=paste0(representative_gene, " (", class_name, ", ", sign, ")"),
+           label=factor(label, levels=rev(unique(label))))
+  ggplot(data, aes(total_seqlets, label, fill=sign)) +
+    geom_col(width=.72) +
+    geom_text(aes(label=comma(total_seqlets)), hjust=-.08, size=3.3) +
+    scale_fill_manual(values=sign_colors) +
+    scale_x_continuous(labels=comma, expand=expansion(mult=c(0, .18))) +
+    labs(title=paste(task, "leading HOCOMOCO motif clusters"),
+         subtitle="Ranked by TF-MoDISco seqlets assigned to significantly annotated patterns",
+         x="Seqlets", y=NULL, fill="Contribution sign")
+}
+```
+
+# Scope
+
+This report interprets the final through-chrX LS-GKM models on their held-out
+chr2 test sets. GkmExplain assigns a contribution score to every nucleotide,
+separately for positive- and negative-class sequences. TF-MoDISco groups
+recurrent contribution patterns, and TOMTOM annotates those patterns against
+the non-redundant HOCOMOCO v14 CORE clustered motif library.
+
+The report mirrors the structure of the AlphaGenome/Tangermeme report where
+the methods provide comparable information: class, contribution sign, motif
+prevalence, task specificity, and representative logos. It does **not** equate
+LS-GKM contribution magnitudes with AlphaGenome saliency or ablation effects.
+No LS-GKM perturbation experiment is included here.
+
+# Quality control
+
+```{r qc-table}
+qc |>
+  gt() |>
+  tab_header(title="GkmExplain, TF-MoDISco, and annotation coverage") |>
+  fmt_integer(columns=c(`Test sequences`, `Positive sequences`,
+                        `Negative sequences`, Patterns,
+                        `Significantly annotated patterns`, Seqlets,
+                        `Support vectors`))
+```
+
+TOMTOM significance uses Benjamini–Hochberg correction across every
+pattern–motif comparison within a task. A significant match associates a
+model-derived pattern with a known motif cluster; it does not establish
+transcription-factor occupancy in vivo.
+
+# Contribution-pattern inventory
+
+```{r pattern-inventory, fig.height=6.8}
+patterns |>
+  count(Task, class_name, sign, wt=n_seqlets, name="Seqlets") |>
+  mutate(`Sequence class`=recode(class_name,
+                                 negative="Negative class",
+                                 positive="Positive class")) |>
+  ggplot(aes(`Sequence class`, Seqlets, fill=sign)) +
+  geom_col(position="dodge") +
+  facet_wrap(~Task, scales="free_y") +
+  scale_fill_manual(values=sign_colors) +
+  scale_y_continuous(labels=comma) +
+  labs(title="TF-MoDISco seqlets by task, sequence class, and contribution sign",
+       x=NULL, y="Seqlets", fill="Contribution sign") +
+  guides(fill=guide_legend(title.position="top")) +
+  theme(axis.text.x=element_text(size=10.5, margin=margin(t=8)),
+        legend.position="bottom",
+        legend.title=element_text(size=11),
+        legend.text=element_text(size=10.5),
+        legend.box.margin=margin(t=14),
+        plot.margin=margin(10, 12, 18, 12))
+```
+
+Positive contribution increases the LS-GKM decision score; negative
+contribution decreases it. Sequence class describes where a pattern was
+observed, not the direction of its contribution.
+
+# Task-specific motif signals
+
+## EVN: enhancer versus genomic background
+
+```{r evn-motifs}
+top_motif_plot("EVN")
+```
+
+```{r evn-logos, results='asis'}
+logo_gallery(logos |> filter(Task == "EVN"))
+```
+
+## SVN: silencer versus genomic background
+
+```{r svn-motifs}
+top_motif_plot("SVN")
+```
+
+```{r svn-logos, results='asis'}
+logo_gallery(logos |> filter(Task == "SVN"))
+```
+
+## EVS: enhancer versus silencer
+
+```{r evs-motifs}
+top_motif_plot("EVS")
+```
+
+```{r evs-logos, results='asis'}
+logo_gallery(logos |> filter(Task == "EVS"))
+```
+
+# Cross-task motif comparison
+
+```{r cross-task-table}
+cross_task <- motifs |>
+  group_by(Task, representative_gene) |>
+  summarise(
+    Seqlets=sum(total_seqlets),
+    Patterns=sum(n_patterns),
+    `Minimum global q-value`=min(minimum_global_qvalue),
+    .groups="drop"
+  ) |>
+  group_by(representative_gene) |>
+  mutate(`Tasks observed`=n_distinct(Task),
+         `All-task seqlets`=sum(Seqlets)) |>
+  ungroup() |>
+  arrange(desc(`Tasks observed`), desc(`All-task seqlets`), representative_gene) |>
+  filter(`Tasks observed` >= 2) |>
+  slice_head(n=30)
+
+cross_task |>
+  select(Motif=representative_gene, Task, Seqlets, Patterns,
+         `Minimum global q-value`, `Tasks observed`) |>
+  gt(groupname_col="Motif") |>
+  tab_header(
+    title="Leading motif clusters shared across tasks",
+    subtitle="Seqlet counts are descriptive and are not normalized across models"
+  ) |>
+  fmt_integer(columns=c(Seqlets, Patterns, `Tasks observed`)) |>
+  fmt_scientific(columns=`Minimum global q-value`, decimals=2)
+```
+
+Shared clusters are candidates for common regulatory grammar. Task-restricted
+clusters may reflect task-specific sequence features, but differences in
+seqlet counts can also arise from model performance, test-set composition,
+or TF-MoDISco clustering. Direct numerical comparisons with the AlphaGenome
+ablation effects are therefore inappropriate.
+
+# Pattern-level evidence
+
+```{r pattern-scatter}
+patterns |>
+  filter(best_match_significant) |>
+  ggplot(aes(n_seqlets, abs(total_contribution), color=sign,
+             shape=class_name)) +
+  geom_point(alpha=.72, size=2.2) +
+  facet_wrap(~Task, scales="free") +
+  scale_color_manual(values=sign_colors) +
+  scale_x_log10(labels=comma) +
+  labs(title="Pattern recurrence and contribution magnitude",
+       subtitle="Each point is one TF-MoDISco pattern with a significant HOCOMOCO match",
+       x="Seqlets assigned to pattern (log scale)",
+       y="Absolute aggregate contribution", color="Contribution sign",
+       shape="Sequence class")
+```
+
+This separates two complementary properties: recurrence across sequences and
+the aggregate contribution carried by the pattern. A common moderate pattern
+and a rare high-contribution pattern can both be biologically informative.
+
+# Reproducibility
+
+```{r provenance}
+tibble(
+  Item=c("Models", "Evaluation chromosome", "Explanations", "Discovery",
+         "Motif database", "Motif annotation", "Multiple testing",
+         "Interpretive unit"),
+  Value=c(
+    "Final through-chrX LS-GKM models for EVN, SVN, and EVS",
+    "chr2 held-out test sets",
+    "GkmExplain observed-base importance scores",
+    "TF-MoDISco-lite run separately by sequence class and contribution sign",
+    "HOCOMOCO v14 CORE clustered (648 representative motifs)",
+    "TOMTOM against every clustered motif",
+    "Benjamini–Hochberg across all pattern–motif comparisons per task",
+    "TF-MoDISco patterns and their assigned seqlets"
+  )
+) |>
+  gt() |>
+  tab_header(title="Analysis provenance")
+```
